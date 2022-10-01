@@ -82,9 +82,11 @@ const Text = styled.Text<IText>(({active}) => ({
   color: active ? 'rgba(45, 45, 45, 1)' : 'rgba(110, 110, 110, 1)',
   fontFamily: theme.fonts.Gagalin,
 }));
-const ItemList = styled.View({});
+const ItemList = styled.View({
+  marginTop: heightPixel(10),
+});
 const Item = styled.TouchableOpacity({
-  paddingVertical: heightPixel(9),
+  paddingVertical: heightPixel(10),
   paddingLeft: widthPixel(16),
   width: '100%',
 });
