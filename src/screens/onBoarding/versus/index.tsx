@@ -20,13 +20,13 @@ export const Versus = ({}) => {
   const SetRounds = (number: React.SetStateAction<number>) => {
     setNoOfRounds(number);
   };
-  const navigation = useNavigation();
+  const {navigate, goBack} = useNavigation();
   return (
     <Main>
       <Body>
         <Logo />
         <Card>
-          <Cross onPress={() => navigation.goBack()}>
+          <Cross onPress={() => goBack()}>
             <Icon name={'cross'} size={30} color={theme.colors.black} />
           </Cross>
           <Title>Select number of teams</Title>
@@ -48,7 +48,7 @@ export const Versus = ({}) => {
             />
           </DropDownContainer>
           <Button>
-            <StrippedButton label="Next" />
+            <StrippedButton label="Next" onPress={() => navigate('Home')} />
           </Button>
         </Card>
       </Body>

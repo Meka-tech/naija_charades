@@ -46,7 +46,11 @@ export const MainMenu = ({}) => {
               {height: '100%', justifyContent: 'space-between'},
               ButtonSpringStyles,
             ]}>
-            <StrippedButton label="Quick Play" elevation={5} />
+            <StrippedButton
+              label="Quick Play"
+              elevation={5}
+              onPress={() => navigate('Home')}
+            />
             <StrippedButton
               label="Versus"
               elevation={5}
