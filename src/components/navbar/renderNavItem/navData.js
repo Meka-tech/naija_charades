@@ -9,6 +9,7 @@ import SettingIcon from '../../../../assets/images/NavIcons/settings.svg';
 import SettingActiveIcon from '../../../../assets/images/NavIcons/settings_active.svg';
 import SpeakerIcon from '../../../../assets/images/NavIcons/speaker.svg';
 import SpeakerActiveIcon from '../../../../assets/images/NavIcons/speaker_active.svg';
+import MenuActiveIcon from '../../../../assets/images/NavIcons/menu_active.svg';
 import React from 'react';
 
 export const NAVDATA = [
@@ -24,7 +25,7 @@ export const NAVDATA = [
     title: 'Main Menu',
     nav: 'MainMenu',
     icon: <MenuIcon />,
-    activeIcon: <HomeActiveIcon />,
+    activeIcon: <MenuActiveIcon />,
   },
   {
     id: '3',

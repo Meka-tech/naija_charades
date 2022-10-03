@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import Logo from '../../../../assets/images/logo.svg';
 import styled from '@emotion/native';
-import Art from '../../../../assets/images/background_art.png';
+import Art from '../../../../assets/images/background_main.svg';
 import {StrippedButton} from '../../../components';
 import {heightPixel, widthPixel} from '../../../utils/pxToDpConvert';
 import Animated, {
@@ -10,8 +10,11 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../app/store';
 
 export const MainMenu = ({}) => {
+  const dispatch = useDispatch();
   const offset = useSharedValue(0);
   const offsetButton = useSharedValue(0);
 
@@ -33,6 +36,11 @@ export const MainMenu = ({}) => {
     }, 2000);
   }, []);
   const {navigate} = useNavigation();
+
+  const {darkMode: isDarkMode} = useSelector(
+    (state: RootState) => state.reducer.userPreference,
+  );
+
   return (
     <Main>
       <Body>
@@ -60,7 +68,9 @@ export const MainMenu = ({}) => {
           </Animated.View>
         </Buttons>
       </Body>
-      <Image source={Art} />
+      <Image>
+        <Art width={'100%'} height={'100%'} />
+      </Image>
     </Main>
   );
 };
@@ -78,7 +88,7 @@ const Body = styled.View({
   alignItems: 'center',
   justifyContent: 'center',
 });
-const Image = styled.Image({
+const Image = styled.View({
   width: '100%',
   height: '100%',
   position: 'absolute',

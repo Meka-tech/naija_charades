@@ -10,6 +10,8 @@ import {heightPixel, widthPixel} from '../../utils/pxToDpConvert';
 import Icon from 'react-native-vector-icons/Entypo';
 import {RenderNavItem} from './renderNavItem';
 import {NAVDATA} from './renderNavItem/navData';
+import {RootState} from '../../app/store';
+import {useSelector} from 'react-redux';
 
 interface IProps {
   activePage?: string;
@@ -19,6 +21,9 @@ interface IProps {
 
 export const Navbar: FC<IProps> = ({active, activePage, closeNav}) => {
   const offset = useSharedValue(0);
+  const {darkMode: isDarkMode} = useSelector(
+    (state: RootState) => state.reducer.userPreference,
+  );
 
   const defaultSpringStyles = useAnimatedStyle(() => {
     return {
@@ -33,8 +38,24 @@ export const Navbar: FC<IProps> = ({active, activePage, closeNav}) => {
     };
   });
   useEffect(() => {
-    active ? (offset.value = 0) : (offset.value = -1.8);
+    active ? (offset.value = 1) : (offset.value = -1.5);
   }, [active, offset]);
+
+  const Bar = styled.View({
+    width: '60%',
+    height: '100%',
+    backgroundColor: isDarkMode
+      ? theme.colors.darkbackground
+      : theme.colors.white,
+    elevation: 200,
+    paddingTop: heightPixel(89),
+  });
+
+  const Cross = styled.TouchableOpacity({
+    position: 'absolute',
+    left: widthPixel(30),
+    top: heightPixel(30),
+  });
 
   return (
     <Animated.View
@@ -45,7 +66,11 @@ export const Navbar: FC<IProps> = ({active, activePage, closeNav}) => {
       <Container>
         <Bar>
           <Cross onPress={closeNav}>
-            <Icon name={'cross'} size={30} color={theme.colors.black} />
+            <Icon
+              name={'cross'}
+              size={30}
+              color={isDarkMode ? theme.colors.white : theme.colors.black}
+            />
           </Cross>
           {NAVDATA.map(item => {
             return (
@@ -54,7 +79,13 @@ export const Navbar: FC<IProps> = ({active, activePage, closeNav}) => {
                 text={item.title}
                 key={item.id}
                 nav={item.nav}
-                Icon={activePage === item.title ? item.activeIcon : item.icon}
+                Icon={
+                  activePage === item.title
+                    ? item.activeIcon
+                    : isDarkMode
+                    ? item.activeIcon
+                    : item.icon
+                }
               />
             );
           })}
@@ -70,24 +101,12 @@ const Container = styled.View({
   width: '100%',
   height: '100%',
   zIndex: 10,
+  left: '-60%',
 });
 
 const Shade = styled.TouchableOpacity({
   position: 'absolute',
-  width: '30%',
+  width: '40%',
   height: '100%',
   right: 0,
-});
-const Bar = styled.View({
-  width: '70%',
-  height: '100%',
-  backgroundColor: theme.colors.white,
-  elevation: 200,
-  paddingTop: heightPixel(89),
-});
-
-const Cross = styled.TouchableOpacity({
-  position: 'absolute',
-  left: widthPixel(30),
-  top: heightPixel(30),
 });

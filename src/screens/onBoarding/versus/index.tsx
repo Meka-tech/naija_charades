@@ -1,24 +1,45 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from '@emotion/native';
-import Art from '../../../../assets/images/background_art.png';
+import Art from '../../../../assets/images/background_main.svg';
 import Logo from '../../../../assets/images/logo.svg';
 import {Dropdown, StrippedButton} from '../../../components';
 import {fontPixel, heightPixel, widthPixel} from '../../../utils/pxToDpConvert';
 import {theme} from '../../../utils/theme';
 import Icon from 'react-native-vector-icons/Entypo';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector, useDispatch} from 'react-redux';
+import {RootState} from '../../../app/store';
+import {
+  updateNoOfRounds,
+  updateNoOfTeams,
+} from '../../../features/game_rules/gameRulesSlice';
 
 export const Versus = ({}) => {
+  /////Redux
+  const Rounds = useSelector(
+    (state: RootState) => state.reducer.gameRules.rounds,
+  );
+  const Teams = useSelector(
+    (state: RootState) => state.reducer.gameRules.teams,
+  );
+  const dispatch = useDispatch();
+
+  ////Teams
   const Teamlist = [2, 3, 4];
-  const [noOfTeams, setNoOfTeams] = useState<number>(2);
-  const SetTeams = (number: React.SetStateAction<number>) => {
+  const [noOfTeams, setNoOfTeams] = useState<number>(Teams);
+
+  const SetTeams = (number: number) => {
     setNoOfTeams(number);
+    dispatch(updateNoOfTeams(number));
   };
 
+  ////Rounds
   const Roundslist = [3, 5, 7];
-  const [noOfRounds, setNoOfRounds] = useState<number>(3);
-  const SetRounds = (number: React.SetStateAction<number>) => {
+  const [noOfRounds, setNoOfRounds] = useState<number>(Rounds);
+
+  const SetRounds = (number: number) => {
     setNoOfRounds(number);
+    dispatch(updateNoOfRounds(number));
   };
   const {navigate, goBack} = useNavigation();
   return (
@@ -52,7 +73,9 @@ export const Versus = ({}) => {
           </Button>
         </Card>
       </Body>
-      <Image source={Art} />
+      <Image>
+        <Art width={'100%'} height={'100%'} />
+      </Image>
     </Main>
   );
 };
@@ -70,7 +93,7 @@ const Body = styled.View({
   alignItems: 'center',
   justifyContent: 'center',
 });
-const Image = styled.Image({
+const Image = styled.View({
   width: '100%',
   height: '100%',
   position: 'absolute',

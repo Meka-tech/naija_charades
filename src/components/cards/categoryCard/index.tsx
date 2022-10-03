@@ -11,8 +11,6 @@ interface IProps {
 
 const Gradient = GenerateGradient();
 
-console.log(Gradient);
-
 export const CategoryCard: FC<IProps> = ({title, icon, favourite}) => {
   return <Container></Container>;
 };

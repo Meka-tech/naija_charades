@@ -1,7 +1,10 @@
 import {
   NavigationContainer,
   NavigatorScreenParams,
+  DefaultTheme,
+  DarkTheme,
 } from '@react-navigation/native';
+import {useColorScheme} from 'react-native';
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Favourites, Home, MainMenu, New, Settings, Versus} from '../../screens';
@@ -17,8 +20,9 @@ export type IRootNavgation = {
 const Stack = createNativeStackNavigator<IRootNavgation>();
 
 export const RootNavigation = () => {
+  const scheme = useColorScheme();
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name="MainMenu" component={MainMenu} />
         <Stack.Screen name="Versus" component={Versus} />
