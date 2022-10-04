@@ -1,20 +1,45 @@
 import styled from '@emotion/native';
-import React, {FC} from 'react';
+import React, {FC, useState} from 'react';
 import {fontPixel, heightPixel, widthPixel} from '../../../utils/pxToDpConvert';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {theme} from '../../../utils/theme';
 import customImage from '../../../../assets/images/CardIcon/custom_image.png';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../app/store';
+import {deleteCustomCard} from '../../../features/custom_category/customCategory';
+import {DeleteModal} from '../../modal';
 
 interface IProps {
   title?: string;
+  id?: number;
 }
 
-export const CustomMadeCard: FC<IProps> = ({title}) => {
+export const CustomMadeCard: FC<IProps> = ({title, id}) => {
+  const dispatch = useDispatch();
+  const {customCategoryArray} = useSelector(
+    (state: RootState) => state.reducer.customCategories,
+  );
+  const [modalActive, setModalActive] = useState(false);
+  const OnDeleteDeck = () => {
+    const NewArray = customCategoryArray.filter(deck => deck.id !== id);
+    dispatch(deleteCustomCard(NewArray));
+  };
+
+  const CloseModal = () => {
+    setModalActive(false);
+  };
+
   return (
     <Container>
+      <DeleteModal
+        active={modalActive}
+        bodyText={`Deleting  the category “${title}” will remove it and all of its contents. This cannot be undone.`}
+        onPress={OnDeleteDeck}
+        closeModal={CloseModal}
+      />
       <Title>{title}</Title>
       <Image source={customImage} />
-      <Trash>
+      <Trash onPress={() => setModalActive(true)}>
         <Icon name={'trash-o'} color="white" size={22} />
       </Trash>
     </Container>
@@ -38,7 +63,7 @@ const Title = styled.Text({
   marginBottom: heightPixel(5),
 });
 const Image = styled.Image({});
-const Trash = styled.View({
+const Trash = styled.TouchableOpacity({
   position: 'absolute',
   right: 15,
   top: 15,

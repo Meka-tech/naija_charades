@@ -52,12 +52,15 @@ export const Settings = () => {
     dispatch(updateSound(sound));
   }, [timer, dispatch, darkMode, sound]);
 
-  const SettingName = styled.Text({
-    marginLeft: widthPixel(12),
-    fontWeight: '600',
-    fontSize: fontPixel(18),
-    color: darkMode ? theme.colors.white : theme.colors.black,
-    fontFamily: theme.fonts.MonstserratSemibold,
+  const ToggleTimerView = styled.TouchableOpacity({
+    backgroundColor: darkMode ? 'rgba(30, 30, 30, 1)' : theme.colors.white,
+    width: widthPixel(109),
+    height: heightPixel(38),
+    borderColor: theme.colors.main,
+    borderWidth: widthPixel(2),
+    borderRadius: widthPixel(5),
+    alignItems: 'center',
+    justifyContent: 'center',
   });
 
   return (
@@ -66,16 +69,16 @@ export const Settings = () => {
         <Setting>
           <Left>
             {darkMode ? <TimerIconDark /> : <TimerIcon />}
-            <SettingName>Timer</SettingName>
+            <SettingName darkMode={darkMode}>Timer</SettingName>
           </Left>
           <ToggleTimerView onPress={ChangeTimer}>
-            <TimerText>{timer} Secs</TimerText>
+            <TimerText darkMode={darkMode}>{timer} Secs</TimerText>
           </ToggleTimerView>
         </Setting>
         <Setting>
           <Left>
             {darkMode ? <CrescentIconDark /> : <MoonIcon />}
-            <SettingName>Dark Mode</SettingName>
+            <SettingName darkMode={darkMode}>Dark Mode</SettingName>
           </Left>
           <ToggleView>
             <Switch active={darkMode} toggle={toggleMode} />
@@ -84,7 +87,7 @@ export const Settings = () => {
         <Setting>
           <Left>
             {darkMode ? <SoundIconDark /> : <SoundIcon />}
-            <SettingName>Sound</SettingName>
+            <SettingName darkMode={darkMode}>Sound</SettingName>
           </Left>
           <ToggleView>
             <Switch active={sound} toggle={toggleSound} />
@@ -95,27 +98,27 @@ export const Settings = () => {
   );
 };
 
+interface useDark {
+  darkMode: boolean;
+}
+
+const TimerText = styled.Text<useDark>(({darkMode}) => ({
+  fontWeight: '600',
+  color: darkMode ? theme.colors.white : theme.colors.black,
+  fontSize: fontPixel(15),
+  fontFamily: theme.fonts.MonstserratSemibold,
+}));
+const SettingName = styled.Text<useDark>(({darkMode}) => ({
+  marginLeft: widthPixel(12),
+  fontWeight: '600',
+  fontSize: fontPixel(18),
+  color: darkMode ? theme.colors.white : theme.colors.black,
+  fontFamily: theme.fonts.MonstserratSemibold,
+}));
+
 const Body = styled.View({
   width: '80%',
   marginTop: heightPixel(50),
-});
-
-const ToggleTimerView = styled.TouchableOpacity({
-  backgroundColor: theme.colors.white,
-  width: widthPixel(109),
-  height: heightPixel(38),
-  borderColor: theme.colors.main,
-  borderWidth: widthPixel(2),
-  borderRadius: widthPixel(5),
-  alignItems: 'center',
-  justifyContent: 'center',
-});
-
-const TimerText = styled.Text({
-  fontWeight: '600',
-  color: theme.colors.black,
-  fontSize: fontPixel(15),
-  fontFamily: theme.fonts.MonstserratSemibold,
 });
 
 const Setting = styled.View({

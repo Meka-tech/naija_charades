@@ -10,8 +10,7 @@ import {heightPixel, widthPixel} from '../../utils/pxToDpConvert';
 import Icon from 'react-native-vector-icons/Entypo';
 import {RenderNavItem} from './renderNavItem';
 import {NAVDATA} from './renderNavItem/navData';
-import {RootState} from '../../app/store';
-import {useSelector} from 'react-redux';
+import {IsDarkMode} from '../../utils/isDarkMode';
 
 interface IProps {
   activePage?: string;
@@ -21,9 +20,7 @@ interface IProps {
 
 export const Navbar: FC<IProps> = ({active, activePage, closeNav}) => {
   const offset = useSharedValue(0);
-  const {darkMode: isDarkMode} = useSelector(
-    (state: RootState) => state.reducer.userPreference,
-  );
+  const isDarkMode = IsDarkMode();
 
   const defaultSpringStyles = useAnimatedStyle(() => {
     return {
@@ -41,22 +38,6 @@ export const Navbar: FC<IProps> = ({active, activePage, closeNav}) => {
     active ? (offset.value = 0.95) : (offset.value = -1.5);
   }, [active, offset]);
 
-  const Bar = styled.View({
-    width: '60%',
-    height: '100%',
-    backgroundColor: isDarkMode
-      ? theme.colors.darkbackground
-      : theme.colors.white,
-    elevation: 200,
-    paddingTop: heightPixel(89),
-  });
-
-  const Cross = styled.TouchableOpacity({
-    position: 'absolute',
-    left: widthPixel(30),
-    top: heightPixel(30),
-  });
-
   return (
     <Animated.View
       style={[
@@ -64,7 +45,7 @@ export const Navbar: FC<IProps> = ({active, activePage, closeNav}) => {
         defaultSpringStyles,
       ]}>
       <Container>
-        <Bar>
+        <Bar isDarkMode={isDarkMode}>
           <Cross onPress={closeNav}>
             <Icon
               name={'cross'}
@@ -109,4 +90,22 @@ const Shade = styled.TouchableOpacity({
   width: '40%',
   height: '100%',
   right: 0,
+});
+interface useDark {
+  isDarkMode: boolean;
+}
+const Bar = styled.View<useDark>(({isDarkMode}) => ({
+  width: '60%',
+  height: '100%',
+  backgroundColor: isDarkMode
+    ? theme.colors.darkbackground
+    : theme.colors.white,
+  elevation: 200,
+  paddingTop: heightPixel(89),
+}));
+
+const Cross = styled.TouchableOpacity({
+  position: 'absolute',
+  left: widthPixel(30),
+  top: heightPixel(30),
 });

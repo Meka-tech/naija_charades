@@ -12,7 +12,7 @@ export const Home = () => {
             <CategoryCard
               title={category.title}
               color={category.color}
-              favourite={category.favourite}
+              description={category.description}
               icon={category.icon}
               key={index * Math.random()}
             />

@@ -1,11 +1,9 @@
 import styled from '@emotion/native';
 import {useNavigation} from '@react-navigation/native';
 import React, {FC} from 'react';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {RootState} from '../../../app/store';
 import {fontPixel, heightPixel, widthPixel} from '../../../utils/pxToDpConvert';
 import {theme} from '../../../utils/theme';
-import {useSelector} from 'react-redux';
+import {IsDarkMode} from '../../../utils/isDarkMode';
 
 interface IProps {
   active: boolean;
@@ -16,39 +14,15 @@ interface IProps {
 
 export const RenderNavItem: FC<IProps> = ({active, text, Icon, nav}) => {
   const {navigate} = useNavigation();
-  const {darkMode: isDarkMode} = useSelector(
-    (state: RootState) => state.reducer.userPreference,
-  );
-
-  interface IText {
-    active: boolean;
-  }
-  const TextAbove = styled.Text<IText>(({active}) => ({
-    fontWeight: '500',
-    fontSize: fontPixel(24),
-    fontFamily: theme.fonts.Gagalin,
-    color: active
-      ? theme.colors.white
-      : isDarkMode
-      ? theme.colors.white
-      : theme.colors.black,
-    position: 'absolute',
-    zIndex: 1,
-  }));
-  const TextBelow = styled.Text<IText>(({active}) => ({
-    fontWeight: '500',
-    fontSize: fontPixel(24),
-    fontFamily: theme.fonts.Gagalin,
-    color: active ? theme.colors.black : theme.colors.main,
-    position: 'absolute',
-    bottom: 0,
-  }));
+  const isDarkMode = IsDarkMode();
 
   return (
     <Container active={active} onPress={() => navigate(nav)}>
       <IconView>{Icon}</IconView>
       <TextView>
-        <TextAbove active={active}>{text}</TextAbove>
+        <TextAbove isDarkMode={isDarkMode} active={active}>
+          {text}
+        </TextAbove>
         <TextBelow active={active}>{text}</TextBelow>
       </TextView>
     </Container>
@@ -78,3 +52,28 @@ const TextView = styled.View({
   height: heightPixel(31),
   width: '100%',
 });
+
+interface IText {
+  active: boolean;
+  isDarkMode?: boolean;
+}
+const TextAbove = styled.Text<IText>(({active, isDarkMode}) => ({
+  fontWeight: '500',
+  fontSize: fontPixel(24),
+  fontFamily: theme.fonts.Gagalin,
+  color: active
+    ? theme.colors.white
+    : isDarkMode
+    ? theme.colors.white
+    : theme.colors.black,
+  position: 'absolute',
+  zIndex: 1,
+}));
+const TextBelow = styled.Text<IText>(({active}) => ({
+  fontWeight: '500',
+  fontSize: fontPixel(24),
+  fontFamily: theme.fonts.Gagalin,
+  color: active ? theme.colors.black : theme.colors.main,
+  position: 'absolute',
+  bottom: 0,
+}));

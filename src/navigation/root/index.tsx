@@ -8,14 +8,17 @@ import {useColorScheme} from 'react-native';
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
+  CreateNewCategory,
   CustomPage,
   Favourites,
+  GameDescription,
   Home,
   MainMenu,
   New,
   Settings,
   Versus,
 } from '../../screens';
+import {WhoseGuess} from '../../screens/app/Game/whoseGuess';
 
 export type IRootNavgation = {
   MainMenu: undefined;
@@ -25,6 +28,9 @@ export type IRootNavgation = {
   New: undefined;
   Favourites: undefined;
   CustomPage: undefined;
+  GameDescription: {title: string; description: string};
+  WhoseGuess: {title: string};
+  CreateNewCategory: undefined;
 };
 const Stack = createNativeStackNavigator<IRootNavgation>();
 
@@ -40,6 +46,9 @@ export const RootNavigation = () => {
         <Stack.Screen name="New" component={New} />
         <Stack.Screen name="Favourites" component={Favourites} />
         <Stack.Screen name="CustomPage" component={CustomPage} />
+        <Stack.Screen name="GameDescription" component={GameDescription} />
+        <Stack.Screen name="WhoseGuess" component={WhoseGuess} />
+        <Stack.Screen name="CreateNewCategory" component={CreateNewCategory} />
       </Stack.Navigator>
     </NavigationContainer>
   );

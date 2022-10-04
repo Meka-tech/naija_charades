@@ -18,12 +18,12 @@ export const New = () => {
 
 const NoContentView = styled.View({
   width: '100%',
-  height: '100%',
+  height: '90%',
   alignItems: 'center',
+  justifyContent: 'center',
 });
 
 const Image = styled.Image({
-  marginTop: heightPixel(70),
   marginBottom: heightPixel(30),
 });
 const NoContentText = styled.Text({

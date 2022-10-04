@@ -1,47 +1,37 @@
 import React, {FC, useState} from 'react';
 import styled from '@emotion/native';
+
 import Art from '../../../assets/images/background_art2.svg';
 import {theme} from '../../utils/theme';
 import {fontPixel, heightPixel, widthPixel} from '../../utils/pxToDpConvert';
-import HamburgerIcon from '../../../assets/images/hamburger_icon.svg';
-import {Navbar} from '../navbar';
 import Art2 from '../../../assets/images/background_art.svg';
-import HamburgerIconDark from '../../../assets/images/DarkMode/hamburger_light.svg';
+import {useNavigation} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/AntDesign';
 import {Dimensions} from 'react-native';
 import {IsDarkMode} from '../../utils/isDarkMode';
 
 interface IProps {
   title?: string;
-  activePage?: string;
   children?: JSX.Element;
 }
 
-export const MenuPage: FC<IProps> = ({title, activePage, children}) => {
-  const [navbarActive, setNavbarActive] = useState(false);
+export const SecondaryMenuPage: FC<IProps> = ({title, children}) => {
+  const {goBack} = useNavigation();
 
   const isDarkMode = IsDarkMode();
-  const closeNav = () => {
-    setNavbarActive(false);
-  };
 
   return (
     <Container isDarkMode={isDarkMode}>
-      <Navbar
-        activePage={activePage}
-        active={navbarActive}
-        closeNav={() => closeNav()}
-      />
       <Head>
-        <HamburgerButton
+        <ArrowButton
           onPress={() => {
-            setNavbarActive(true);
+            goBack();
           }}>
-          {isDarkMode ? <HamburgerIconDark /> : <HamburgerIcon width={50} />}
-        </HamburgerButton>
+          <Icon name="arrowleft" color={theme.colors.main} size={30} />
+        </ArrowButton>
         <Title isDarkMode={isDarkMode}>{title}</Title>
       </Head>
       <Body>{children}</Body>
-
       <Image>
         {isDarkMode ? (
           <Art2 width={'100%'} height={'100%'} />
@@ -55,35 +45,34 @@ export const MenuPage: FC<IProps> = ({title, activePage, children}) => {
 
 const WindowHeight = Dimensions.get('window').height;
 
-interface IContainer {
+interface useDark {
   isDarkMode: boolean;
 }
-const Container = styled.View<IContainer>(({isDarkMode}) => ({
+const Container = styled.View<useDark>(({isDarkMode}) => ({
   width: '100%',
   height: '100%',
   backgroundColor: isDarkMode
     ? theme.colors.darkbackground
     : theme.colors.white,
 }));
-interface ITitle {
-  isDarkMode: boolean;
-}
-const Title = styled.Text<ITitle>(({isDarkMode}) => ({
-  fontWeight: '400',
-  fontSize: fontPixel(30),
-  fontFamily: theme.fonts.Gagalin,
+
+const Title = styled.Text<useDark>(({isDarkMode}) => ({
+  marginTop: heightPixel(35),
+  fontWeight: '600',
+  fontSize: fontPixel(20),
+  fontFamily: theme.fonts.MonstserratSemibold,
   color: isDarkMode ? theme.colors.white : theme.colors.black,
 }));
 
-const HamburgerButton = styled.TouchableOpacity({
+const ArrowButton = styled.TouchableOpacity({
   position: 'absolute',
   left: 25,
   width: widthPixel(50),
 });
 const Body = styled.View({
   width: '100%',
-  alignItems: 'center',
   height: WindowHeight - heightPixel(78),
+  alignItems: 'center',
 });
 const Image = styled.View({
   width: '100%',

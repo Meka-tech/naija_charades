@@ -1,13 +1,14 @@
 import styled from '@emotion/native';
 import React, {FC} from 'react';
 import {fontPixel, heightPixel, widthPixel} from '../../../utils/pxToDpConvert';
-import Icon from 'react-native-vector-icons/AntDesign';
 import {theme} from '../../../utils/theme';
 import NewIcon from '../../../../assets/images/CardIcon/new_card.svg';
+import {useNavigation} from '@react-navigation/native';
 
 export const CustomCard: FC = ({}) => {
+  const {navigate} = useNavigation();
   return (
-    <Container>
+    <Container onPress={() => navigate('CreateNewCategory')}>
       <Title>Add New Deck</Title>
       <NewIcon />
     </Container>

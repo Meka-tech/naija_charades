@@ -11,14 +11,17 @@ import {
   deleteFavouriteArray,
   updateFavouriteArray,
 } from '../../../features/favourite_category/favouriteCategory';
+import {useNavigation} from '@react-navigation/native';
 
 interface IProps {
   title: string;
   icon?: string; //JSX.Element
   color: string;
+  description: string;
 }
 
-export const CategoryCard: FC<IProps> = ({title, icon, color}) => {
+export const CategoryCard: FC<IProps> = ({title, icon, color, description}) => {
+  const {navigate} = useNavigation();
   const dispatch = useDispatch();
   const {favouritesArray} = useSelector(
     (state: RootState) => state.reducer.favouriteCategories,
@@ -38,7 +41,14 @@ export const CategoryCard: FC<IProps> = ({title, icon, color}) => {
   };
 
   return (
-    <Container color={color}>
+    <Container
+      color={color}
+      onPress={() =>
+        navigate('GameDescription', {
+          title: title,
+          description: description,
+        })
+      }>
       <Title>{title}</Title>
       <Heart onPress={updateFavourite}>
         <Icon name={favorite ? 'heart' : 'hearto'} color="white" size={22} />

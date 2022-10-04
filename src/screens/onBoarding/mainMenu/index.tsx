@@ -10,8 +10,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../app/store';
+import {useDispatch} from 'react-redux';
 import {Dimensions} from 'react-native';
 
 export const MainMenu = ({}) => {
@@ -38,9 +37,6 @@ export const MainMenu = ({}) => {
   }, []);
   const {navigate} = useNavigation();
 
-  const {darkMode: isDarkMode} = useSelector(
-    (state: RootState) => state.reducer.userPreference,
-  );
   const WindowHeight = Dimensions.get('window').height;
   const WindowWidth = Dimensions.get('window').width;
   return (
@@ -49,7 +45,6 @@ export const MainMenu = ({}) => {
         <Animated.View style={[defaultSpringStyles]}>
           <Logo />
         </Animated.View>
-
         <Buttons>
           <Animated.View
             style={[
