@@ -7,7 +7,15 @@ import {
 import {useColorScheme} from 'react-native';
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Favourites, Home, MainMenu, New, Settings, Versus} from '../../screens';
+import {
+  CustomPage,
+  Favourites,
+  Home,
+  MainMenu,
+  New,
+  Settings,
+  Versus,
+} from '../../screens';
 
 export type IRootNavgation = {
   MainMenu: undefined;
@@ -16,6 +24,7 @@ export type IRootNavgation = {
   Settings: undefined;
   New: undefined;
   Favourites: undefined;
+  CustomPage: undefined;
 };
 const Stack = createNativeStackNavigator<IRootNavgation>();
 
@@ -30,6 +39,7 @@ export const RootNavigation = () => {
         <Stack.Screen name="Settings" component={Settings} />
         <Stack.Screen name="New" component={New} />
         <Stack.Screen name="Favourites" component={Favourites} />
+        <Stack.Screen name="CustomPage" component={CustomPage} />
       </Stack.Navigator>
     </NavigationContainer>
   );

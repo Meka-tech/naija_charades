@@ -41,7 +41,10 @@ export const Dropdown: FC<IProps> = ({
               <View key={index * Math.random()}>
                 {item !== selected && (
                   <Item
-                    onPress={() => setSelected(item)}
+                    onPress={() => {
+                      setSelected(item);
+                      setActive(false);
+                    }}
                     key={index * Math.random()}>
                     <Text>
                       {item} {groupName}

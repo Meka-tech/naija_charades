@@ -38,7 +38,7 @@ export const Navbar: FC<IProps> = ({active, activePage, closeNav}) => {
     };
   });
   useEffect(() => {
-    active ? (offset.value = 1) : (offset.value = -1.5);
+    active ? (offset.value = 0.95) : (offset.value = -1.5);
   }, [active, offset]);
 
   const Bar = styled.View({

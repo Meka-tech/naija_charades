@@ -44,7 +44,7 @@ export const NAVDATA = [
   {
     id: '5',
     title: 'Custom',
-    nav: 'Home',
+    nav: 'CustomPage',
     icon: <PlusIcon />,
     activeIcon: <PlusActiveIcon />,
   },

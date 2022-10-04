@@ -13,6 +13,7 @@ import {
   updateNoOfRounds,
   updateNoOfTeams,
 } from '../../../features/game_rules/gameRulesSlice';
+import {Dimensions} from 'react-native';
 
 export const Versus = ({}) => {
   /////Redux
@@ -42,6 +43,9 @@ export const Versus = ({}) => {
     dispatch(updateNoOfRounds(number));
   };
   const {navigate, goBack} = useNavigation();
+
+  const WindowHeight = Dimensions.get('window').height;
+  const WindowWidth = Dimensions.get('window').width;
   return (
     <Main>
       <Body>
@@ -74,7 +78,7 @@ export const Versus = ({}) => {
         </Card>
       </Body>
       <Image>
-        <Art width={'100%'} height={'100%'} />
+        <Art width={WindowWidth} height={WindowHeight} />
       </Image>
     </Main>
   );

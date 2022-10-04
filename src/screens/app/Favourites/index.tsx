@@ -1,19 +1,44 @@
-import {MenuPage} from '../../../components';
+import {CategoryCard, MenuPage} from '../../../components';
 import React from 'react';
 import styled from '@emotion/native';
 import Void from '../../../../assets/images/void.png';
 import {fontPixel, heightPixel} from '../../../utils/pxToDpConvert';
 import {theme} from '../../../utils/theme';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../app/store';
+import {CardData} from '../cardData';
 
 export const Favourites = () => {
+  const {favouritesArray} = useSelector(
+    (state: RootState) => state.reducer.favouriteCategories,
+  );
+
   return (
     <MenuPage title="FAVOURITES" activePage={'Favourites'}>
-      <NoContentView>
-        <Image source={Void} />
-        <NoContentText>
-          You haven’t added anything to your favourites
-        </NoContentText>
-      </NoContentView>
+      <>
+        {favouritesArray?.length === 0 && (
+          <NoContentView>
+            <Image source={Void} />
+            <NoContentText>
+              You haven’t added anything to your favourites
+            </NoContentText>
+          </NoContentView>
+        )}
+        <Body>
+          {CardData.map((category, index) => {
+            return (
+              favouritesArray.includes(category.title) && (
+                <CategoryCard
+                  title={category.title}
+                  color={category.color}
+                  icon={category.icon}
+                  key={index * Math.random()}
+                />
+              )
+            );
+          })}
+        </Body>
+      </>
     </MenuPage>
   );
 };
@@ -37,3 +62,5 @@ const NoContentText = styled.Text({
   width: '65%',
   lineHeight: heightPixel(25),
 });
+
+const Body = styled.ScrollView({height: '90%'});

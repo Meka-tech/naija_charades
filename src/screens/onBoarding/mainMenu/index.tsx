@@ -12,6 +12,7 @@ import Animated, {
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../app/store';
+import {Dimensions} from 'react-native';
 
 export const MainMenu = ({}) => {
   const dispatch = useDispatch();
@@ -40,7 +41,8 @@ export const MainMenu = ({}) => {
   const {darkMode: isDarkMode} = useSelector(
     (state: RootState) => state.reducer.userPreference,
   );
-
+  const WindowHeight = Dimensions.get('window').height;
+  const WindowWidth = Dimensions.get('window').width;
   return (
     <Main>
       <Body>
@@ -69,7 +71,7 @@ export const MainMenu = ({}) => {
         </Buttons>
       </Body>
       <Image>
-        <Art width={'100%'} height={'100%'} />
+        <Art width={WindowWidth} height={WindowHeight} />
       </Image>
     </Main>
   );
