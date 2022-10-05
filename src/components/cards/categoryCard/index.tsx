@@ -11,7 +11,7 @@ import {
   deleteFavouriteArray,
   updateFavouriteArray,
 } from '../../../features/favourite_category/favouriteCategory';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 interface IProps {
   title: string;
@@ -26,7 +26,7 @@ export const CategoryCard: FC<IProps> = ({title, icon, color, description}) => {
   const {favouritesArray} = useSelector(
     (state: RootState) => state.reducer.favouriteCategories,
   );
-
+  const isFocused = useIsFocused();
   const [favorite, setFavourite] = useState(favouritesArray.includes(title));
 
   const updateFavourite = () => {
@@ -39,6 +39,10 @@ export const CategoryCard: FC<IProps> = ({title, icon, color, description}) => {
       dispatch(deleteFavouriteArray(NewArray));
     }
   };
+  useEffect(
+    () => setFavourite(favouritesArray.includes(title)),
+    [favouritesArray, title, isFocused],
+  );
 
   return (
     <Container
@@ -51,7 +55,7 @@ export const CategoryCard: FC<IProps> = ({title, icon, color, description}) => {
       }>
       <Title>{title}</Title>
       <Heart onPress={updateFavourite}>
-        <Icon name={favorite ? 'heart' : 'hearto'} color="white" size={22} />
+        <Icon name={favorite ? 'heart' : 'hearto'} color="white" size={25} />
       </Heart>
     </Container>
   );

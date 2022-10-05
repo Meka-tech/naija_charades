@@ -49,7 +49,7 @@ export const CreateNewCategory = () => {
           <AddCards>
             <AddCardHeader>
               <TextInput
-                placeholder="Add Cards"
+                placeholder="Add Card"
                 width={'70%'}
                 onChangeText={text => setCardInput(text)}
                 value={cardInput}

@@ -39,6 +39,7 @@ export const MainMenu = ({}) => {
 
   const WindowHeight = Dimensions.get('window').height;
   const WindowWidth = Dimensions.get('window').width;
+
   return (
     <Main>
       <Body>
@@ -61,7 +62,11 @@ export const MainMenu = ({}) => {
               elevation={5}
               onPress={() => navigate('Versus')}
             />
-            <StrippedButton label="How to play" elevation={5} />
+            <StrippedButton
+              label="How to play"
+              elevation={5}
+              onPress={() => navigate('HowToPlay')}
+            />
           </Animated.View>
         </Buttons>
       </Body>

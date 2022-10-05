@@ -13,6 +13,7 @@ import {
   Favourites,
   GameDescription,
   Home,
+  HowToPlay,
   MainMenu,
   New,
   Settings,
@@ -31,6 +32,7 @@ export type IRootNavgation = {
   GameDescription: {title: string; description: string};
   WhoseGuess: {title: string};
   CreateNewCategory: undefined;
+  HowToPlay: undefined;
 };
 const Stack = createNativeStackNavigator<IRootNavgation>();
 
@@ -49,6 +51,7 @@ export const RootNavigation = () => {
         <Stack.Screen name="GameDescription" component={GameDescription} />
         <Stack.Screen name="WhoseGuess" component={WhoseGuess} />
         <Stack.Screen name="CreateNewCategory" component={CreateNewCategory} />
+        <Stack.Screen name="HowToPlay" component={HowToPlay} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -4,6 +4,7 @@ import {fontPixel, heightPixel, widthPixel} from '../../utils/pxToDpConvert';
 import {theme} from '../../utils/theme';
 import Modal from 'react-native-modal';
 import {Text, View} from 'react-native';
+import {IsDarkMode} from '../../utils/isDarkMode';
 
 interface IProps {
   active: boolean;
@@ -18,12 +19,13 @@ export const DeleteModal: FC<IProps> = ({
   closeModal,
   bodyText,
 }) => {
+  const isDarkMode = IsDarkMode();
   return (
     <Body>
       <Modal isVisible={active}>
-        <ModalBody>
-          <Title>Are you sure</Title>
-          <Description>{bodyText}</Description>
+        <ModalBody isDarkMode={isDarkMode}>
+          <Title isDarkMode={isDarkMode}>Are you sure</Title>
+          <Description isDarkMode={isDarkMode}>{bodyText}</Description>
           <ButtonView>
             <Button onPress={onPress}>
               <ButtonText>DELETE</ButtonText>
@@ -38,33 +40,38 @@ export const DeleteModal: FC<IProps> = ({
   );
 };
 
+interface IuseDark {
+  isDarkMode: boolean;
+}
 const Body = styled.View({});
 
-const ModalBody = styled.View({
+const ModalBody = styled.View<IuseDark>(({isDarkMode}) => ({
   position: 'absolute',
   width: widthPixel(310),
-  backgroundColor: theme.colors.white,
+  backgroundColor: isDarkMode
+    ? theme.colors.darkbackground
+    : theme.colors.white,
   height: heightPixel(160),
   alignSelf: 'center',
   borderRadius: widthPixel(10),
   paddingVertical: heightPixel(10),
   paddingHorizontal: widthPixel(20),
   justifyContent: 'center',
-});
+}));
 
-const Title = styled.Text({
-  color: theme.colors.black,
+const Title = styled.Text<IuseDark>(({isDarkMode}) => ({
+  color: isDarkMode ? theme.colors.white : theme.colors.black,
   fontSize: fontPixel(18),
   fontFamily: theme.fonts.Monstserrat,
   marginBottom: heightPixel(5),
-});
+}));
 
-const Description = styled.Text({
-  color: theme.colors.black,
+const Description = styled.Text<IuseDark>(({isDarkMode}) => ({
+  color: isDarkMode ? theme.colors.white : theme.colors.black,
   fontSize: fontPixel(14),
   fontFamily: theme.fonts.Monstserrat,
   marginBottom: heightPixel(10),
-});
+}));
 
 const ButtonView = styled.View({
   width: '100%',
