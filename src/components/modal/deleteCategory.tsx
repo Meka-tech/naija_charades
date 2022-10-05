@@ -3,7 +3,6 @@ import styled from '@emotion/native';
 import {fontPixel, heightPixel, widthPixel} from '../../utils/pxToDpConvert';
 import {theme} from '../../utils/theme';
 import Modal from 'react-native-modal';
-import {Text, View} from 'react-native';
 import {IsDarkMode} from '../../utils/isDarkMode';
 
 interface IProps {
@@ -22,7 +21,11 @@ export const DeleteModal: FC<IProps> = ({
   const isDarkMode = IsDarkMode();
   return (
     <Body>
-      <Modal isVisible={active}>
+      <Modal
+        isVisible={active}
+        animationIn={'bounceInLeft'}
+        animationOut={'bounceOutRight'}
+        onBackdropPress={closeModal}>
         <ModalBody isDarkMode={isDarkMode}>
           <Title isDarkMode={isDarkMode}>Are you sure</Title>
           <Description isDarkMode={isDarkMode}>{bodyText}</Description>

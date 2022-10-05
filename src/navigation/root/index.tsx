@@ -41,17 +41,116 @@ export const RootNavigation = () => {
   return (
     <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name="MainMenu" component={MainMenu} />
-        <Stack.Screen name="Versus" component={Versus} />
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Settings" component={Settings} />
-        <Stack.Screen name="New" component={New} />
-        <Stack.Screen name="Favourites" component={Favourites} />
-        <Stack.Screen name="CustomPage" component={CustomPage} />
-        <Stack.Screen name="GameDescription" component={GameDescription} />
-        <Stack.Screen name="WhoseGuess" component={WhoseGuess} />
-        <Stack.Screen name="CreateNewCategory" component={CreateNewCategory} />
-        <Stack.Screen name="HowToPlay" component={HowToPlay} />
+        <Stack.Screen
+          name="MainMenu"
+          component={MainMenu}
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
+          name="Versus"
+          component={Versus}
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
+          name="Settings"
+          component={Settings}
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'fade',
+          }}
+        />
+        <Stack.Screen
+          name="New"
+          component={New}
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'fade',
+          }}
+        />
+        <Stack.Screen
+          name="Favourites"
+          component={Favourites}
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'fade',
+          }}
+        />
+        <Stack.Screen
+          name="CustomPage"
+          component={CustomPage}
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'fade',
+          }}
+        />
+        <Stack.Screen
+          name="GameDescription"
+          component={GameDescription}
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
+          name="WhoseGuess"
+          component={WhoseGuess}
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
+          name="CreateNewCategory"
+          component={CreateNewCategory}
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
+          name="HowToPlay"
+          component={HowToPlay}
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
