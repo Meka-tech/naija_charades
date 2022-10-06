@@ -9,6 +9,7 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Dimensions} from 'react-native';
 import {IsDarkMode} from '../../utils/isDarkMode';
+import {OrientationLocker, PORTRAIT} from 'react-native-orientation-locker';
 
 interface IProps {
   title?: string;
@@ -31,7 +32,10 @@ export const SecondaryMenuPage: FC<IProps> = ({title, children}) => {
         </ArrowButton>
         <Title isDarkMode={isDarkMode}>{title}</Title>
       </Head>
-      <Body>{children}</Body>
+      <Body>
+        <OrientationLocker orientation={'PORTRAIT'} />
+        {children}
+      </Body>
       <Image>
         {isDarkMode ? (
           <Art2 width={'100%'} height={'100%'} />

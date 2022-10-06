@@ -12,6 +12,7 @@ import Animated, {
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {Dimensions} from 'react-native';
+import {OrientationLocker, PORTRAIT} from 'react-native-orientation-locker';
 
 export const MainMenu = ({}) => {
   const dispatch = useDispatch();
@@ -42,6 +43,7 @@ export const MainMenu = ({}) => {
 
   return (
     <Main>
+      <OrientationLocker orientation={'PORTRAIT'} />
       <Body>
         <Animated.View style={[defaultSpringStyles]}>
           <Logo />

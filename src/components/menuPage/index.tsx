@@ -9,6 +9,7 @@ import Art2 from '../../../assets/images/background_art.svg';
 import HamburgerIconDark from '../../../assets/images/DarkMode/hamburger_light.svg';
 import {Dimensions} from 'react-native';
 import {IsDarkMode} from '../../utils/isDarkMode';
+import {OrientationLocker, PORTRAIT} from 'react-native-orientation-locker';
 
 interface IProps {
   title?: string;
@@ -40,7 +41,10 @@ export const MenuPage: FC<IProps> = ({title, activePage, children}) => {
         </HamburgerButton>
         <Title isDarkMode={isDarkMode}>{title}</Title>
       </Head>
-      <Body>{children}</Body>
+      <Body>
+        <OrientationLocker orientation={'PORTRAIT'} />
+        {children}
+      </Body>
 
       <Image>
         {isDarkMode ? (

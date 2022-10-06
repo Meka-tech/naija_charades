@@ -14,12 +14,13 @@ import {
   GameDescription,
   Home,
   HowToPlay,
+  InGame,
   MainMenu,
   New,
   Settings,
   Versus,
+  WhoseGuess,
 } from '../../screens';
-import {WhoseGuess} from '../../screens/app/Game/whoseGuess';
 
 export type IRootNavgation = {
   MainMenu: undefined;
@@ -31,6 +32,7 @@ export type IRootNavgation = {
   CustomPage: undefined;
   GameDescription: {title: string; description: string};
   WhoseGuess: {title: string};
+  InGame: {title: string; youGuess: boolean};
   CreateNewCategory: undefined;
   HowToPlay: undefined;
 };
@@ -124,6 +126,16 @@ export const RootNavigation = () => {
         <Stack.Screen
           name="WhoseGuess"
           component={WhoseGuess}
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
+          name="InGame"
+          component={InGame}
           options={{
             headerShown: false,
             presentation: 'modal',

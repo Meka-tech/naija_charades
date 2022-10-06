@@ -2,6 +2,7 @@ import {CategoryCard, MenuPage} from '../../../components';
 import React from 'react';
 import styled from '@emotion/native';
 import {CardData} from '../cardData';
+import {OrientationLocker, PORTRAIT} from 'react-native-orientation-locker';
 
 export const Home = () => {
   return (

@@ -6,7 +6,7 @@ import {
   heightPixel,
   widthPixel,
 } from '../../../../utils/pxToDpConvert';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {theme} from '../../../../utils/theme';
 import {IsDarkMode} from '../../../../utils/isDarkMode';
 
@@ -33,6 +33,7 @@ const GuessBlock: FC<IGuessBlock> = ({active, title, description, onPress}) => {
 
 export const WhoseGuess = () => {
   const {params} = useRoute();
+  const {navigate} = useNavigation();
 
   const [youGuessActive, setYouGuessActive] = useState(true);
   const [othersGuessActive, setOthersGuessActive] = useState(false);
@@ -77,7 +78,15 @@ act out the words on the screen."
           />
         </Guesses>
         <Button>
-          <StrippedButton label="Next" />
+          <StrippedButton
+            label="Next"
+            onPress={() =>
+              navigate('InGame', {
+                title: CategoryTitle,
+                youGuess: youGuessActive,
+              })
+            }
+          />
         </Button>
       </Body>
     </SecondaryMenuPage>
