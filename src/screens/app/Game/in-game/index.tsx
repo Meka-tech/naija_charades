@@ -4,26 +4,48 @@ import {useCountDown} from '../../../../hooks';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {theme} from '../../../../utils/theme';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {RootState} from '../../../../app/store';
-import {SecondsToMinutes} from '../../../../utils/function';
+import {CreateTeamData, SecondsToMinutes} from '../../../../utils/function';
 import {fontPixel} from '../../../../utils/pxToDpConvert';
 import {OrientationLocker} from 'react-native-orientation-locker';
-import {Round, StartGame} from './phases';
+import {Round, RoundResult, StartGame} from './phases';
 import {EndCard} from './phases/endCard';
+import {
+  updateCorrectArray,
+  updateSkipArray,
+  updateTeamData,
+  updateTeamScore,
+} from '../../../../features/team_data/team_data';
 
 export const InGame = () => {
+  const dispatch = useDispatch();
+  const {navigate} = useNavigation();
   const UserRoundTime = useSelector(
     (state: RootState) => state.reducer.gameRules.timer,
   );
+  const NoOfTeams = useSelector(
+    (state: RootState) => state.reducer.gameRules.teams,
+  );
+
+  const NoOfRounds = useSelector(
+    (state: RootState) => state.reducer.gameRules.rounds,
+  );
+
+  const TeamData = useSelector((state: RootState) => state.teamData.teamArray);
+
   const {params} = useRoute();
   const {title: CategoryTitle, youGuess} = params;
 
   const {goBack} = useNavigation();
   const [gameStarting, setGameStarting] = useState(false);
+
+  const [beginTimerReset, setBeginTimerReset] = useState(false);
   const {currentNumber: BeginTimer, timerDone: BeginTimerDone} = useCountDown({
     number: 3,
     beginTimer: gameStarting,
+    reset: beginTimerReset,
+    setReset: setBeginTimerReset,
   });
 
   const [roundStarting, setRoundStarting] = useState(false);
@@ -32,11 +54,19 @@ export const InGame = () => {
   const [endCard, setEndCard] = useState(false);
   const [cardStatus, setCardStatus] = useState('');
 
+  const [roundStartingReset, setRoundStartingReset] = useState(false);
   const {currentNumber: roundTimer, timerDone: roundTimerDone} = useCountDown({
     number: UserRoundTime,
     beginTimer: roundStarting,
+    reset: roundStartingReset,
+    setReset: setRoundStartingReset,
   });
 
+  const [activeTeam, setActiveTeam] = useState(1);
+  const [activeRound, setActiveRound] = useState(1);
+  const [teamRoundEnded, setTeamRoundEnded] = useState(false);
+  /////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////
   ///Functions
   const OnClickStartGame = () => {
     setGameStarting(true);
@@ -44,13 +74,51 @@ export const InGame = () => {
 
   const OnCorrectCard = () => {
     setCardStatus('Correct');
+    dispatch(updateTeamScore({score: 1, team: activeTeam}));
+    dispatch(updateCorrectArray({card: 'shoki', team: activeTeam}));
   };
 
   const OnSkipCard = () => {
     setCardStatus('Skip');
+    dispatch(updateSkipArray({card: 'shoki', team: activeTeam}));
+  };
+  // increase Round and team by 1 , team goes back to one if last team
+  //functions to restart the game for new round
+  const TeamEndsRound = () => {
+    setGameStarting(false);
+    if (youGuess === false) {
+      setRoundStarting(true);
+    }
+    setTeamRoundEnded(false);
+    setBeginTimerReset(true);
+    if (activeTeam === NoOfTeams) {
+      setActiveTeam(1);
+    } else {
+      setActiveTeam(activeTeam + 1);
+    }
+    if (activeTeam === NoOfTeams) {
+      setActiveRound(activeRound + 1);
+    }
+    if (activeRound === NoOfRounds && activeTeam === NoOfTeams) {
+      navigate('VersusResult', {title: CategoryTitle});
+    }
   };
 
+  ////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////
   //start Round
+  const data = useSelector((state: RootState) => state.teamData.teamArray);
+
+  //Create Number of team data array
+  useEffect(() => {
+    const teamData = CreateTeamData(NoOfTeams);
+    dispatch(updateTeamData(teamData));
+    if (youGuess === false) {
+      setRoundStarting(true);
+    }
+  }, []);
+
+  //placeholder countdown done ,  start round
   useEffect(() => {
     if (BeginTimerDone) {
       setRoundStarting(true);
@@ -60,17 +128,21 @@ export const InGame = () => {
     }
   }, [BeginTimerDone, youGuess]);
 
+  //if players pick "you guess" start round immediately
   useEffect(() => {
     if (youGuess === false) {
       setRoundStarting(true);
     }
   }, []);
 
-  // Skip or Correct Card
+  //when you Skip or Correct Card
   useEffect(() => {
     if (cardStatus !== '') {
       setEndCard(true);
-      setTimeout(() => setEndCard(false), 1000);
+      setTimeout(() => {
+        setEndCard(false);
+        setCardStatus('');
+      }, 1000);
     }
   }, [cardStatus]);
 
@@ -78,8 +150,14 @@ export const InGame = () => {
   useEffect(() => {
     if (roundTimerDone) {
       setTimeUp(true);
+      setTimeout(() => {
+        setTeamRoundEnded(true);
+        setRoundStartingReset(true);
+        setTimeUp(false);
+        setRoundStarting(false);
+      }, 2000);
     }
-  }, [roundTimerDone]);
+  }, [roundTimerDone, activeTeam, NoOfTeams, activeRound, NoOfRounds]);
 
   return (
     <Container>
@@ -91,14 +169,15 @@ export const InGame = () => {
       {BeginTimer >= 0 && youGuess && (
         <StartGame startAction={OnClickStartGame} timer={BeginTimer} />
       )}
-      {BeginTimerDone || youGuess === false ? (
+      {roundStarting && (
         <Round
           skip={OnSkipCard}
           correct={OnCorrectCard}
           title={CategoryTitle}
           timer={roundTimer}
+          score={`${TeamData[activeTeam - 1].score}`}
         />
-      ) : null}
+      )}
       {endCard && <EndCard status={cardStatus} />}
       {timeUp && (
         <TimesUp>
@@ -106,9 +185,19 @@ export const InGame = () => {
           <TimesupBigText>Times Up!</TimesupBigText>
         </TimesUp>
       )}
+      {teamRoundEnded && (
+        <RoundResult
+          title={CategoryTitle}
+          team={activeTeam}
+          round={activeRound}
+          onClick={TeamEndsRound}
+        />
+      )}
     </Container>
   );
 };
+
+export * from './phases/versusResult';
 
 const Container = styled.View({
   width: '100%',

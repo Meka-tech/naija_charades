@@ -14,6 +14,7 @@ import {
   updateNoOfTeams,
 } from '../../../features/game_rules/gameRulesSlice';
 import {Dimensions} from 'react-native';
+import {updateQuickPlay} from '../../../features/team_data/team_data';
 
 export const Versus = ({}) => {
   /////Redux
@@ -73,7 +74,13 @@ export const Versus = ({}) => {
             />
           </DropDownContainer>
           <Button>
-            <StrippedButton label="Next" onPress={() => navigate('Home')} />
+            <StrippedButton
+              label="Next"
+              onPress={() => {
+                navigate('Home');
+                dispatch(updateQuickPlay(false));
+              }}
+            />
           </Button>
         </Card>
       </Body>

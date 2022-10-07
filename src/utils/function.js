@@ -6,3 +6,17 @@ export const SecondsToMinutes = time => {
   }
   return `0${minutes} : ${seconds < 10 ? '0' : ''}${seconds}`;
 };
+
+export const CreateTeamData = number => {
+  const TeamData = [];
+
+  for (let i = 0; i <= number - 1; i++) {
+    TeamData.push({
+      id: i + 1,
+      team: `team ${i + 1}`,
+      score: 0,
+      cards: {correct: [], skip: []},
+    });
+  }
+  return TeamData;
+};

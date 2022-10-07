@@ -19,6 +19,7 @@ import {
   New,
   Settings,
   Versus,
+  VersusResult,
   WhoseGuess,
 } from '../../screens';
 
@@ -35,6 +36,7 @@ export type IRootNavgation = {
   InGame: {title: string; youGuess: boolean};
   CreateNewCategory: undefined;
   HowToPlay: undefined;
+  VersusResult: {title: string};
 };
 const Stack = createNativeStackNavigator<IRootNavgation>();
 
@@ -136,6 +138,16 @@ export const RootNavigation = () => {
         <Stack.Screen
           name="InGame"
           component={InGame}
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
+          name="VersusResult"
+          component={VersusResult}
           options={{
             headerShown: false,
             presentation: 'modal',

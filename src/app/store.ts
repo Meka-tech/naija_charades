@@ -6,6 +6,7 @@ import {persistReducer, persistStore} from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FavouriteReducer from '../features/favourite_category/favouriteCategory';
 import CustomCategoryReducer from '../features/custom_category/customCategory';
+import TeamDataReducer from '../features/team_data/team_data';
 
 const persistConfig = {
   key: 'root',
@@ -23,6 +24,7 @@ const persistedUserReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
   reducer: {
     reducer: persistedUserReducer,
+    teamData: TeamDataReducer,
   },
   devTools: process.env.NODE_ENV !== 'production',
   middleware: [thunk],

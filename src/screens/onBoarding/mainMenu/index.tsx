@@ -10,14 +10,16 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Dimensions} from 'react-native';
 import {OrientationLocker, PORTRAIT} from 'react-native-orientation-locker';
+import {RootState} from '../../../app/store';
+import {updateQuickPlay} from '../../../features/team_data/team_data';
 
 export const MainMenu = ({}) => {
-  const dispatch = useDispatch();
   const offset = useSharedValue(0);
   const offsetButton = useSharedValue(0);
+  const dispatch = useDispatch();
 
   const defaultSpringStyles = useAnimatedStyle(() => {
     return {
@@ -57,7 +59,10 @@ export const MainMenu = ({}) => {
             <StrippedButton
               label="Quick Play"
               elevation={5}
-              onPress={() => navigate('Home')}
+              onPress={() => {
+                navigate('Home');
+                dispatch(updateQuickPlay(true));
+              }}
             />
             <StrippedButton
               label="Versus"

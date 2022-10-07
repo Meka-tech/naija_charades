@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 
-export const useCountDown = ({number, beginTimer}) => {
+export const useCountDown = ({number, beginTimer, reset, setReset}) => {
   const [currentNumber, setCurrentNumber] = useState(number);
   const [timerDone, setTimerDone] = useState(false);
 
@@ -13,5 +13,12 @@ export const useCountDown = ({number, beginTimer}) => {
     }
   }, [currentNumber, timerDone, beginTimer]);
 
+  useEffect(() => {
+    if (reset) {
+      setCurrentNumber(number);
+      setTimerDone(false);
+      setTimeout(() => setReset(false), 3000);
+    }
+  }, [reset, number, setReset]);
   return {currentNumber, timerDone};
 };

@@ -8,6 +8,8 @@ import {
 } from '../../../../utils/pxToDpConvert';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {theme} from '../../../../utils/theme';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../../app/store';
 
 export const GameDescription = () => {
   const {params} = useRoute();
@@ -15,9 +17,10 @@ export const GameDescription = () => {
 
   const CategoryTitle = params.title;
   const CategoryDescription = params.description;
+  const QuickPlay = useSelector((state: RootState) => state.teamData.quickPlay);
 
   return (
-    <SecondaryMenuPage title={'Round 1: Team 1'}>
+    <SecondaryMenuPage title={QuickPlay ? '' : 'Round 1: Team 1'}>
       <Body>
         <DescriptionBox>
           <Title>{CategoryTitle}</Title>
