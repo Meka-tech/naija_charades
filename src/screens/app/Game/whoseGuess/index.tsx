@@ -19,7 +19,7 @@ interface IGuessBlock {
 const GuessBlock: FC<IGuessBlock> = ({active, title, description, onPress}) => {
   const isDarkMode = IsDarkMode();
   return (
-    <GuessView isDarkMode={isDarkMode}>
+    <GuessView isDarkMode={isDarkMode} onPress={onPress}>
       <GoldRing onPress={onPress}>{active ? <ActiveRing /> : null}</GoldRing>
       <GuessText>
         <GuessTitle isDarkMode={isDarkMode}>{title}</GuessTitle>
@@ -37,7 +37,9 @@ export const WhoseGuess = () => {
 
   const [youGuessActive, setYouGuessActive] = useState(true);
   const [othersGuessActive, setOthersGuessActive] = useState(false);
-  const CategoryTitle = params.title;
+  const CategoryTitle = params?.title;
+  const Custom = params?.custom;
+  const Id = params?.id;
 
   const ClickYouGuess = () => {
     if (othersGuessActive) {
@@ -84,6 +86,8 @@ act out the words on the screen."
               navigate('InGame', {
                 title: CategoryTitle,
                 youGuess: youGuessActive,
+                custom: Custom,
+                id: Id,
               })
             }
           />
@@ -116,7 +120,7 @@ const Guesses = styled.View({
   marginTop: heightPixel(150),
 });
 
-const GuessView = styled.View<useDark>(({isDarkMode}) => ({
+const GuessView = styled.TouchableOpacity<useDark>(({isDarkMode}) => ({
   elevation: 10,
   width: widthPixel(291),
   height: heightPixel(136),

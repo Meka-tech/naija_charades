@@ -12,15 +12,23 @@ interface Iprops {
   score?: string;
   correct: () => void;
   skip: () => void;
+  card?: string;
 }
 
-export const Round: FC<Iprops> = ({title, timer, score, correct, skip}) => {
+export const Round: FC<Iprops> = ({
+  title,
+  timer,
+  score,
+  correct,
+  skip,
+  card,
+}) => {
   return (
     <Container>
       <Operation onPress={correct} style={{right: 0}} />
       <Operation onPress={skip} style={{left: 0}} />
       <Title>{title}</Title>
-      <Card>Shoki</Card>
+      <Card>{card}</Card>
       <Timer>{SecondsToMinutes(timer)}</Timer>
       <ScoreText>SCORE : {score}</ScoreText>
     </Container>

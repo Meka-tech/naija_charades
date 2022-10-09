@@ -32,8 +32,8 @@ export type IRootNavgation = {
   Favourites: undefined;
   CustomPage: undefined;
   GameDescription: {title: string; description: string};
-  WhoseGuess: {title: string};
-  InGame: {title: string; youGuess: boolean};
+  WhoseGuess: {title: string; custom: boolean; id?: number};
+  InGame: {title: string; youGuess: boolean; custom: boolean; id?: number};
   CreateNewCategory: undefined;
   HowToPlay: undefined;
   VersusResult: {title: string};

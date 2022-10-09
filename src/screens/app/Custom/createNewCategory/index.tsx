@@ -26,8 +26,10 @@ export const CreateNewCategory = () => {
 
   const DarkMode = IsDarkMode();
   const updateArray = () => {
-    setCardArray(current => [...current, cardInput]);
-    setCardInput('');
+    if (cardInput !== '') {
+      setCardArray(current => [...current, cardInput]);
+      setCardInput('');
+    }
   };
 
   const CreateDeck = () => {
@@ -37,6 +39,7 @@ export const CreateNewCategory = () => {
       navigate('CustomPage');
     }
   };
+
   return (
     <CustomKeyboardAvoidingWrapper>
       <SecondaryMenuPage>
@@ -95,10 +98,10 @@ const AddCardHeader = styled.View({
   justifyContent: 'space-between',
 });
 
-const Cards = styled.View({
+const Cards = styled.ScrollView({
+  marginTop: heightPixel(20),
+  alignSelf: 'center',
   width: '100%',
-  alignItems: 'center',
-  marginTop: heightPixel(30),
 });
 
 interface useDark {
@@ -111,4 +114,5 @@ const CardItem = styled.Text<useDark>(({darkMode}) => ({
   fontSize: fontPixel(18),
   fontFamily: theme.fonts.MonstserratMedium,
   textTransform: 'uppercase',
+  textAlign: 'center',
 }));

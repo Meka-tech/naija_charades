@@ -29,7 +29,13 @@ export const GameDescription = () => {
         <Button>
           <StrippedButton
             label="Play"
-            onPress={() => navigate('WhoseGuess', {title: CategoryTitle})}
+            onPress={() =>
+              navigate('WhoseGuess', {
+                title: CategoryTitle,
+                cutsom: false,
+                id: null,
+              })
+            }
           />
         </Button>
       </Body>

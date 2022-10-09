@@ -36,7 +36,12 @@ export const InGame = () => {
   const TeamData = useSelector((state: RootState) => state.teamData.teamArray);
 
   const {params} = useRoute();
-  const {title: CategoryTitle, youGuess} = params;
+  const {title: CategoryTitle, youGuess, custom, id: CustomId} = params;
+
+  const CustomCardArray = useSelector(
+    (state: RootState) =>
+      state.reducer.customCategories.customCategoryArray[CustomId]?.cards,
+  );
 
   const {goBack} = useNavigation();
   const [gameStarting, setGameStarting] = useState(false);
@@ -57,7 +62,7 @@ export const InGame = () => {
 
   const [roundStartingReset, setRoundStartingReset] = useState(false);
   const {currentNumber: roundTimer, timerDone: roundTimerDone} = useCountDown({
-    number: 10,
+    number: UserRoundTime,
     beginTimer: roundStarting,
     reset: roundStartingReset,
     setReset: setRoundStartingReset,
@@ -66,23 +71,57 @@ export const InGame = () => {
   const [activeTeam, setActiveTeam] = useState(1);
   const [activeRound, setActiveRound] = useState(1);
   const [teamRoundEnded, setTeamRoundEnded] = useState(false);
+  const [gameCardArray, setGameCardArray] = useState([]);
+  const [presentCard, setPresentCard] = useState('');
+  const [usedCardArray, setUsedCardArray] = useState([]);
+  const ArrayLength = gameCardArray.length;
   /////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////
   ///Functions
-  const OnClickStartGame = () => {
-    setGameStarting(true);
+  const NewCard = () => {
+    const Card = gameCardArray[Math.floor(Math.random() * ArrayLength)];
+    if (Card !== undefined) {
+      setUsedCardArray([...usedCardArray, Card]);
+    }
+    //so as to not repeatCards
+    if (usedCardArray.includes(Card) === false) {
+      setPresentCard(Card);
+      return;
+    } else if (
+      usedCardArray.includes(Card) &&
+      usedCardArray.length !== gameCardArray.length
+    ) {
+      NewCard();
+      return;
+    } else {
+      setUsedCardArray([]);
+      //avoided recursion error
+      setPresentCard(gameCardArray[0]);
+      return;
+    }
   };
 
+  //When press "Touch screen"
+  const OnClickStartGame = () => {
+    setGameStarting(true);
+    NewCard();
+  };
+
+  //press right side of the screen
   const OnCorrectCard = () => {
     setCardStatus('Correct');
     dispatch(updateTeamScore({score: 1, team: activeTeam}));
-    dispatch(updateCorrectArray({card: 'shoki', team: activeTeam}));
+    dispatch(updateCorrectArray({card: presentCard, team: activeTeam}));
+    NewCard();
   };
 
+  //press left side of the screen
   const OnSkipCard = () => {
     setCardStatus('Skip');
-    dispatch(updateSkipArray({card: 'shoki', team: activeTeam}));
+    dispatch(updateSkipArray({card: presentCard, team: activeTeam}));
+    NewCard();
   };
+
   // increase Round and team by 1 , team goes back to one if last team
   //functions to restart the game for new round
   const TeamEndsRound = () => {
@@ -92,6 +131,7 @@ export const InGame = () => {
     }
     setTeamRoundEnded(false);
     setBeginTimerReset(true);
+    NewCard();
     dispatch(clearCards(activeTeam - 1));
     if (activeTeam === NoOfTeams) {
       setActiveTeam(1);
@@ -109,7 +149,13 @@ export const InGame = () => {
   ////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////
   //start Round
-  const data = useSelector((state: RootState) => state.teamData.teamArray);
+
+  //set CardArray
+  useEffect(() => {
+    if (custom) {
+      setGameCardArray(CustomCardArray);
+    }
+  }, []);
 
   //Create Number of team data array
   useEffect(() => {
@@ -134,8 +180,11 @@ export const InGame = () => {
   useEffect(() => {
     if (youGuess === false) {
       setRoundStarting(true);
+      if (gameCardArray.length !== 0) {
+        NewCard();
+      }
     }
-  }, []);
+  }, [gameCardArray, youGuess, ArrayLength, NewCard]);
 
   //when you Skip or Correct Card
   useEffect(() => {
@@ -178,6 +227,7 @@ export const InGame = () => {
           title={CategoryTitle}
           timer={roundTimer}
           score={`${TeamData[activeTeam - 1].score}`}
+          card={presentCard}
         />
       )}
       {endCard && <EndCard status={cardStatus} />}

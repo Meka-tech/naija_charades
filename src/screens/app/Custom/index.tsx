@@ -19,12 +19,13 @@ export const CustomPage = () => {
       <Body>
         <CustomCard />
         {customCategoryArray.length !== 0 &&
-          customCategoryArray.map(category => {
+          customCategoryArray.map((category, index) => {
             return (
               <CustomMadeCard
                 title={category.title}
                 key={category.id}
-                id={category.id}
+                id={index}
+                uniqueId={category.id}
               />
             );
           })}

@@ -8,20 +8,23 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../app/store';
 import {deleteCustomCard} from '../../../features/custom_category/customCategory';
 import {DeleteModal} from '../../modal';
+import {useNavigation} from '@react-navigation/native';
 
 interface IProps {
   title?: string;
   id?: number;
+  uniqueId?: number;
 }
 
-export const CustomMadeCard: FC<IProps> = ({title, id}) => {
+export const CustomMadeCard: FC<IProps> = ({title, id, uniqueId}) => {
+  const {navigate} = useNavigation();
   const dispatch = useDispatch();
   const {customCategoryArray} = useSelector(
     (state: RootState) => state.reducer.customCategories,
   );
   const [modalActive, setModalActive] = useState(false);
   const OnDeleteDeck = () => {
-    const NewArray = customCategoryArray.filter(deck => deck.id !== id);
+    const NewArray = customCategoryArray.filter(deck => deck.id !== uniqueId);
     dispatch(deleteCustomCard(NewArray));
   };
 
@@ -30,7 +33,14 @@ export const CustomMadeCard: FC<IProps> = ({title, id}) => {
   };
 
   return (
-    <Container>
+    <Container
+      onPress={() =>
+        navigate('WhoseGuess', {
+          title: title,
+          custom: true,
+          id: id,
+        })
+      }>
       <DeleteModal
         active={modalActive}
         bodyText={`Deleting  the category “${title}” will remove it and all of its contents. This cannot be undone.`}
