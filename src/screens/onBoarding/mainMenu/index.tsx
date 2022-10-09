@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Logo from '../../../../assets/images/logo.svg';
 import styled from '@emotion/native';
 import Art from '../../../../assets/images/background_main.svg';
@@ -10,16 +10,18 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {Dimensions} from 'react-native';
-import {OrientationLocker, PORTRAIT} from 'react-native-orientation-locker';
-import {RootState} from '../../../app/store';
+import {OrientationLocker} from 'react-native-orientation-locker';
 import {updateQuickPlay} from '../../../features/team_data/team_data';
+import {BackHandler, Alert} from 'react-native';
+import {ConfirmExitModal} from '../../../components/modal';
 
 export const MainMenu = ({}) => {
   const offset = useSharedValue(0);
   const offsetButton = useSharedValue(0);
   const dispatch = useDispatch();
+  const {goBack} = useNavigation();
 
   const defaultSpringStyles = useAnimatedStyle(() => {
     return {
@@ -42,11 +44,31 @@ export const MainMenu = ({}) => {
 
   const WindowHeight = Dimensions.get('window').height;
   const WindowWidth = Dimensions.get('window').width;
+  const [modalActive, setModalActive] = useState(false);
+
+  useEffect(() => {
+    const backAction = () => {
+      setModalActive(true);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <Main>
       <OrientationLocker orientation={'PORTRAIT'} />
       <Body>
+        <ConfirmExitModal
+          active={modalActive}
+          closeModal={() => setModalActive(false)}
+          onPress={() => BackHandler.exitApp()}
+        />
         <Animated.View style={[defaultSpringStyles]}>
           <Logo />
         </Animated.View>

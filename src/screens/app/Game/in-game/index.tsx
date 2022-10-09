@@ -180,11 +180,12 @@ export const InGame = () => {
   useEffect(() => {
     if (youGuess === false) {
       setRoundStarting(true);
-      if (gameCardArray.length !== 0) {
-        NewCard();
-      }
     }
-  }, [gameCardArray, youGuess, ArrayLength, NewCard]);
+    if (gameCardArray.length !== 0) {
+      NewCard();
+      return;
+    }
+  }, [gameCardArray, youGuess, ArrayLength]);
 
   //when you Skip or Correct Card
   useEffect(() => {
