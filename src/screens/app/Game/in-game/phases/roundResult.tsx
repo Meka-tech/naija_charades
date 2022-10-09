@@ -37,6 +37,14 @@ export const RoundResult: FC<IProps> = ({team, round, title, onClick}) => {
     (state: RootState) => state.teamData.teamArray[team - 1].cards.skip,
   );
 
+  const TotalRounds = useSelector(
+    (state: RootState) => state.reducer.gameRules.rounds,
+  );
+
+  const TotalTeams = useSelector(
+    (state: RootState) => state.reducer.gameRules.teams,
+  );
+
   const isDarkMode = IsDarkMode();
   return (
     <Container darkMode={isDarkMode}>
@@ -61,7 +69,11 @@ export const RoundResult: FC<IProps> = ({team, round, title, onClick}) => {
           <CardCategory>
             <CategoryTitle cardCate="Correct">CORRECT</CategoryTitle>
             {CorrectCards.map((card, index) => {
-              return <CardNames key={index}>{card}</CardNames>;
+              return (
+                <CardNames key={index} darkMode={isDarkMode}>
+                  {card}
+                </CardNames>
+              );
             })}
           </CardCategory>
           <CardCategory>
@@ -77,7 +89,13 @@ export const RoundResult: FC<IProps> = ({team, round, title, onClick}) => {
         </CardResults>
         <Button>
           <StrippedButton
-            label={QuickPlay ? 'Play Again' : 'Next Team'}
+            label={
+              QuickPlay
+                ? 'Play Again'
+                : TotalRounds === round && team === TotalTeams
+                ? 'Game Result'
+                : 'Next Team'
+            }
             onPress={
               QuickPlay
                 ? () => {

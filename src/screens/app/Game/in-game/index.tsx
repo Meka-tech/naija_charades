@@ -12,6 +12,7 @@ import {OrientationLocker} from 'react-native-orientation-locker';
 import {Round, RoundResult, StartGame} from './phases';
 import {EndCard} from './phases/endCard';
 import {
+  clearCards,
   updateCorrectArray,
   updateSkipArray,
   updateTeamData,
@@ -56,7 +57,7 @@ export const InGame = () => {
 
   const [roundStartingReset, setRoundStartingReset] = useState(false);
   const {currentNumber: roundTimer, timerDone: roundTimerDone} = useCountDown({
-    number: UserRoundTime,
+    number: 10,
     beginTimer: roundStarting,
     reset: roundStartingReset,
     setReset: setRoundStartingReset,
@@ -91,6 +92,7 @@ export const InGame = () => {
     }
     setTeamRoundEnded(false);
     setBeginTimerReset(true);
+    dispatch(clearCards(activeTeam - 1));
     if (activeTeam === NoOfTeams) {
       setActiveTeam(1);
     } else {

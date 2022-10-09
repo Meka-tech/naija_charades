@@ -72,6 +72,10 @@ export const TeamData = createSlice({
     updateQuickPlay: (state, action: PayloadAction<boolean>) => {
       state.quickPlay = action.payload;
     },
+    clearCards: (state, action: PayloadAction<number>) => {
+      state.teamArray[action.payload].cards.correct = [];
+      state.teamArray[action.payload].cards.skip = [];
+    },
   },
 });
 
@@ -82,6 +86,7 @@ export const {
   updateCorrectArray,
   updateSkipArray,
   updateQuickPlay,
+  clearCards,
 } = TeamData.actions;
 
 export default TeamData.reducer;

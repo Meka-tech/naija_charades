@@ -23,13 +23,25 @@ export const VersusResult = () => {
   const NoOfRounds = useSelector(
     (state: RootState) => state.reducer.gameRules.rounds,
   );
+
+  const TeamArray = useSelector((state: RootState) => state.teamData.teamArray);
   const isDarkMode = IsDarkMode();
+
+  const TeamScores = TeamArray.map(team => {
+    return [team.team, team.score];
+  });
+  console.log(TeamScores);
+
+  const SortedArray = TeamScores.sort((a, b) => b[1] - a[1]);
+
+  console.log(SortedArray);
+
   return (
     <Container darkMode={isDarkMode}>
       <OrientationLocker orientation={'PORTRAIT'} />
       <ArrowButton
         onPress={() => {
-          goBack();
+          navigate('Home');
         }}>
         <Icon name="arrowleft" color={theme.colors.main} size={30} />
       </ArrowButton>
@@ -40,7 +52,31 @@ export const VersusResult = () => {
             isDarkMode
           }>{`Number of Rounds: ${NoOfRounds} `}</RoundTeamText>
         <ScoreText>Versus Result</ScoreText>
-        <CardResults></CardResults>
+        <TeamResults>
+          <ResultHeader>
+            <HeaderText>POS</HeaderText>
+            <HeaderText>TEAMS</HeaderText>
+            <HeaderText>SCORES</HeaderText>
+          </ResultHeader>
+          {SortedArray.map((item, index) => {
+            return (
+              <ResultItem key={index} pos={index}>
+                <PositionText>
+                  {index === 0
+                    ? '1st'
+                    : index === 1
+                    ? '2nd'
+                    : index === 2
+                    ? '3rd'
+                    : '4th'}
+                </PositionText>
+                <ResultItemText>{item[0]}</ResultItemText>
+                <ResultScoreText>{item[1]}</ResultScoreText>
+              </ResultItem>
+            );
+          })}
+          <AnnounceResultText>{`${SortedArray[0][0]} wins`}</AnnounceResultText>
+        </TeamResults>
         <Button>
           <StrippedButton
             label={'Play Again'}
@@ -121,48 +157,75 @@ const ScoreText = styled.Text({
   marginBottom: heightPixel(15),
 });
 
-const CardResults = styled.View({
+const TeamResults = styled.View({
   backgroundColor: 'rgba(0, 159, 255, 0.3)',
   width: '100%',
   height: heightPixel(480),
   borderRadius: widthPixel(25),
   marginBottom: heightPixel(70),
   alignItems: 'center',
-  justifyContent: 'space-between',
+  flexDirection: 'column',
+});
+
+const ResultHeader = styled.View({
   flexDirection: 'row',
-  paddingHorizontal: widthPixel(15),
+  justifyContent: 'space-between',
+  paddingHorizontal: widthPixel(35),
+  marginTop: heightPixel(15),
+  marginBottom: heightPixel(25),
+  width: '100%',
 });
 
-const CardCategory = styled.View({
-  height: '90%',
-  width: '45%',
+const HeaderText = styled.Text({
+  fontSize: fontPixel(25),
+  fontFamily: theme.fonts.Gagalin,
+  color: theme.colors.white,
+});
+
+interface Iresult {
+  pos: number;
+}
+const ResultItem = styled.View<Iresult>(({pos}) => ({
+  width: '100%',
+  flexDirection: 'row',
+  paddingHorizontal: widthPixel(35),
+  marginBottom: heightPixel(15),
+  backgroundColor:
+    pos === 0
+      ? 'rgba(91, 193, 255, 1)'
+      : pos === 1
+      ? 'rgba(254, 182, 10, 1)'
+      : pos === 2
+      ? 'rgba(252, 94, 94, 1)'
+      : 'rgba(159, 163, 166, 1)',
+  height: heightPixel(56),
   alignItems: 'center',
+}));
+
+const ResultItemText = styled.Text({
+  fontSize: fontPixel(25),
+  fontFamily: theme.fonts.MonstserratBold,
+  color: theme.colors.white,
+  textTransform: 'uppercase',
+  width: widthPixel(150),
+});
+const PositionText = styled.Text({
+  fontSize: fontPixel(25),
+  fontFamily: theme.fonts.MonstserratBold,
+  color: theme.colors.white,
+  width: widthPixel(100),
+});
+const ResultScoreText = styled.Text({
+  fontSize: fontPixel(25),
+  fontFamily: theme.fonts.MonstserratSemibold,
+  color: theme.colors.white,
 });
 
-interface ICardTitle {
-  cardCate?: string;
-}
-
-const CategoryTitle = styled.Text<ICardTitle>(({cardCate}) => ({
-  color:
-    cardCate === 'Correct' ? 'rgba(78, 203, 113, 1)' : 'rgba(254, 182, 10, 1)',
-  fontSize: fontPixel(20),
-  fontFamily: theme.fonts.MonstserratBold,
-  marginBottom: heightPixel(10),
-}));
-interface ICards {
-  cardCate?: string;
-  darkMode?: boolean;
-}
-const CardNames = styled.Text<ICards>(({cardCate, darkMode}) => ({
-  color:
-    cardCate === 'skipped'
-      ? 'rgba(175, 194, 205, 1)'
-      : darkMode
-      ? theme.colors.white
-      : theme.colors.black,
-  fontSize: fontPixel(20),
-  fontFamily: theme.fonts.MonstserratBold,
-  marginBottom: heightPixel(10),
-  textDecorationLine: cardCate === 'skipped' ? 'line-through' : 'none',
-}));
+const AnnounceResultText = styled.Text({
+  fontSize: fontPixel(32),
+  fontFamily: theme.fonts.Gagalin,
+  color: theme.colors.white,
+  alignSelf: 'center',
+  height: '100%',
+  marginTop: heightPixel(60),
+});
