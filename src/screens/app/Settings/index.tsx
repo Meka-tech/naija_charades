@@ -1,4 +1,4 @@
-import {MenuPage, Switch} from '../../../components';
+import {MenuPage, SliderComponent, Switch} from '../../../components';
 import React, {useEffect, useState} from 'react';
 import styled from '@emotion/native';
 import {theme} from '../../../utils/theme';
@@ -24,18 +24,23 @@ export const Settings = () => {
   const {
     darkMode: DarkMode,
     sound: Sound,
-    soundLevel,
+    soundLevel: SoundLevel,
   } = useSelector((state: RootState) => state.reducer.userPreference);
   const [darkMode, setDarkMode] = useState(DarkMode);
   const [sound, setSound] = useState(Sound);
+  const [soundLevel, setSoundLevel] = useState(SoundLevel);
   const [timer, setTimer] = useState(Timer);
   const dispatch = useDispatch();
-
   const toggleMode = () => {
     setDarkMode(!darkMode);
   };
   const toggleSound = () => {
     setSound(!sound);
+    if (sound) {
+      setSoundLevel(SoundLevel);
+    } else {
+      setSoundLevel(0);
+    }
   };
 
   const ChangeTimer = () => {
@@ -50,7 +55,7 @@ export const Settings = () => {
     dispatch(updateTimer(timer));
     dispatch(updateDarkMode(darkMode));
     dispatch(updateSound(sound));
-  }, [timer, dispatch, darkMode, sound]);
+  }, [timer, dispatch, darkMode, sound, soundLevel]);
 
   const ToggleTimerView = styled.TouchableOpacity({
     backgroundColor: darkMode ? 'rgba(30, 30, 30, 1)' : theme.colors.white,
@@ -90,9 +95,15 @@ export const Settings = () => {
             <SettingName darkMode={darkMode}>Sound</SettingName>
           </Left>
           <ToggleView>
-            <Switch active={sound} toggle={toggleSound} />
+            <Switch
+              active={SoundLevel === 0 ? false : sound}
+              toggle={toggleSound}
+            />
           </ToggleView>
         </Setting>
+        <SliderDiv>
+          <SliderComponent />
+        </SliderDiv>
       </Body>
     </MenuPage>
   );
@@ -136,4 +147,9 @@ const Left = styled.View({
 const ToggleView = styled.View({
   width: widthPixel(109),
   alignItems: 'center',
+});
+const SliderDiv = styled.View({
+  width: '80%',
+  marginLeft: 'auto',
+  marginRight: 'auto',
 });

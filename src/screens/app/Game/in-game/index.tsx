@@ -2,11 +2,11 @@ import styled from '@emotion/native';
 import React, {useEffect, useState} from 'react';
 import {useCountDown} from '../../../../hooks';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {theme} from '../../../../utils/theme';
 import {useSelector, useDispatch} from 'react-redux';
 import {RootState} from '../../../../app/store';
-import {CreateTeamData, SecondsToMinutes} from '../../../../utils/function';
+import {CreateTeamData} from '../../../../utils/function';
 import {fontPixel} from '../../../../utils/pxToDpConvert';
 import {OrientationLocker} from 'react-native-orientation-locker';
 import {Round, RoundResult, StartGame} from './phases';
@@ -18,35 +18,45 @@ import {
   updateTeamData,
   updateTeamScore,
 } from '../../../../features/team_data/team_data';
+import {
+  CorrectCardSound,
+  EndGameSound,
+  StartGameSound,
+  TimerSound,
+  WrongCardSound,
+} from './sounds';
+import {IRootNavgation} from '../../../../navigation';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 export const InGame = () => {
   const dispatch = useDispatch();
-  const {navigate} = useNavigation();
-  const UserRoundTime = useSelector(
-    (state: RootState) => state.reducer.gameRules.timer,
-  );
-  const NoOfTeams = useSelector(
-    (state: RootState) => state.reducer.gameRules.teams,
-  );
+  const {navigate} = useNavigation<NativeStackNavigationProp<IRootNavgation>>();
+  const {goBack} = useNavigation();
+  const {params} = useRoute<RouteProp<IRootNavgation>>();
 
-  const NoOfRounds = useSelector(
-    (state: RootState) => state.reducer.gameRules.rounds,
+  const {title: CategoryTitle, youGuess, custom, id: CustomId} = params;
+
+  const {
+    timer: UserRoundTime,
+    rounds: NoOfRounds,
+    teams: NoOfTeams,
+  } = useSelector((state: RootState) => state.reducer.gameRules);
+
+  const {soundLevel: SoundLevel, sound: Sound} = useSelector(
+    (state: RootState) => state.reducer.userPreference,
   );
 
   const TeamData = useSelector((state: RootState) => state.teamData.teamArray);
-
-  const {params} = useRoute();
-  const {title: CategoryTitle, youGuess, custom, id: CustomId} = params;
 
   const CustomCardArray = useSelector(
     (state: RootState) =>
       state.reducer.customCategories.customCategoryArray[CustomId]?.cards,
   );
 
-  const {goBack} = useNavigation();
   const [gameStarting, setGameStarting] = useState(false);
 
   const [beginTimerReset, setBeginTimerReset] = useState(false);
+
   const {currentNumber: BeginTimer, timerDone: BeginTimerDone} = useCountDown({
     number: 3,
     beginTimer: gameStarting,
@@ -55,12 +65,14 @@ export const InGame = () => {
   });
 
   const [roundStarting, setRoundStarting] = useState(false);
+
   const [timeUp, setTimeUp] = useState(false);
 
   const [endCard, setEndCard] = useState(false);
   const [cardStatus, setCardStatus] = useState('');
 
   const [roundStartingReset, setRoundStartingReset] = useState(false);
+
   const {currentNumber: roundTimer, timerDone: roundTimerDone} = useCountDown({
     number: UserRoundTime,
     beginTimer: roundStarting,
@@ -75,6 +87,7 @@ export const InGame = () => {
   const [presentCard, setPresentCard] = useState('');
   const [usedCardArray, setUsedCardArray] = useState([]);
   const ArrayLength = gameCardArray.length;
+
   /////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////
   ///Functions
@@ -113,6 +126,10 @@ export const InGame = () => {
     dispatch(updateTeamScore({score: 1, team: activeTeam}));
     dispatch(updateCorrectArray({card: presentCard, team: activeTeam}));
     NewCard();
+    if (Sound) {
+      CorrectCardSound.setVolume(SoundLevel);
+      CorrectCardSound.play();
+    }
   };
 
   //press left side of the screen
@@ -120,26 +137,35 @@ export const InGame = () => {
     setCardStatus('Skip');
     dispatch(updateSkipArray({card: presentCard, team: activeTeam}));
     NewCard();
+
+    if (Sound) {
+      WrongCardSound.setVolume(SoundLevel);
+      WrongCardSound.play();
+    }
   };
 
   // increase Round and team by 1 , team goes back to one if last team
   //functions to restart the game for new round
   const TeamEndsRound = () => {
     setGameStarting(false);
+    // to start game immediately
     if (youGuess === false) {
       setRoundStarting(true);
     }
+    ////
     setTeamRoundEnded(false);
     setBeginTimerReset(true);
+    ////
     NewCard();
+
+    //clearCards
     dispatch(clearCards(activeTeam - 1));
+    //
     if (activeTeam === NoOfTeams) {
       setActiveTeam(1);
+      setActiveRound(activeRound + 1);
     } else {
       setActiveTeam(activeTeam + 1);
-    }
-    if (activeTeam === NoOfTeams) {
-      setActiveRound(activeRound + 1);
     }
     if (activeRound === NoOfRounds && activeTeam === NoOfTeams) {
       navigate('VersusResult', {title: CategoryTitle});
@@ -155,6 +181,7 @@ export const InGame = () => {
     if (custom) {
       setGameCardArray(CustomCardArray);
     }
+    //ApiCall
   }, []);
 
   //Create Number of team data array
@@ -201,6 +228,7 @@ export const InGame = () => {
   // end Round
   useEffect(() => {
     if (roundTimerDone) {
+      EndGameSound.play();
       setTimeUp(true);
       setTimeout(() => {
         setTeamRoundEnded(true);
@@ -210,6 +238,35 @@ export const InGame = () => {
       }, 2000);
     }
   }, [roundTimerDone, activeTeam, NoOfTeams, activeRound, NoOfRounds]);
+
+  ///sounds
+
+  useEffect(() => {
+    if (gameStarting) {
+      if (Sound) {
+        StartGameSound.setVolume(SoundLevel);
+        StartGameSound.play(success => {
+          if (success) {
+            console.log('successfully finished playing');
+          } else {
+            console.log('playback failed due to audio decoding errors');
+          }
+        });
+      }
+    }
+  }, [Sound, SoundLevel, gameStarting]);
+
+  useEffect(() => {
+    if (Sound) {
+      TimerSound.setVolume(SoundLevel);
+      if (roundTimer === 10) {
+        TimerSound.play();
+      }
+      if (roundTimer === 0) {
+        TimerSound.stop();
+      }
+    }
+  }, [Sound, SoundLevel, roundTimer]);
 
   return (
     <Container>

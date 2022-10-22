@@ -10,7 +10,7 @@ export interface UserPreferenceState {
 const initialState: UserPreferenceState = {
   darkMode: false,
   sound: true,
-  soundLevel: 60,
+  soundLevel: 1,
 };
 
 export const UserPreference = createSlice({

@@ -6,3 +6,4 @@ export * from './switch';
 export * from './secondaryMenuPage';
 export * from './InputField';
 export * from './CustomKeyboardAvoidingView';
+export * from './Slider';

@@ -10,10 +10,12 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {theme} from '../../../../utils/theme';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../../app/store';
+import {IRootNavgation} from '../../../../navigation';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 export const GameDescription = () => {
   const {params} = useRoute();
-  const {navigate} = useNavigation();
+  const {navigate} = useNavigation<NativeStackNavigationProp<IRootNavgation>>();
 
   const CategoryTitle = params.title;
   const CategoryDescription = params.description;
@@ -32,7 +34,7 @@ export const GameDescription = () => {
             onPress={() =>
               navigate('WhoseGuess', {
                 title: CategoryTitle,
-                cutsom: false,
+                custom: false,
                 id: null,
               })
             }

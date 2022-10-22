@@ -4,6 +4,8 @@ import React, {FC} from 'react';
 import {fontPixel, heightPixel, widthPixel} from '../../../utils/pxToDpConvert';
 import {theme} from '../../../utils/theme';
 import {IsDarkMode} from '../../../utils/isDarkMode';
+import {IRootNavgation} from '../../../navigation';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 interface IProps {
   active: boolean;
@@ -13,7 +15,7 @@ interface IProps {
 }
 
 export const RenderNavItem: FC<IProps> = ({active, text, Icon, nav}) => {
-  const {navigate} = useNavigation();
+  const {navigate} = useNavigation<NativeStackNavigationProp<IRootNavgation>>();
   const isDarkMode = IsDarkMode();
 
   return (

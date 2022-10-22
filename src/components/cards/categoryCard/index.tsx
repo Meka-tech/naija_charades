@@ -1,8 +1,6 @@
 import styled from '@emotion/native';
 import React, {FC, useState, useEffect} from 'react';
 import {fontPixel, heightPixel, widthPixel} from '../../../utils/pxToDpConvert';
-import LinearGradient from 'react-native-linear-gradient';
-import {ColorList} from './colorList';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {theme} from '../../../utils/theme';
 import {useDispatch, useSelector} from 'react-redux';
@@ -12,6 +10,8 @@ import {
   updateFavouriteArray,
 } from '../../../features/favourite_category/favouriteCategory';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {IRootNavgation} from '../../../navigation';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 interface IProps {
   title: string;
@@ -21,7 +21,7 @@ interface IProps {
 }
 
 export const CategoryCard: FC<IProps> = ({title, icon, color, description}) => {
-  const {navigate} = useNavigation();
+  const {navigate} = useNavigation<NativeStackNavigationProp<IRootNavgation>>();
   const dispatch = useDispatch();
   const {favouritesArray} = useSelector(
     (state: RootState) => state.reducer.favouriteCategories,

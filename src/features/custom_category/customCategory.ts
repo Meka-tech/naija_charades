@@ -6,7 +6,7 @@ export interface customState {
 }
 
 const initialState: customState = {
-  customCategoryArray: [],
+  customCategoryArray: [{}],
 };
 
 export const CustomCategories = createSlice({

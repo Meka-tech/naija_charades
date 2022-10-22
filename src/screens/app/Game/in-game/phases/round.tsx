@@ -1,7 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {FC, useState} from 'react';
+import React, {FC} from 'react';
 import styled from '@emotion/native';
-import {IsDarkMode} from '../../../../../utils/isDarkMode';
 import {theme} from '../../../../../utils/theme';
 import {fontPixel, heightPixel} from '../../../../../utils/pxToDpConvert';
 import {SecondsToMinutes} from '../../../../../utils/function';

@@ -9,6 +9,8 @@ import {RootState} from '../../../app/store';
 import {deleteCustomCard} from '../../../features/custom_category/customCategory';
 import {DeleteModal} from '../../modal';
 import {useNavigation} from '@react-navigation/native';
+import {IRootNavgation} from '../../../navigation';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 interface IProps {
   title?: string;
@@ -17,7 +19,7 @@ interface IProps {
 }
 
 export const CustomMadeCard: FC<IProps> = ({title, id, uniqueId}) => {
-  const {navigate} = useNavigation();
+  const {navigate} = useNavigation<NativeStackNavigationProp<IRootNavgation>>();
   const dispatch = useDispatch();
   const {customCategoryArray} = useSelector(
     (state: RootState) => state.reducer.customCategories,

@@ -6,9 +6,11 @@ import {
   heightPixel,
   widthPixel,
 } from '../../../../utils/pxToDpConvert';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {theme} from '../../../../utils/theme';
 import {IsDarkMode} from '../../../../utils/isDarkMode';
+import {IRootNavgation} from '../../../../navigation';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 interface IGuessBlock {
   active?: boolean;
@@ -32,8 +34,8 @@ const GuessBlock: FC<IGuessBlock> = ({active, title, description, onPress}) => {
 };
 
 export const WhoseGuess = () => {
-  const {params} = useRoute();
-  const {navigate} = useNavigation();
+  const {params} = useRoute<RouteProp<IRootNavgation>>();
+  const {navigate} = useNavigation<NativeStackNavigationProp<IRootNavgation>>();
 
   const [youGuessActive, setYouGuessActive] = useState(true);
   const [othersGuessActive, setOthersGuessActive] = useState(false);

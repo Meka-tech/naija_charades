@@ -1,11 +1,10 @@
 import {
   NavigationContainer,
-  NavigatorScreenParams,
   DefaultTheme,
   DarkTheme,
 } from '@react-navigation/native';
 import {useColorScheme} from 'react-native';
-import React from 'react';
+import * as React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
   CreateNewCategory,
@@ -32,7 +31,7 @@ export type IRootNavgation = {
   Favourites: undefined;
   CustomPage: undefined;
   GameDescription: {title: string; description: string};
-  WhoseGuess: {title: string; custom: boolean; id?: number};
+  WhoseGuess: {title?: string; custom: boolean; id?: number | null};
   InGame: {title: string; youGuess: boolean; custom: boolean; id?: number};
   CreateNewCategory: undefined;
   HowToPlay: undefined;

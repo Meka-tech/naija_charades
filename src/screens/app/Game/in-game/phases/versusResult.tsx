@@ -15,9 +15,11 @@ import Art from '../../../../../../assets/images/background_art2.svg';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../../../app/store';
 import {StrippedButton} from '../../../../../components';
+import {IRootNavgation} from '../../../../../navigation';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 export const VersusResult = () => {
-  const {goBack, navigate} = useNavigation();
+  const {navigate} = useNavigation<NativeStackNavigationProp<IRootNavgation>>();
   const {params} = useRoute();
   const CategoryTitle = params.title;
   const NoOfRounds = useSelector(
