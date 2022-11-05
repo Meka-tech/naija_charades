@@ -1,5 +1,5 @@
 import {CategoryCard, MenuPage} from '../../../components';
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from '@emotion/native';
 import {CardData} from '../cardData';
 import axios from 'axios';
@@ -17,14 +17,18 @@ type GetCategoryResponse = [
 ];
 
 export const Home = () => {
-  const fetchCategories = () => {
-    // axios
-    //   .get<GetCategoryResponse>('http://localhost:5000/api/categories')
-    //   .then(response => {
-    //     console.log(response);
-    //   });
-  };
-  fetchCategories();
+  useEffect(() => {
+    const fetchCategories = () => {
+      fetch('https://localhost:5000/api/categories')
+        .then(response => response.json())
+        .catch(error => {
+          console.error(error);
+        });
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <MenuPage title="Categories" activePage={'HOME'}>
       <Body>
