@@ -19,7 +19,7 @@ export const SliderComponent = () => {
         const level: number = value[0];
         setSliderValue(level);
       }}
-      thumbTintColor={'white'}
+      thumbTintColor={'#e9e7e7'}
       minimumTrackTintColor={'rgba(254, 182, 10, 1)'}
       onSlidingComplete={() => dispatch(updateSoundLevel(sliderValue))}
     />

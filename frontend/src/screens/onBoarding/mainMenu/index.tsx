@@ -18,6 +18,8 @@ import {BackHandler, Alert} from 'react-native';
 import {ConfirmExitModal} from '../../../components/modal';
 
 export const MainMenu = ({}) => {
+  const WindowHeight = Dimensions.get('window').height;
+  const WindowWidth = Dimensions.get('window').width;
   const offset = useSharedValue(0);
   const offsetButton = useSharedValue(0);
   const dispatch = useDispatch();
@@ -36,14 +38,12 @@ export const MainMenu = ({}) => {
 
   useEffect(() => {
     setTimeout(() => {
-      offset.value = -1;
-      offsetButton.value = 1.4;
+      offset.value = -WindowHeight / 800;
+      offsetButton.value = WindowWidth / 290; //1.4
     }, 2000);
   }, []);
   const {navigate} = useNavigation();
 
-  const WindowHeight = Dimensions.get('window').height;
-  const WindowWidth = Dimensions.get('window').width;
   const [modalActive, setModalActive] = useState(false);
 
   useEffect(() => {
@@ -119,7 +119,7 @@ const Body = styled.View({
   alignItems: 'center',
   justifyContent: 'center',
 });
-const Image = styled.View({
+const Image = styled.ImageBackground({
   width: '100%',
   height: '100%',
   position: 'absolute',

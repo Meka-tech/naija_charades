@@ -9,7 +9,7 @@ import Art2 from '../../../assets/images/background_art.svg';
 import HamburgerIconDark from '../../../assets/images/DarkMode/hamburger_light.svg';
 import {Dimensions} from 'react-native';
 import {IsDarkMode} from '../../utils/isDarkMode';
-import {OrientationLocker, PORTRAIT} from 'react-native-orientation-locker';
+import {OrientationLocker} from 'react-native-orientation-locker';
 
 interface IProps {
   title?: string;
