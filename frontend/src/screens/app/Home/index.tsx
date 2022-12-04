@@ -1,38 +1,47 @@
 import {CategoryCard, MenuPage} from '../../../components';
-import React, {useEffect} from 'react';
+import React, {useState} from 'react';
 import styled from '@emotion/native';
 import {CardData} from '../cardData';
-import axios from 'axios';
-
-type GetCategoryResponse = [
-  {
-    id: Number;
-    title: String;
-    icon: String;
-    favourite: Boolean;
-    color: String;
-    description: String;
-    cards: [];
-  },
-];
+import firestore from '@react-native-firebase/firestore';
+import database from '@react-native-firebase/database';
 
 export const Home = () => {
-  useEffect(() => {
-    const fetchCategories = () => {
-      fetch('https://localhost:5000/api/categories')
-        .then(response => response.json())
-        .catch(error => {
-          console.error(error);
-        });
-    };
+  const [data, setData] = useState(CardData);
 
-    fetchCategories();
-  }, []);
+  const getCategories = async () => {
+    // const categoriesCollection = firestore().collection('categories').get();
+    // console.log(categoriesCollection);
+    database()
+      .ref('/categories')
+      .once('value')
+      .then(snapshot => {
+        if (snapshot.val() !== CardData) {
+          setData(snapshot.val());
+        }
+        console.log('User data: ', snapshot.val());
+      });
+  };
 
+  // const setCategories = () => {
+  //   database()
+  //     .ref('categories')
+  //     .set(CardData)
+  //     .then(() => console.log('Data set.'))
+  //     .catch(err => console.log(err));
+  //   firestore()
+  //     .collection('categories')
+  //     .add(CardData[17])
+  //     .then(() => {
+  //       console.log('User added!');
+  //     });
+  // };
+
+  getCategories();
+  // setCategories();
   return (
     <MenuPage title="Categories" activePage={'HOME'}>
       <Body>
-        {CardData.map((category, index) => {
+        {data.map((category, index) => {
           return (
             <CategoryCard
               title={category.title}

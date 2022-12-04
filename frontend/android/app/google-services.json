@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "940240866699",
+    "project_id": "naija-charades-1",
+    "storage_bucket": "naija-charades-1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940240866699:android:4e98fe2cb7cdc64f71738e",
+        "android_client_info": {
+          "package_name": "com.naija_charades"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "940240866699-5srfl5nndhhcmsuteb794gg9gpccprpv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvdaIJr40DI_DOhrr81Lk2ynQUEg19To8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "940240866699-5srfl5nndhhcmsuteb794gg9gpccprpv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
