@@ -55,7 +55,7 @@ export const InGame = () => {
   );
 
   const SavedCardArray = useSelector(
-    (state: RootState) => state.reducer.cardArray.cardArray[CategoryId].cards,
+    (state: RootState) => state.reducer.cardArray.cardArray[CategoryId]?.cards,
   );
 
   const [gameStarting, setGameStarting] = useState(false);
@@ -101,6 +101,7 @@ export const InGame = () => {
       setGameCardArray(SavedCardArray);
     }
   }, []);
+  // console.log(custom);
 
   /////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////
@@ -253,9 +254,9 @@ export const InGame = () => {
         StartGameSound.setVolume(SoundLevel);
         StartGameSound.play(success => {
           if (success) {
-            console.log('successfully finished playing');
+            // console.log('successfully finished playing');
           } else {
-            console.log('playback failed due to audio decoding errors');
+            // console.log('playback failed due to audio decoding errors');
           }
         });
       }

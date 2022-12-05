@@ -20,3 +20,7 @@ export const CreateTeamData = number => {
   }
   return TeamData;
 };
+
+export const CreateStringArray = string => {
+  return string.replaceAll(',', `","`);
+};

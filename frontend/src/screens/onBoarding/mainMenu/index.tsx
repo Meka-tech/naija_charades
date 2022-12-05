@@ -19,13 +19,25 @@ import database from '@react-native-firebase/database';
 import {useSelector, useDispatch} from 'react-redux';
 import {RootState} from '../../../app/store';
 import {updateCards} from '../../../features/card_array/card_array';
+import {CreateStringArray} from '../../../utils/function';
+import NetInfo from '@react-native-community/netinfo';
+import {CardData} from '../../app/cardData';
+import {applyMiddleware} from 'redux';
 
 export const MainMenu = () => {
   const dispatch = useDispatch();
+  const [networkConnected, setNetworkConnected] = useState(false);
   const SavedCardArray = useSelector(
     (state: RootState) => state.reducer.cardArray,
   );
+
   useEffect(() => {
+    const checkConnection = NetInfo.addEventListener(state => {
+      if (state.isConnected) {
+        setNetworkConnected(state.isConnected);
+      }
+    });
+    checkConnection();
     const getCategories = async () => {
       database()
         .ref('/categories')
@@ -37,7 +49,9 @@ export const MainMenu = () => {
           // console.log('card data: ', snapshot.val());
         });
     };
-    getCategories();
+    if (networkConnected) {
+      getCategories();
+    }
   }, []);
 
   // const setCategories = () => {
@@ -49,6 +63,8 @@ export const MainMenu = () => {
   // };
 
   // setCategories();
+
+  // console.log(CreateStringArray(String));
 
   const WindowHeight = Dimensions.get('window').height;
   const WindowWidth = Dimensions.get('window').width;

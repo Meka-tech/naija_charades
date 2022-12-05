@@ -17,14 +17,15 @@ export const CustomCard: FC = ({}) => {
 
 export * from './custom_made_card';
 const Container = styled.TouchableOpacity({
-  width: widthPixel(319),
-  height: heightPixel(164),
+  width: widthPixel(320),
+  height: heightPixel(170),
   marginBottom: heightPixel(20),
   borderRadius: widthPixel(15),
   backgroundColor: theme.colors.gray100,
   position: 'relative',
   alignItems: 'center',
   paddingVertical: heightPixel(18),
+  elevation: 5,
 });
 const Title = styled.Text({
   color: theme.colors.white,

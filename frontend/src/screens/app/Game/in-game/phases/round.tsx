@@ -27,7 +27,9 @@ export const Round: FC<Iprops> = ({
       <Operation onPress={correct} style={{right: 0}} />
       <Operation onPress={skip} style={{left: 0}} />
       <Title>{title}</Title>
-      <Card>{card}</Card>
+      <CardDiv>
+        <Card>{card}</Card>
+      </CardDiv>
       <Timer>{SecondsToMinutes(timer)}</Timer>
       <ScoreText>SCORE : {score}</ScoreText>
     </Container>
@@ -51,12 +53,19 @@ const Title = styled.Text({
   marginBottom: heightPixel(80),
 });
 
+const CardDiv = styled.View({
+  height: heightPixel(155),
+  marginBottom: heightPixel(60),
+  maxWidth: '80%',
+  alignItems: 'center',
+  justifyContent: 'center',
+});
 const Card = styled.Text({
   color: theme.colors.white,
   fontFamily: theme.fonts.MonstserratBold,
-  fontSize: fontPixel(70),
+  fontSize: fontPixel(50),
   fontWeight: '500',
-  marginBottom: heightPixel(60),
+  textAlign: 'center',
 });
 
 const Timer = styled.Text({

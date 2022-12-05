@@ -12,6 +12,7 @@ import {
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {IRootNavgation} from '../../../navigation';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import customImage from '../../../../assets/images/CardIcon/custom_image.png';
 
 interface IProps {
   title: string;
@@ -62,6 +63,11 @@ export const CategoryCard: FC<IProps> = ({
         })
       }>
       <Title>{title}</Title>
+      <Image
+        source={{
+          uri: icon,
+        }}
+      />
       <Heart onPress={updateFavourite}>
         <Icon name={favorite ? 'heart' : 'hearto'} color="white" size={25} />
       </Heart>
@@ -73,23 +79,28 @@ interface IContainer {
   color: string;
 }
 const Container = styled.TouchableOpacity<IContainer>(({color}) => ({
-  width: widthPixel(319),
-  height: heightPixel(164),
+  width: widthPixel(320),
+  height: heightPixel(170),
   marginBottom: heightPixel(20),
   borderRadius: widthPixel(15),
   backgroundColor: color,
   position: 'relative',
   alignItems: 'center',
-  paddingVertical: heightPixel(18),
+  paddingVertical: heightPixel(10),
+  elevation: 5,
 }));
 const Title = styled.Text({
   color: theme.colors.white,
   fontSize: fontPixel(24),
   fontFamily: theme.fonts.MonstserratBold,
-  marginBottom: heightPixel(5),
+  marginBottom: heightPixel(2),
 });
 const Heart = styled.TouchableOpacity({
   position: 'absolute',
   bottom: 15,
   right: 15,
+});
+const Image = styled.Image({
+  height: heightPixel(100),
+  width: widthPixel(100),
 });
