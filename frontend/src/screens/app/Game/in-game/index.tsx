@@ -27,6 +27,7 @@ import {
 } from './sounds';
 import {IRootNavgation} from '../../../../navigation';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import database from '@react-native-firebase/database';
 
 export const InGame = () => {
   const dispatch = useDispatch();
@@ -34,7 +35,7 @@ export const InGame = () => {
   const {goBack} = useNavigation();
   const {params} = useRoute<RouteProp<IRootNavgation>>();
 
-  const {title: CategoryTitle, youGuess, custom, id: CustomId} = params;
+  const {title: CategoryTitle, youGuess, custom, id: CategoryId} = params;
 
   const {
     timer: UserRoundTime,
@@ -50,7 +51,11 @@ export const InGame = () => {
 
   const CustomCardArray = useSelector(
     (state: RootState) =>
-      state.reducer.customCategories.customCategoryArray[CustomId]?.cards,
+      state.reducer.customCategories.customCategoryArray[CategoryId]?.cards,
+  );
+
+  const SavedCardArray = useSelector(
+    (state: RootState) => state.reducer.cardArray.cardArray[CategoryId].cards,
   );
 
   const [gameStarting, setGameStarting] = useState(false);
@@ -86,7 +91,16 @@ export const InGame = () => {
   const [gameCardArray, setGameCardArray] = useState([]);
   const [presentCard, setPresentCard] = useState('');
   const [usedCardArray, setUsedCardArray] = useState([]);
-  const ArrayLength = gameCardArray.length;
+  const ArrayLength = gameCardArray?.length;
+
+  //set CardArray
+  useEffect(() => {
+    if (custom) {
+      setGameCardArray(CustomCardArray);
+    } else {
+      setGameCardArray(SavedCardArray);
+    }
+  }, []);
 
   /////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////
@@ -175,14 +189,6 @@ export const InGame = () => {
   ////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////
   //start Round
-
-  //set CardArray
-  useEffect(() => {
-    if (custom) {
-      setGameCardArray(CustomCardArray);
-    }
-    //ApiCall
-  }, []);
 
   //Create Number of team data array
   useEffect(() => {

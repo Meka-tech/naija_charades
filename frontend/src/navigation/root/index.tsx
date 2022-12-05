@@ -30,7 +30,7 @@ export type IRootNavgation = {
   New: undefined;
   Favourites: undefined;
   CustomPage: undefined;
-  GameDescription: {title: string; description: string};
+  GameDescription: {title: string; description: string; index: number};
   WhoseGuess: {title?: string; custom: boolean; id?: number | null};
   InGame: {title: string; youGuess: boolean; custom: boolean; id?: number};
   CreateNewCategory: undefined;

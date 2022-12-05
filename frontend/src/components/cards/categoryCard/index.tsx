@@ -18,9 +18,16 @@ interface IProps {
   icon?: string; //JSX.Element
   color: string;
   description: string;
+  index: number;
 }
 
-export const CategoryCard: FC<IProps> = ({title, icon, color, description}) => {
+export const CategoryCard: FC<IProps> = ({
+  title,
+  icon,
+  color,
+  description,
+  index,
+}) => {
   const {navigate} = useNavigation<NativeStackNavigationProp<IRootNavgation>>();
   const dispatch = useDispatch();
   const {favouritesArray} = useSelector(
@@ -51,6 +58,7 @@ export const CategoryCard: FC<IProps> = ({title, icon, color, description}) => {
         navigate('GameDescription', {
           title: title,
           description: description,
+          index: index,
         })
       }>
       <Title>{title}</Title>

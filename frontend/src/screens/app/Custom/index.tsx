@@ -4,7 +4,7 @@ import {
   MenuPage,
   TextInput,
 } from '../../../components';
-import React, {useState} from 'react';
+import React from 'react';
 import styled from '@emotion/native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../app/store';
@@ -23,7 +23,7 @@ export const CustomPage = () => {
             return (
               <CustomMadeCard
                 title={category.title}
-                key={category.id}
+                key={index * Math.random()}
                 id={index}
                 uniqueId={category.id}
               />

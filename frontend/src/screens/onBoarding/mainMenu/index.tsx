@@ -10,19 +10,50 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
 import {Dimensions} from 'react-native';
 import {OrientationLocker} from 'react-native-orientation-locker';
 import {updateQuickPlay} from '../../../features/team_data/team_data';
-import {BackHandler, Alert} from 'react-native';
+import {BackHandler} from 'react-native';
 import {ConfirmExitModal} from '../../../components/modal';
+import database from '@react-native-firebase/database';
+import {useSelector, useDispatch} from 'react-redux';
+import {RootState} from '../../../app/store';
+import {updateCards} from '../../../features/card_array/card_array';
 
-export const MainMenu = ({}) => {
+export const MainMenu = () => {
+  const dispatch = useDispatch();
+  const SavedCardArray = useSelector(
+    (state: RootState) => state.reducer.cardArray,
+  );
+  useEffect(() => {
+    const getCategories = async () => {
+      database()
+        .ref('/categories')
+        .once('value')
+        .then(snapshot => {
+          if (snapshot.val() !== SavedCardArray) {
+            dispatch(updateCards(snapshot.val()));
+          }
+          // console.log('card data: ', snapshot.val());
+        });
+    };
+    getCategories();
+  }, []);
+
+  // const setCategories = () => {
+  //   database()
+  //     .ref('categories')
+  //     .set(CardData)
+  //     .then(() => console.log('Data set.'))
+  //     .catch(err => console.log(err));
+  // };
+
+  // setCategories();
+
   const WindowHeight = Dimensions.get('window').height;
   const WindowWidth = Dimensions.get('window').width;
   const offset = useSharedValue(0);
   const offsetButton = useSharedValue(0);
-  const dispatch = useDispatch();
   const {goBack} = useNavigation();
 
   const defaultSpringStyles = useAnimatedStyle(() => {

@@ -6,11 +6,13 @@ import {fontPixel, heightPixel} from '../../../utils/pxToDpConvert';
 import {theme} from '../../../utils/theme';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../app/store';
-import {CardData} from '../cardData';
 
 export const Favourites = () => {
   const {favouritesArray} = useSelector(
     (state: RootState) => state.reducer.favouriteCategories,
+  );
+  const CardArray = useSelector(
+    (state: RootState) => state.reducer.cardArray.cardArray,
   );
 
   return (
@@ -25,7 +27,7 @@ export const Favourites = () => {
           </NoContentView>
         )}
         <Body>
-          {CardData.map((category, index) => {
+          {CardArray.map((category, index) => {
             return (
               favouritesArray.includes(category.title) && (
                 <CategoryCard
@@ -33,6 +35,8 @@ export const Favourites = () => {
                   color={category.color}
                   icon={category.icon}
                   key={index * Math.random()}
+                  index={index}
+                  description={category.description}
                 />
               )
             );

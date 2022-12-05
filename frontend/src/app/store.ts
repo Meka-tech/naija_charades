@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import FavouriteReducer from '../features/favourite_category/favouriteCategory';
 import CustomCategoryReducer from '../features/custom_category/customCategory';
 import TeamDataReducer from '../features/team_data/team_data';
+import CardArrayReducer from '../features/card_array/card_array';
 
 const persistConfig = {
   key: 'root',
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   userPreference: UserPreferenceReducer,
   favouriteCategories: FavouriteReducer,
   customCategories: CustomCategoryReducer,
+  cardArray: CardArrayReducer,
 });
 const persistedUserReducer = persistReducer(persistConfig, rootReducer);
 

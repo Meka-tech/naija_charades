@@ -19,6 +19,7 @@ export const GameDescription = () => {
 
   const CategoryTitle = params.title;
   const CategoryDescription = params.description;
+  const CategoryIndex = params.index;
   const QuickPlay = useSelector((state: RootState) => state.teamData.quickPlay);
 
   return (
@@ -35,7 +36,7 @@ export const GameDescription = () => {
               navigate('WhoseGuess', {
                 title: CategoryTitle,
                 custom: false,
-                id: null,
+                id: CategoryIndex,
               })
             }
           />
