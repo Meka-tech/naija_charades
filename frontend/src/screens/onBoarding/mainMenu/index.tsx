@@ -27,6 +27,7 @@ import {applyMiddleware} from 'redux';
 
 export const MainMenu = () => {
   const dispatch = useDispatch();
+
   const [networkConnected, setNetworkConnected] = useState(false);
   const SavedCardArray = useSelector(
     (state: RootState) => state.reducer.cardArray,

@@ -27,7 +27,7 @@ import {
 } from './sounds';
 import {IRootNavgation} from '../../../../navigation';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import database from '@react-native-firebase/database';
+import {Barometer} from 'expo-sensors';
 
 export const InGame = () => {
   const dispatch = useDispatch();
@@ -93,6 +93,28 @@ export const InGame = () => {
   const [usedCardArray, setUsedCardArray] = useState([]);
   const ArrayLength = gameCardArray?.length;
 
+  ///Gyroscope///
+  const [{pressure, relativeAltitude}, setData] = useState({
+    pressure: 0,
+    relativeAltitude: 0,
+  });
+  const [subscription, setSubscription] = useState(null);
+
+  const toggleListener = () => {
+    subscription ? unsubscribe() : subscribe();
+  };
+
+  const subscribe = () => {
+    setSubscription(Barometer.addListener(setData));
+  };
+
+  const unsubscribe = () => {
+    subscription && subscription.remove();
+    setSubscription(null);
+  };
+  useEffect(() => {
+    console.log(pressure);
+  }, [pressure]);
   //set CardArray
   useEffect(() => {
     if (custom) {

@@ -1,9 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {FC} from 'react';
+import React, {FC, useState, useEffect} from 'react';
 import styled from '@emotion/native';
 import {theme} from '../../../../../utils/theme';
 import {fontPixel, heightPixel} from '../../../../../utils/pxToDpConvert';
 import {SecondsToMinutes} from '../../../../../utils/function';
+import {Accelerometer} from 'expo-sensors';
 
 interface Iprops {
   title: string;
@@ -22,13 +23,49 @@ export const Round: FC<Iprops> = ({
   skip,
   card,
 }) => {
+  const [hasBeenTilted, setHasBeenTilted] = useState(false);
+  const [{x, y, z}, setData] = useState({
+    x: 0,
+    y: 0,
+    z: 0,
+  });
+  const [subscription, setSubscription] = useState(null);
+
+  const _subscribe = () => {
+    setSubscription(Accelerometer.addListener(setData));
+  };
+
+  const _unsubscribe = () => {
+    subscription && subscription.remove();
+    setSubscription(null);
+  };
+
+  useEffect(() => {
+    _subscribe();
+    if (y >= 0.5 && hasBeenTilted === false) {
+      correct();
+      setHasBeenTilted(true);
+    }
+    if (y <= -0.5 && hasBeenTilted === false) {
+      skip();
+      setHasBeenTilted(true);
+    }
+    if (hasBeenTilted && y < 0.04 && y > -0.04) {
+      setHasBeenTilted(false);
+    }
+    return () => _unsubscribe();
+  }, [x, y, z]);
+
   return (
     <Container>
       <Operation onPress={correct} style={{right: 0}} />
       <Operation onPress={skip} style={{left: 0}} />
       <Title>{title}</Title>
       <CardDiv>
-        <Card>{card}</Card>
+        {hasBeenTilted === false && <Card>{card}</Card>}
+        {hasBeenTilted && (
+          <Reminder>(Hold device upright to continue!)</Reminder>
+        )}
       </CardDiv>
       <Timer>{SecondsToMinutes(timer)}</Timer>
       <ScoreText>SCORE : {score}</ScoreText>
@@ -65,6 +102,13 @@ const Card = styled.Text({
   fontFamily: theme.fonts.MonstserratBold,
   fontSize: fontPixel(50),
   fontWeight: '500',
+  textAlign: 'center',
+});
+const Reminder = styled.Text({
+  color: theme.colors.main,
+  fontFamily: theme.fonts.MonstserratBold,
+  fontSize: fontPixel(40),
+  fontWeight: '600',
   textAlign: 'center',
 });
 

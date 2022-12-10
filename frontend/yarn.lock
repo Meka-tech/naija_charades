@@ -4707,6 +4707,11 @@ expo-keep-awake@~11.0.1:
   resolved "https://registry.yarnpkg.com/expo-keep-awake/-/expo-keep-awake-11.0.1.tgz#ee354465892a94040ffe09901b85b469e7d54fb3"
   integrity sha512-44ZjgLE4lnce2d40Pv8xsjMVc6R5GvgHOwZfkLYtGmgYG9TYrEJeEj5UfSeweXPL3pBFhXKfFU8xpGYMaHdP0A==
 
+expo-location@~15.0.1:
+  version "15.0.1"
+  resolved "https://registry.yarnpkg.com/expo-location/-/expo-location-15.0.1.tgz#b132b8b50ce4d2dd9257b7b66cec44beeba253a4"
+  integrity sha512-GOAP24m8fMahFcBT75H07f2+IQAOCOdNTzb8Ci/19NZ+Y/CY2lIvb55V8zu7Gn0+76FKPb7XC3ebQaq4ctn1QA==
+
 expo-modules-autolinking@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/expo-modules-autolinking/-/expo-modules-autolinking-1.0.0.tgz#2daac20035e1ecf8e66d74dca9bd1b0d6c09166c"
@@ -4724,6 +4729,13 @@ expo-modules-core@1.0.3:
   integrity sha512-XqyA5c+zsK+cHDNVBVYu62HLBHyGMG0iWpXVP0bBQJWz0eyg5rcuEqLsnRTmoEz0YnH6QBf/cwRl+FfgnnH5Og==
   dependencies:
     compare-versions "^3.4.0"
+    invariant "^2.2.4"
+
+expo-sensors@~12.0.1:
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/expo-sensors/-/expo-sensors-12.0.1.tgz#ec8a285bb672ca73a6e1d5be95c78ee225c1641d"
+  integrity sha512-XsrHC7RD8dx9jHiY7DKvMhm14k59uCyKoZki0A0hyOn8NeVG/GUuCZtZwqFog2Ozc4jKidBWQ1OQp5Xq4xJXvQ==
+  dependencies:
     invariant "^2.2.4"
 
 expo@^47.0.8:
@@ -8155,6 +8167,11 @@ react-native-asset@^2.0.1:
     plist "^3.0.1"
     sha1-file "^1.0.4"
     xcode "^2.0.0"
+
+react-native-barometer@^1.0.18:
+  version "1.0.18"
+  resolved "https://registry.yarnpkg.com/react-native-barometer/-/react-native-barometer-1.0.18.tgz#ed9518851f471cca8ef97ef08d7fbfece0243612"
+  integrity sha512-+qN5OvK3+dURIAfyeK3fyAtJ4A9JdCe86wusjPLBOvL5mwSkucBWSILBzUOp9c6HtGJjHKnIzq4Joer5KujNKw==
 
 react-native-codegen@^0.70.6:
   version "0.70.6"
