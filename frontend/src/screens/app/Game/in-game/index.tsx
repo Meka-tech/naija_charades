@@ -113,8 +113,11 @@ export const InGame = () => {
     setSubscription(null);
   };
   useEffect(() => {
-    console.log(pressure);
-  }, [pressure]);
+    subscribe();
+    console.log(relativeAltitude);
+
+    return () => unsubscribe();
+  }, [relativeAltitude]);
   //set CardArray
   useEffect(() => {
     if (custom) {
