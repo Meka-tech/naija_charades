@@ -20,12 +20,15 @@ import {
 } from '../../../../../utils/pxToDpConvert';
 import {theme} from '../../../../../utils/theme';
 import {Dimensions, View} from 'react-native';
+const ScreenWidth = Dimensions.get('screen').width;
+
+const ScreenHeight = Dimensions.get('screen').height;
 
 export const ItemOne = () => {
   const isDarkMode = IsDarkMode();
   return (
     <Container>
-      <Text isDarkMode={isDarkMode} width={'60%'}>
+      <Text isDarkMode={isDarkMode} width={'80%'}>
         Select Quick Play or Versus, depending on the mode you want to play
       </Text>
       <Image source={ImgOne} />
@@ -39,7 +42,7 @@ export const ItemTwo = () => {
   return (
     <Container>
       <Image source={ImgTwo} />
-      <Text isDarkMode={isDarkMode} width={'60%'}>
+      <Text isDarkMode={isDarkMode} width={'95%'}>
         To play the versus mode, select the number of teams that are to play e.g
         if you’re 6 people playing, you can divide yourselves into 3 teams by
         playing 2 people per team.
@@ -53,11 +56,10 @@ export const ItemThree = () => {
   return (
     <Container>
       <Image source={ImgThree} />
-      <Text isDarkMode={isDarkMode} width={'70%'}>
-        For the number of rounds, this means selecting the number of times you
-        want to play a particular category with your team. e.g 3 rounds means if
-        you are 3 teams playing, each team would play the selected category 3
-        times.
+      <Text isDarkMode={isDarkMode} width={'90%'}>
+        3 rounds means if you are 3 teams playing, each team would play the
+        selected category 3 times. This means selecting the number of times you
+        want to play a particular category.
       </Text>
     </Container>
   );
@@ -81,7 +83,7 @@ export const ItemFive = () => {
 
   return (
     <Container>
-      <Text isDarkMode={isDarkMode} width={'50%'}>
+      <Text isDarkMode={isDarkMode} width={'80%'}>
         Read the Instruction for that category
       </Text>
       <Image source={ImgFive} />
@@ -94,7 +96,7 @@ export const ItemSix = () => {
 
   return (
     <Container>
-      <Text isDarkMode={isDarkMode} width={'50%'}>
+      <Text isDarkMode={isDarkMode} width={'80%'}>
         Select your preferred method to play
       </Text>
       <Image source={ImgSix} />
@@ -124,7 +126,7 @@ export const ItemEight = () => {
     <Container>
       <Text
         isDarkMode={isDarkMode}
-        width={'60%'}
+        width={'80%'}
         style={{marginBottom: heightPixel(50), marginTop: heightPixel(100)}}>
         You can play the game by, tapping the screens for the others guess mode
       </Text>
@@ -189,7 +191,7 @@ export const ItemTen = () => {
 
   return (
     <Container>
-      <Text isDarkMode={isDarkMode} width={'70%'}>
+      <Text isDarkMode={isDarkMode} width={'90%'}>
         When your allocated time runs out, it’ll be indicated
       </Text>
       <Image source={ImgTen} />
@@ -210,7 +212,6 @@ export const ItemTen = () => {
   );
 };
 
-const ScreenWidth = Dimensions.get('screen').width;
 const Container = styled.View({
   width: ScreenWidth,
   height: '100%',
@@ -221,6 +222,7 @@ const Container = styled.View({
 
 const Image = styled.Image(({width, height}) => ({
   marginVertical: heightPixel(20),
+  transform: [{scaleY: ScreenHeight / 900}, {scaleX: ScreenWidth / 400}],
 }));
 
 const Text = styled.Text(({width, isDarkMode}) => ({

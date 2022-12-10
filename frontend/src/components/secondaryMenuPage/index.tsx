@@ -2,9 +2,11 @@ import React, {FC, useState} from 'react';
 import styled from '@emotion/native';
 
 import Art from '../../../assets/images/background_art2.svg';
+import ArtImg from '../../../assets/images/background_art2.png';
 import {theme} from '../../utils/theme';
 import {fontPixel, heightPixel, widthPixel} from '../../utils/pxToDpConvert';
 import Art2 from '../../../assets/images/background_art.svg';
+import Art2Img from '../../../assets/images/background_art.png';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Dimensions} from 'react-native';
@@ -23,25 +25,20 @@ export const SecondaryMenuPage: FC<IProps> = ({title, children}) => {
 
   return (
     <Container isDarkMode={isDarkMode}>
-      <Head>
-        <ArrowButton
-          onPress={() => {
-            goBack();
-          }}>
-          <Icon name="arrowleft" color={theme.colors.main} size={30} />
-        </ArrowButton>
-        <Title isDarkMode={isDarkMode}>{title}</Title>
-      </Head>
-      <Body>
-        <OrientationLocker orientation={'PORTRAIT'} />
-        {children}
-      </Body>
-      <Image>
-        {isDarkMode ? (
-          <Art2 width={'100%'} height={'100%'} />
-        ) : (
-          <Art width={'100%'} height={'100%'} />
-        )}
+      <Image source={isDarkMode ? Art2Img : ArtImg}>
+        <Head>
+          <ArrowButton
+            onPress={() => {
+              goBack();
+            }}>
+            <Icon name="arrowleft" color={theme.colors.main} size={30} />
+          </ArrowButton>
+          <Title isDarkMode={isDarkMode}>{title}</Title>
+        </Head>
+        <Body>
+          <OrientationLocker orientation={'PORTRAIT'} />
+          {children}
+        </Body>
       </Image>
     </Container>
   );
@@ -78,11 +75,12 @@ const Body = styled.View({
   height: WindowHeight - heightPixel(78),
   alignItems: 'center',
 });
-const Image = styled.View({
+const Image = styled.ImageBackground({
   width: '100%',
   height: '100%',
-  position: 'absolute',
-  zIndex: -1,
+  alignItems: 'center',
+  justifyContent: 'center',
+  flex: 1,
 });
 
 const Head = styled.View({

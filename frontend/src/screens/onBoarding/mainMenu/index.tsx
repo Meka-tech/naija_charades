@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Logo from '../../../../assets/images/logo.svg';
 import styled from '@emotion/native';
 import Art from '../../../../assets/images/background_main.svg';
+import ArtImg from '../../../../assets/images/background_art.png';
 import {StrippedButton} from '../../../components';
 import {heightPixel, widthPixel} from '../../../utils/pxToDpConvert';
 import Animated, {
@@ -109,45 +110,53 @@ export const MainMenu = () => {
 
   return (
     <Main>
-      <OrientationLocker orientation={'PORTRAIT'} />
-      <Body>
-        <ConfirmExitModal
-          active={modalActive}
-          closeModal={() => setModalActive(false)}
-          onPress={() => BackHandler.exitApp()}
-        />
-        <Animated.View style={[defaultSpringStyles]}>
-          <Logo />
-        </Animated.View>
-        <Buttons>
-          <Animated.View
-            style={[
-              {height: '100%', justifyContent: 'space-between'},
-              ButtonSpringStyles,
-            ]}>
-            <StrippedButton
-              label="Quick Play"
-              elevation={5}
-              onPress={() => {
-                navigate('Home');
-                dispatch(updateQuickPlay(true));
+      <Image source={ArtImg} resizeMode="cover">
+        <OrientationLocker orientation={'PORTRAIT'} />
+        <Body>
+          <ConfirmExitModal
+            active={modalActive}
+            closeModal={() => setModalActive(false)}
+            onPress={() => BackHandler.exitApp()}
+          />
+          <Animated.View style={[defaultSpringStyles]}>
+            <Logo
+              width={WindowWidth}
+              style={{
+                transform: [
+                  {scaleY: WindowHeight / 900},
+                  {scaleX: WindowWidth / 400},
+                ],
               }}
             />
-            <StrippedButton
-              label="Versus"
-              elevation={5}
-              onPress={() => navigate('Versus')}
-            />
-            <StrippedButton
-              label="How to play"
-              elevation={5}
-              onPress={() => navigate('HowToPlay')}
-            />
           </Animated.View>
-        </Buttons>
-      </Body>
-      <Image>
-        <Art width={WindowWidth} height={WindowHeight} />
+          <Buttons>
+            <Animated.View
+              style={[
+                {height: '100%', justifyContent: 'space-between'},
+                ButtonSpringStyles,
+              ]}>
+              <StrippedButton
+                label="Quick Play"
+                elevation={5}
+                onPress={() => {
+                  navigate('Home');
+                  dispatch(updateQuickPlay(true));
+                }}
+              />
+              <StrippedButton
+                label="Versus"
+                elevation={5}
+                onPress={() => navigate('Versus')}
+              />
+              <StrippedButton
+                label="How to play"
+                elevation={5}
+                onPress={() => navigate('HowToPlay')}
+              />
+            </Animated.View>
+          </Buttons>
+        </Body>
+        {/* <Art width={WindowWidth} height={WindowHeight} /> */}
       </Image>
     </Main>
   );
@@ -169,8 +178,9 @@ const Body = styled.View({
 const Image = styled.ImageBackground({
   width: '100%',
   height: '100%',
-  position: 'absolute',
-  zIndex: -1,
+  alignItems: 'center',
+  justifyContent: 'center',
+  flex: 1,
 });
 
 const Buttons = styled.View({

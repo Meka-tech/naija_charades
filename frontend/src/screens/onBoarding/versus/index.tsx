@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import styled from '@emotion/native';
 import Art from '../../../../assets/images/background_main.svg';
+import ArtImg from '../../../../assets/images/background_art.png';
 import Logo from '../../../../assets/images/logo.svg';
 import {Dropdown, StrippedButton} from '../../../components';
 import {fontPixel, heightPixel, widthPixel} from '../../../utils/pxToDpConvert';
@@ -49,43 +50,42 @@ export const Versus = ({}) => {
   const WindowWidth = Dimensions.get('window').width;
   return (
     <Main>
-      <Body>
-        <Logo />
-        <Card>
-          <Cross onPress={() => goBack()}>
-            <Icon name={'cross'} size={30} color={theme.colors.black} />
-          </Cross>
-          <Title>Select number of teams</Title>
-          <DropDownContainer>
-            <Dropdown
-              list={Teamlist}
-              groupName={'Teams'}
-              selected={noOfTeams}
-              setSelected={SetTeams}
-            />
-          </DropDownContainer>
-          <Title>Select number of rounds</Title>
-          <DropDownContainer>
-            <Dropdown
-              list={Roundslist}
-              groupName={'Rounds'}
-              selected={noOfRounds}
-              setSelected={SetRounds}
-            />
-          </DropDownContainer>
-          <Button>
-            <StrippedButton
-              label="Next"
-              onPress={() => {
-                navigate('Home');
-                dispatch(updateQuickPlay(false));
-              }}
-            />
-          </Button>
-        </Card>
-      </Body>
-      <Image>
-        <Art width={WindowWidth} height={WindowHeight} />
+      <Image source={ArtImg} resizeMode="contain">
+        <Body>
+          <Logo />
+          <Card>
+            <Cross onPress={() => goBack()}>
+              <Icon name={'cross'} size={30} color={theme.colors.black} />
+            </Cross>
+            <Title>Select number of teams</Title>
+            <DropDownContainer>
+              <Dropdown
+                list={Teamlist}
+                groupName={'Teams'}
+                selected={noOfTeams}
+                setSelected={SetTeams}
+              />
+            </DropDownContainer>
+            <Title>Select number of rounds</Title>
+            <DropDownContainer>
+              <Dropdown
+                list={Roundslist}
+                groupName={'Rounds'}
+                selected={noOfRounds}
+                setSelected={SetRounds}
+              />
+            </DropDownContainer>
+            <Button>
+              <StrippedButton
+                label="Next"
+                onPress={() => {
+                  navigate('Home');
+                  dispatch(updateQuickPlay(false));
+                }}
+              />
+            </Button>
+          </Card>
+        </Body>
       </Image>
     </Main>
   );
@@ -104,11 +104,12 @@ const Body = styled.View({
   alignItems: 'center',
   justifyContent: 'center',
 });
-const Image = styled.View({
+const Image = styled.ImageBackground({
   width: '100%',
   height: '100%',
-  position: 'absolute',
-  zIndex: -1,
+  alignItems: 'center',
+  justifyContent: 'center',
+  flex: 1,
 });
 
 const Card = styled.View({

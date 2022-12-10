@@ -13,6 +13,9 @@ import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {IRootNavgation} from '../../../navigation';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import customImage from '../../../../assets/images/CardIcon/custom_image.png';
+import {Dimensions} from 'react-native';
+
+const ScreenHeight = Dimensions.get('window').height;
 
 interface IProps {
   title: string;
@@ -103,4 +106,5 @@ const Heart = styled.TouchableOpacity({
 const Image = styled.Image({
   height: heightPixel(100),
   width: widthPixel(100),
+  transform: [{scaleY: ScreenHeight / 900}],
 });

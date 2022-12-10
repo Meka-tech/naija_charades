@@ -189,10 +189,9 @@ const CardResults = styled.View({
   paddingHorizontal: widthPixel(15),
 });
 
-const CardCategory = styled.View({
+const CardCategory = styled.ScrollView({
   height: '90%',
   width: '45%',
-  alignItems: 'center',
 });
 
 interface ICardTitle {
@@ -205,6 +204,7 @@ const CategoryTitle = styled.Text<ICardTitle>(({cardCate}) => ({
   fontSize: fontPixel(20),
   fontFamily: theme.fonts.MonstserratBold,
   marginBottom: heightPixel(10),
+  textAlign: 'center',
 }));
 interface ICards {
   cardCate?: string;
@@ -221,4 +221,5 @@ const CardNames = styled.Text<ICards>(({cardCate, darkMode}) => ({
   fontFamily: theme.fonts.MonstserratBold,
   marginBottom: heightPixel(10),
   textDecorationLine: cardCate === 'skipped' ? 'line-through' : 'none',
+  textAlign: 'center',
 }));

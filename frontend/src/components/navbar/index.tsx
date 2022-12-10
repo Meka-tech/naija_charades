@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import {RenderNavItem} from './renderNavItem';
 import {NAVDATA} from './renderNavItem/navData';
 import {IsDarkMode} from '../../utils/isDarkMode';
+import {Dimensions} from 'react-native';
 
 interface IProps {
   activePage?: string;
@@ -21,6 +22,7 @@ interface IProps {
 export const Navbar: FC<IProps> = ({active, activePage, closeNav}) => {
   const offset = useSharedValue(0);
   const isDarkMode = IsDarkMode();
+  const WindowWidth = Dimensions.get('window').width;
 
   const defaultSpringStyles = useAnimatedStyle(() => {
     return {
@@ -35,7 +37,9 @@ export const Navbar: FC<IProps> = ({active, activePage, closeNav}) => {
     };
   });
   useEffect(() => {
-    active ? (offset.value = 0.95) : (offset.value = -1.5);
+    active
+      ? (offset.value = WindowWidth / 432)
+      : (offset.value = -WindowWidth / 274);
   }, [active, offset]);
 
   return (

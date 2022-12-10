@@ -69,16 +69,13 @@ export const WhoseGuess = () => {
             active={youGuessActive}
             onPress={ClickYouGuess}
             title="You Guess"
-            description="Place the screen on your forehead 
-and try to guess,while your teammates describe or
-act out the words on the screen."
+            description="Place the screen on your forehead and try to guess, while your teammates describe or act out the words."
           />
           <GuessBlock
             active={othersGuessActive}
             onPress={ClickOtherGuess}
             title="Others Guess"
-            description="Describe or act out the words on
-            the screen, while your teammates guess the word"
+            description="Describe or act out the words on the screen, while your teammates guess the word"
           />
         </Guesses>
         <Button>
@@ -137,10 +134,11 @@ const GuessView = styled.TouchableOpacity<useDark>(({isDarkMode}) => ({
 
 const GuessText = styled.View({
   width: '70%',
+  alignItems: 'center',
+  justifyContent: 'center',
 });
 const GuessTitle = styled.Text<useDark>(({isDarkMode}) => ({
-  marginBottom: heightPixel(5),
-  fontSize: fontPixel(20),
+  fontSize: fontPixel(18),
   fontFamily: theme.fonts.MonstserratBold,
   color: isDarkMode ? theme.colors.white : theme.colors.black,
   textAlign: 'center',
@@ -149,7 +147,7 @@ const GuessDescription = styled.Text<useDark>(({isDarkMode}) => ({
   fontSize: fontPixel(12),
   fontFamily: theme.fonts.MonstserratMedium,
   color: isDarkMode ? theme.colors.white : theme.colors.black,
-  textAlign: 'center',
+  textAlign: 'left',
 }));
 
 const GoldRing = styled.TouchableOpacity({
@@ -159,7 +157,7 @@ const GoldRing = styled.TouchableOpacity({
   borderColor: theme.colors.main,
   borderWidth: widthPixel(2),
   alignSelf: 'center',
-  marginRight: widthPixel(10),
+  marginRight: widthPixel(20),
   alignItems: 'center',
   justifyContent: 'center',
 });
