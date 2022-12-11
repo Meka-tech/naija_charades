@@ -234,7 +234,8 @@ export const InGame = () => {
 
   // end Round
   useEffect(() => {
-    if (roundTimerDone) {
+    if (roundTimerDone && Sound) {
+      EndGameSound.setVolume(SoundLevel);
       EndGameSound.play();
       setTimeUp(true);
       setTimeout(() => {
@@ -244,7 +245,15 @@ export const InGame = () => {
         setRoundStarting(false);
       }, 2000);
     }
-  }, [roundTimerDone, activeTeam, NoOfTeams, activeRound, NoOfRounds]);
+  }, [
+    roundTimerDone,
+    activeTeam,
+    NoOfTeams,
+    activeRound,
+    NoOfRounds,
+    SoundLevel,
+    Sound,
+  ]);
 
   ///sounds
 
