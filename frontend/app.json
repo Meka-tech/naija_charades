@@ -1,4 +1,7 @@
 {
   "name": "naija_charades",
-  "displayName": "naija_charades"
+  "displayName": "naija_charades",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-4708275943185751~8795108601"
+  }
 }

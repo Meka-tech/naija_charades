@@ -23,7 +23,7 @@ export const Round: FC<Iprops> = ({
   skip,
   card,
 }) => {
-  const [hasBeenTilted, setHasBeenTilted] = useState(false);
+  const [hasBeenTilted, setHasBeenTilted] = useState(true);
   const [{x, y, z}, setData] = useState({
     x: 0,
     y: 0,
@@ -50,11 +50,11 @@ export const Round: FC<Iprops> = ({
       skip();
       setHasBeenTilted(true);
     }
-    if (hasBeenTilted && y < 0.04 && y > -0.04 && x > 0.9) {
+    if (hasBeenTilted && y < 0.04 && y > -0.04 && x > 0.7) {
       setHasBeenTilted(false);
     }
     return () => _unsubscribe();
-  }, [x, y, z]);
+  }, [x, y]);
 
   return (
     <Container>

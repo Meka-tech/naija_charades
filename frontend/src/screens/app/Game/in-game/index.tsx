@@ -102,7 +102,6 @@ export const InGame = () => {
       setGameCardArray(SavedCardArray);
     }
   }, []);
-  // console.log(heldHigh, 'heldHigh');
 
   /////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////
@@ -275,9 +274,10 @@ export const InGame = () => {
       }
     }
   }, [Sound, SoundLevel, roundTimer]);
+
   return (
     <Container>
-      <OrientationLocker orientation={'LANDSCAPE'} />
+      <OrientationLocker orientation={'LANDSCAPE_LEFT'} />
       <GoBack onPress={() => goBack()}>
         <Icon name="arrowleft" color={theme.colors.main} size={35} />
         <Text>back</Text>

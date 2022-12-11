@@ -24,9 +24,16 @@ import {CreateStringArray} from '../../../utils/function';
 import NetInfo from '@react-native-community/netinfo';
 import {CardData} from '../../app/cardData';
 import {applyMiddleware} from 'redux';
+import mobileAds from 'react-native-google-mobile-ads';
 
 export const MainMenu = () => {
   const dispatch = useDispatch();
+
+  mobileAds()
+    .initialize()
+    .then(adapterStatuses => {
+      // Initialization complete!
+    });
 
   const [networkConnected, setNetworkConnected] = useState(false);
   const SavedCardArray = useSelector(

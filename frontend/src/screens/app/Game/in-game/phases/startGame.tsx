@@ -50,7 +50,8 @@ export const StartGame: FC<Iprops> = ({startAction, timer}) => {
   useEffect(() => {
     _subscribe();
     _subscribeAccel();
-    if (data?.z > -1 && y < 0.04 && y > -0.04) {
+
+    if (data?.z > -2 && y < 0.04 && y > -0.04 && x > 0.9) {
       startAction();
       setTimerStarted(true);
     }

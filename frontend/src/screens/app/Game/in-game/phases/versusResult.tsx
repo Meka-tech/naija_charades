@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from '@emotion/native';
 import {
   fontPixel,
@@ -11,12 +11,15 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {IsDarkMode} from '../../../../../utils/isDarkMode';
 import Art2 from '../../../../../../assets/images/background_art.svg';
+import Art2Img from '../../../../../../assets/images/background_art.png';
 import Art from '../../../../../../assets/images/background_art2.svg';
+import ArtImg from '../../../../../../assets/images/background_art2.png';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../../../app/store';
 import {StrippedButton} from '../../../../../components';
 import {IRootNavgation} from '../../../../../navigation';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 
 export const VersusResult = () => {
   const {navigate} = useNavigation<NativeStackNavigationProp<IRootNavgation>>();
@@ -32,68 +35,82 @@ export const VersusResult = () => {
   const TeamScores = TeamArray.map(team => {
     return [team.team, team.score];
   });
-  console.log(TeamScores);
 
   const SortedArray = TeamScores.sort((a, b) => b[1] - a[1]);
 
-  console.log(SortedArray);
+  //ads
+  const adUnitId = __DEV__
+    ? TestIds.INTERSTITIAL
+    : 'ca-app-pub-4708275943185751/5078352735';
+
+  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+    requestNonPersonalizedAdsOnly: true,
+  });
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const ClickNext = () => {
+    if (isLoaded) {
+      show();
+      navigate('Home');
+    } else {
+      navigate('Home');
+    }
+  };
+  useEffect(() => {
+    if (isClosed) {
+      load();
+    }
+  }, [isClosed, load]);
 
   return (
     <Container darkMode={isDarkMode}>
-      <OrientationLocker orientation={'PORTRAIT'} />
-      <ArrowButton
-        onPress={() => {
-          navigate('Home');
-        }}>
-        <Icon name="arrowleft" color={theme.colors.main} size={30} />
-      </ArrowButton>
-      <Body>
-        <Title darkMode={isDarkMode}>{CategoryTitle}</Title>
-        <RoundTeamText
-          darkMode={
-            isDarkMode
-          }>{`Number of Rounds: ${NoOfRounds} `}</RoundTeamText>
-        <ScoreText>Versus Result</ScoreText>
-        <TeamResults>
-          <ResultHeader>
-            <HeaderText>POS</HeaderText>
-            <HeaderText>TEAMS</HeaderText>
-            <HeaderText>SCORES</HeaderText>
-          </ResultHeader>
-          {SortedArray.map((item, index) => {
-            return (
-              <ResultItem key={index} pos={index}>
-                <PositionText>
-                  {index === 0
-                    ? '1st'
-                    : index === 1
-                    ? '2nd'
-                    : index === 2
-                    ? '3rd'
-                    : '4th'}
-                </PositionText>
-                <ResultItemText>{item[0]}</ResultItemText>
-                <ResultScoreText>{item[1]}</ResultScoreText>
-              </ResultItem>
-            );
-          })}
-          <AnnounceResultText>{`${SortedArray[0][0]} wins`}</AnnounceResultText>
-        </TeamResults>
-        <Button>
-          <StrippedButton
-            label={'Play Again'}
-            onPress={() => {
-              navigate('Home');
-            }}
-          />
-        </Button>
-      </Body>
-      <Image>
-        {isDarkMode ? (
-          <Art2 width={'100%'} height={'100%'} />
-        ) : (
-          <Art width={'100%'} height={'100%'} />
-        )}
+      <Image source={isDarkMode ? Art2Img : ArtImg} resizeMode="cover">
+        <OrientationLocker orientation={'PORTRAIT'} />
+        <ArrowButton
+          onPress={() => {
+            navigate('Home');
+          }}>
+          <Icon name="arrowleft" color={theme.colors.main} size={30} />
+        </ArrowButton>
+        <Body>
+          <Title darkMode={isDarkMode}>{CategoryTitle}</Title>
+          <RoundTeamText
+            darkMode={
+              isDarkMode
+            }>{`Number of Rounds: ${NoOfRounds} `}</RoundTeamText>
+          <ScoreText>Versus Result</ScoreText>
+          <TeamResults>
+            <ResultHeader>
+              <HeaderText>POS</HeaderText>
+              <HeaderText>TEAMS</HeaderText>
+              <HeaderText>SCORES</HeaderText>
+            </ResultHeader>
+            {SortedArray.map((item, index) => {
+              return (
+                <ResultItem key={index} pos={index}>
+                  <PositionText>
+                    {index === 0
+                      ? '1st'
+                      : index === 1
+                      ? '2nd'
+                      : index === 2
+                      ? '3rd'
+                      : '4th'}
+                  </PositionText>
+                  <ResultItemText>{item[0]}</ResultItemText>
+                  <ResultScoreText>{item[1]}</ResultScoreText>
+                </ResultItem>
+              );
+            })}
+            <AnnounceResultText>{`${SortedArray[0][0]} wins`}</AnnounceResultText>
+          </TeamResults>
+          <Button>
+            <StrippedButton label={'Play Again'} onPress={ClickNext} />
+          </Button>
+        </Body>
       </Image>
     </Container>
   );
@@ -124,11 +141,12 @@ const ArrowButton = styled.TouchableOpacity({
   top: 30,
   width: widthPixel(50),
 });
-const Image = styled.View({
+const Image = styled.ImageBackground({
   width: '100%',
   height: '100%',
-  position: 'absolute',
-  zIndex: -1,
+  alignItems: 'center',
+  justifyContent: 'center',
+  flex: 1,
 });
 const Button = styled.View({
   width: widthPixel(254),
