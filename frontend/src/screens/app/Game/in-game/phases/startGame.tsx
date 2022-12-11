@@ -1,8 +1,9 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useState, useEffect} from 'react';
 import styled from '@emotion/native';
 import {IsDarkMode} from '../../../../../utils/isDarkMode';
 import {theme} from '../../../../../utils/theme';
 import {fontPixel, heightPixel} from '../../../../../utils/pxToDpConvert';
+import {DeviceMotion, Accelerometer} from 'expo-sensors';
 
 interface Iprops {
   startAction: () => void;
@@ -12,6 +13,53 @@ interface Iprops {
 export const StartGame: FC<Iprops> = ({startAction, timer}) => {
   const isDarkMode = IsDarkMode();
   const [TimerStarted, setTimerStarted] = useState(false);
+  const [data, setData] = useState({});
+  const [{x, y, z}, setAccelData] = useState({
+    x: 0,
+    y: 0,
+    z: 0,
+  });
+  const [subscriptionAccel, setSubscriptionAccel] = useState(null);
+
+  const _setInterval = () => {
+    DeviceMotion.setUpdateInterval(100);
+  };
+
+  const _subscribe = () => {
+    //Adding the Listener
+    DeviceMotion.addListener(devicemotionData => {
+      setData(devicemotionData.accelerationIncludingGravity);
+    });
+    //Calling setInterval Function after adding the listener
+    _setInterval();
+  };
+
+  const _unsubscribe = () => {
+    //Removing all the listeners at end of screen unload
+    DeviceMotion.removeAllListeners();
+  };
+  const _subscribeAccel = () => {
+    setSubscriptionAccel(Accelerometer.addListener(setAccelData));
+  };
+
+  const _unsubscribeAccel = () => {
+    subscriptionAccel && subscriptionAccel.remove();
+    setSubscriptionAccel(null);
+  };
+
+  useEffect(() => {
+    _subscribe();
+    _subscribeAccel();
+    if (data?.z > -1 && y < 0.04 && y > -0.04) {
+      startAction();
+      setTimerStarted(true);
+    }
+    return () => {
+      _unsubscribeAccel();
+      _unsubscribe();
+    };
+  }, [data, x, y, z]);
+
   return (
     <Container
       darkMode={isDarkMode}

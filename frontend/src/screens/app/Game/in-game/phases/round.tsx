@@ -50,7 +50,7 @@ export const Round: FC<Iprops> = ({
       skip();
       setHasBeenTilted(true);
     }
-    if (hasBeenTilted && y < 0.04 && y > -0.04) {
+    if (hasBeenTilted && y < 0.04 && y > -0.04 && x > 0.9) {
       setHasBeenTilted(false);
     }
     return () => _unsubscribe();

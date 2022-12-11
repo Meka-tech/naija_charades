@@ -27,7 +27,6 @@ import {
 } from './sounds';
 import {IRootNavgation} from '../../../../navigation';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {Barometer} from 'expo-sensors';
 
 export const InGame = () => {
   const dispatch = useDispatch();
@@ -94,30 +93,7 @@ export const InGame = () => {
   const ArrayLength = gameCardArray?.length;
 
   ///Gyroscope///
-  const [{pressure, relativeAltitude}, setData] = useState({
-    pressure: 0,
-    relativeAltitude: 0,
-  });
-  const [subscription, setSubscription] = useState(null);
 
-  const toggleListener = () => {
-    subscription ? unsubscribe() : subscribe();
-  };
-
-  const subscribe = () => {
-    setSubscription(Barometer.addListener(setData));
-  };
-
-  const unsubscribe = () => {
-    subscription && subscription.remove();
-    setSubscription(null);
-  };
-  useEffect(() => {
-    subscribe();
-    console.log(relativeAltitude);
-
-    return () => unsubscribe();
-  }, [relativeAltitude]);
   //set CardArray
   useEffect(() => {
     if (custom) {
@@ -126,7 +102,7 @@ export const InGame = () => {
       setGameCardArray(SavedCardArray);
     }
   }, []);
-  // console.log(custom);
+  // console.log(heldHigh, 'heldHigh');
 
   /////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////
@@ -154,7 +130,7 @@ export const InGame = () => {
     }
   };
 
-  //When press "Touch screen"
+  //When press "Starts game"
   const OnClickStartGame = () => {
     setGameStarting(true);
     NewCard();
@@ -235,7 +211,7 @@ export const InGame = () => {
     }
   }, [BeginTimerDone, youGuess]);
 
-  //if players pick "you guess" start round immediately
+  //if players did not pick "you guess" start round immediately
   useEffect(() => {
     if (youGuess === false) {
       setRoundStarting(true);
@@ -299,7 +275,6 @@ export const InGame = () => {
       }
     }
   }, [Sound, SoundLevel, roundTimer]);
-
   return (
     <Container>
       <OrientationLocker orientation={'LANDSCAPE'} />
