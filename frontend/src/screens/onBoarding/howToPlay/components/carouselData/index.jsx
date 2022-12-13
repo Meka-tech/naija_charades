@@ -203,7 +203,7 @@ export const ItemTen = () => {
           width: '100%',
         }}>
         <Image source={ImgTenOne} />
-        <Text isDarkMode={isDarkMode} width={'45%'}>
+        <Text isDarkMode={isDarkMode} width={'40%'}>
           After time runs out, the scoreboard would show your score and cards
           you got right and wrong.
         </Text>

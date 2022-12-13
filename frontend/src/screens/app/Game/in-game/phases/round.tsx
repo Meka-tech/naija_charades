@@ -42,6 +42,7 @@ export const Round: FC<Iprops> = ({
 
   useEffect(() => {
     _subscribe();
+
     if (y >= 0.5 && hasBeenTilted === false) {
       correct();
       setHasBeenTilted(true);
@@ -50,7 +51,7 @@ export const Round: FC<Iprops> = ({
       skip();
       setHasBeenTilted(true);
     }
-    if (hasBeenTilted && y < 0.04 && y > -0.04 && x > 0.7) {
+    if (hasBeenTilted && y < 0.1 && y > -0.1 && x > 0.6) {
       setHasBeenTilted(false);
     }
     return () => _unsubscribe();
@@ -64,7 +65,7 @@ export const Round: FC<Iprops> = ({
       <CardDiv>
         {hasBeenTilted === false && <Card>{card}</Card>}
         {hasBeenTilted && (
-          <Reminder>(Hold device upright to continue!)</Reminder>
+          <Reminder>(Hold device horizontally upright to continue!)</Reminder>
         )}
       </CardDiv>
       <Timer>{SecondsToMinutes(timer)}</Timer>

@@ -27,6 +27,7 @@ import {
 } from './sounds';
 import {IRootNavgation} from '../../../../navigation';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useKeepAwake} from 'expo-keep-awake';
 
 export const InGame = () => {
   const dispatch = useDispatch();
@@ -282,17 +283,26 @@ export const InGame = () => {
         TimerSound.stop();
       }
     }
-  }, [Sound, SoundLevel, roundTimer]);
+  }, [Sound, SoundLevel, roundTimer, roundStarting]);
 
+  useKeepAwake();
   return (
     <Container>
       <OrientationLocker orientation={'LANDSCAPE_LEFT'} />
-      <GoBack onPress={() => goBack()}>
+      <GoBack
+        onPress={() => {
+          goBack();
+          TimerSound.stop();
+        }}>
         <Icon name="arrowleft" color={theme.colors.main} size={35} />
         <Text>back</Text>
       </GoBack>
       {BeginTimer >= 0 && youGuess && (
-        <StartGame startAction={OnClickStartGame} timer={BeginTimer} />
+        <StartGame
+          startAction={OnClickStartGame}
+          timer={BeginTimer}
+          gameStarting={gameStarting}
+        />
       )}
       {roundStarting && (
         <Round

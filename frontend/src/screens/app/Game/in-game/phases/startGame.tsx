@@ -8,9 +8,10 @@ import {DeviceMotion, Accelerometer} from 'expo-sensors';
 interface Iprops {
   startAction: () => void;
   timer: number;
+  gameStarting: boolean;
 }
 
-export const StartGame: FC<Iprops> = ({startAction, timer}) => {
+export const StartGame: FC<Iprops> = ({startAction, timer, gameStarting}) => {
   const isDarkMode = IsDarkMode();
   const [TimerStarted, setTimerStarted] = useState(false);
   const [data, setData] = useState({});
@@ -51,7 +52,13 @@ export const StartGame: FC<Iprops> = ({startAction, timer}) => {
     _subscribe();
     _subscribeAccel();
 
-    if (data?.z > -2 && y < 0.04 && y > -0.04 && x > 0.9) {
+    if (
+      data?.z > -2 &&
+      y < 0.05 &&
+      y > -0.05 &&
+      x > 0.7 &&
+      gameStarting === false
+    ) {
       startAction();
       setTimerStarted(true);
     }
