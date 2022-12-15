@@ -39,17 +39,22 @@ export const Round: FC<Iprops> = ({
     subscription && subscription.remove();
     setSubscription(null);
   };
+  const [canAnswer, setCanAnswer] = useState(true);
 
   useEffect(() => {
     _subscribe();
 
-    if (y >= 0.5 && hasBeenTilted === false) {
+    if (y >= 0.5 && hasBeenTilted === false && canAnswer) {
       correct();
       setHasBeenTilted(true);
+      setCanAnswer(false);
+      setTimeout(() => setCanAnswer(true), 2000);
     }
-    if (y <= -0.5 && hasBeenTilted === false) {
+    if (y <= -0.5 && hasBeenTilted === false && canAnswer) {
       skip();
       setHasBeenTilted(true);
+      setCanAnswer(false);
+      setTimeout(() => setCanAnswer(true), 2000);
     }
     if (hasBeenTilted && y < 0.1 && y > -0.1 && x > 0.6) {
       setHasBeenTilted(false);
