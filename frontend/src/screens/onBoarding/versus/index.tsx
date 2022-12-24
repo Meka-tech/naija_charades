@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import styled from '@emotion/native';
-import Art from '../../../../assets/images/background_main.svg';
 import ArtImg from '../../../../assets/images/background_art.png';
 import Logo from '../../../../assets/images/logo.svg';
 import {Dropdown, StrippedButton} from '../../../components';
@@ -14,7 +13,6 @@ import {
   updateNoOfRounds,
   updateNoOfTeams,
 } from '../../../features/game_rules/gameRulesSlice';
-import {Dimensions} from 'react-native';
 import {updateQuickPlay} from '../../../features/team_data/team_data';
 
 export const Versus = ({}) => {
@@ -46,8 +44,6 @@ export const Versus = ({}) => {
   };
   const {navigate, goBack} = useNavigation();
 
-  const WindowHeight = Dimensions.get('window').height;
-  const WindowWidth = Dimensions.get('window').width;
   return (
     <Main>
       <Image source={ArtImg} resizeMode="contain">

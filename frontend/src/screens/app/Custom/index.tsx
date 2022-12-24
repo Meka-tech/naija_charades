@@ -1,9 +1,4 @@
-import {
-  CustomCard,
-  CustomMadeCard,
-  MenuPage,
-  TextInput,
-} from '../../../components';
+import {CustomCard, CustomMadeCard, MenuPage} from '../../../components';
 import React from 'react';
 import styled from '@emotion/native';
 import {useSelector} from 'react-redux';

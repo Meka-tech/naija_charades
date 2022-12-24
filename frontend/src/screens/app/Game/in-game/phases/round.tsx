@@ -44,17 +44,15 @@ export const Round: FC<Iprops> = ({
   useEffect(() => {
     _subscribe();
 
-    if (y >= 0.5 && hasBeenTilted === false && canAnswer) {
+    if (y >= 0.5 && hasBeenTilted === false && canAnswer === true) {
       correct();
       setHasBeenTilted(true);
       setCanAnswer(false);
-      setTimeout(() => setCanAnswer(true), 2000);
     }
-    if (y <= -0.5 && hasBeenTilted === false && canAnswer) {
+    if (y <= -0.5 && hasBeenTilted === false && canAnswer === true) {
       skip();
       setHasBeenTilted(true);
       setCanAnswer(false);
-      setTimeout(() => setCanAnswer(true), 2000);
     }
     if (hasBeenTilted && y < 0.1 && y > -0.1 && x > 0.6) {
       setHasBeenTilted(false);
@@ -62,10 +60,32 @@ export const Round: FC<Iprops> = ({
     return () => _unsubscribe();
   }, [x, y]);
 
+  useEffect(() => {
+    if (canAnswer === false) {
+      setTimeout(() => setCanAnswer(true), 2500);
+    }
+  }, [canAnswer]);
+
   return (
     <Container>
-      <Operation onPress={correct} style={{right: 0}} />
-      <Operation onPress={skip} style={{left: 0}} />
+      <Operation
+        onPress={() => {
+          if (canAnswer) {
+            setCanAnswer(false);
+            correct();
+          }
+        }}
+        style={{right: 0}}
+      />
+      <Operation
+        onPress={() => {
+          if (canAnswer) {
+            setCanAnswer(false);
+            skip();
+          }
+        }}
+        style={{left: 0}}
+      />
       <Title>{title}</Title>
       <CardDiv>
         {hasBeenTilted === false && <Card>{card}</Card>}

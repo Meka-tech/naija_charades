@@ -3,7 +3,6 @@ import React from 'react';
 import styled from '@emotion/native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../app/store';
-import {CardData} from '../cardData';
 
 export const Home = () => {
   const CardArray = useSelector(

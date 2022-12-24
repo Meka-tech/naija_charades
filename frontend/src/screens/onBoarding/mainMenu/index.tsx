@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Logo from '../../../../assets/images/logo.svg';
 import styled from '@emotion/native';
-import Art from '../../../../assets/images/background_main.svg';
 import ArtImg from '../../../../assets/images/background_art.png';
 import {StrippedButton} from '../../../components';
 import {heightPixel, widthPixel} from '../../../utils/pxToDpConvert';
@@ -20,10 +19,8 @@ import database from '@react-native-firebase/database';
 import {useSelector, useDispatch} from 'react-redux';
 import {RootState} from '../../../app/store';
 import {updateCards} from '../../../features/card_array/card_array';
-import {CreateStringArray} from '../../../utils/function';
 import NetInfo from '@react-native-community/netinfo';
 import {CardData} from '../../app/cardData';
-import {applyMiddleware} from 'redux';
 import mobileAds from 'react-native-google-mobile-ads';
 
 export const MainMenu = () => {
@@ -61,7 +58,7 @@ export const MainMenu = () => {
     if (networkConnected) {
       getCategories();
     }
-  }, []);
+  });
 
   // const setCategories = () => {
   //   database()
@@ -79,7 +76,6 @@ export const MainMenu = () => {
   const WindowWidth = Dimensions.get('window').width;
   const offset = useSharedValue(0);
   const offsetButton = useSharedValue(0);
-  const {goBack} = useNavigation();
 
   const defaultSpringStyles = useAnimatedStyle(() => {
     return {
@@ -97,7 +93,7 @@ export const MainMenu = () => {
       offset.value = -WindowHeight / 800;
       offsetButton.value = WindowWidth / 290; //1.4
     }, 2000);
-  }, []);
+  });
   const {navigate} = useNavigation();
 
   const [modalActive, setModalActive] = useState(false);
