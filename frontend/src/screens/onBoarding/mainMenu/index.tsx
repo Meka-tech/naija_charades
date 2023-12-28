@@ -22,6 +22,7 @@ import {updateCards} from '../../../features/card_array/card_array';
 import NetInfo from '@react-native-community/netinfo';
 import {CardData} from '../../app/cardData';
 import mobileAds from 'react-native-google-mobile-ads';
+import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 
 export const MainMenu = () => {
   const dispatch = useDispatch();
@@ -112,6 +113,35 @@ export const MainMenu = () => {
     return () => backHandler.remove();
   }, []);
 
+  //ads
+  const adUnitId = __DEV__
+    ? TestIds.INTERSTITIAL
+    : 'ca-app-pub-4708275943185751/6247304992';
+
+  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+    requestNonPersonalizedAdsOnly: true,
+  });
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const ClickQuickPlay = () => {
+    if (isLoaded) {
+      show();
+      dispatch(updateQuickPlay(true));
+      navigate('Home');
+    } else {
+      dispatch(updateQuickPlay(true));
+      navigate('Home');
+    }
+  };
+  useEffect(() => {
+    if (isClosed) {
+      load();
+    }
+  }, [isClosed, load]);
+
   return (
     <Main>
       <Image source={ArtImg} resizeMode="cover">
@@ -142,10 +172,7 @@ export const MainMenu = () => {
               <StrippedButton
                 label="Quick Play"
                 elevation={5}
-                onPress={() => {
-                  navigate('Home');
-                  dispatch(updateQuickPlay(true));
-                }}
+                onPress={ClickQuickPlay}
               />
               <StrippedButton
                 label="Versus"

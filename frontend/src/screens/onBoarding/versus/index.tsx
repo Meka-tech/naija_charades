@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from '@emotion/native';
 import ArtImg from '../../../../assets/images/background_art.png';
 import Logo from '../../../../assets/images/logo.svg';
@@ -14,6 +14,7 @@ import {
   updateNoOfTeams,
 } from '../../../features/game_rules/gameRulesSlice';
 import {updateQuickPlay} from '../../../features/team_data/team_data';
+import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 
 export const Versus = ({}) => {
   /////Redux
@@ -43,7 +44,34 @@ export const Versus = ({}) => {
     dispatch(updateNoOfRounds(number));
   };
   const {navigate, goBack} = useNavigation();
+  //ads
+  const adUnitId = __DEV__
+    ? TestIds.INTERSTITIAL
+    : 'ca-app-pub-4708275943185751/6247304992';
 
+  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+    requestNonPersonalizedAdsOnly: true,
+  });
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const OnClickNext = () => {
+    if (isLoaded) {
+      show();
+      dispatch(updateQuickPlay(false));
+      navigate('Home');
+    } else {
+      dispatch(updateQuickPlay(false));
+      navigate('Home');
+    }
+  };
+  useEffect(() => {
+    if (isClosed) {
+      load();
+    }
+  }, [isClosed, load]);
   return (
     <Main>
       <Image source={ArtImg} resizeMode="contain">
@@ -72,13 +100,7 @@ export const Versus = ({}) => {
               />
             </DropDownContainer>
             <Button>
-              <StrippedButton
-                label="Next"
-                onPress={() => {
-                  navigate('Home');
-                  dispatch(updateQuickPlay(false));
-                }}
-              />
+              <StrippedButton label="Next" onPress={OnClickNext} />
             </Button>
           </Card>
         </Body>
