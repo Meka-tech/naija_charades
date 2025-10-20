@@ -15,7 +15,7 @@ import Art2Img from '../../../../../../assets/images/background_art.png';
 import ArtImg from '../../../../../../assets/images/background_art2.png';
 import Art from '../../../../../../assets/images/background_art2.svg';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../../../../app/store';
+import {RootState} from '../../../../../redux/store';
 import {StrippedButton} from '../../../../../components';
 import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 

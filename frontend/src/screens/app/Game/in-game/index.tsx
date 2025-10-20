@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {theme} from '../../../../utils/theme';
 import {useSelector, useDispatch} from 'react-redux';
-import {RootState} from '../../../../app/store';
+import {RootState} from '../../../../redux/store';
 import {CreateTeamData} from '../../../../utils/function';
 import {fontPixel} from '../../../../utils/pxToDpConvert';
 import {OrientationLocker} from 'react-native-orientation-locker';

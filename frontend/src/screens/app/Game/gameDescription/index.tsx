@@ -9,7 +9,7 @@ import {
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {theme} from '../../../../utils/theme';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../../../app/store';
+import {RootState} from '../../../../redux/store';
 import {IRootNavgation} from '../../../../navigation';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 

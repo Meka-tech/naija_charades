@@ -8,7 +8,7 @@ import {theme} from '../../../utils/theme';
 import Icon from 'react-native-vector-icons/Entypo';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector, useDispatch} from 'react-redux';
-import {RootState} from '../../../app/store';
+import {RootState} from '../../../redux/store';
 import {
   updateNoOfRounds,
   updateNoOfTeams,

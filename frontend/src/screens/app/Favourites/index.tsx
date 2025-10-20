@@ -5,7 +5,7 @@ import Void from '../../../../assets/images/void.png';
 import {fontPixel, heightPixel} from '../../../utils/pxToDpConvert';
 import {theme} from '../../../utils/theme';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../../app/store';
+import {RootState} from '../../../redux/store';
 
 export const Favourites = () => {
   const {favouritesArray} = useSelector(

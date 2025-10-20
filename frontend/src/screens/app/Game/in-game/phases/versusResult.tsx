@@ -15,7 +15,7 @@ import Art2Img from '../../../../../../assets/images/background_art.png';
 import Art from '../../../../../../assets/images/background_art2.svg';
 import ArtImg from '../../../../../../assets/images/background_art2.png';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../../../../app/store';
+import {RootState} from '../../../../../redux/store';
 import {StrippedButton} from '../../../../../components';
 import {IRootNavgation} from '../../../../../navigation';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';

@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {theme} from '../../../utils/theme';
 import customImage from '../../../../assets/images/CardIcon/custom_image.png';
 import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../app/store';
+import {RootState} from '../../../redux/store';
 import {deleteCustomCard} from '../../../features/custom_category/customCategory';
 import {DeleteModal} from '../../modal';
 import {useNavigation} from '@react-navigation/native';

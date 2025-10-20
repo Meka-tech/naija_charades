@@ -17,7 +17,7 @@ import {BackHandler} from 'react-native';
 import {ConfirmExitModal} from '../../../components/modal';
 import database from '@react-native-firebase/database';
 import {useSelector, useDispatch} from 'react-redux';
-import {RootState} from '../../../app/store';
+import {RootState} from '../../../redux/store';
 import {updateCards} from '../../../features/card_array/card_array';
 import NetInfo from '@react-native-community/netinfo';
 import {CardData} from '../../app/cardData';

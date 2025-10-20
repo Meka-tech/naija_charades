@@ -2,7 +2,7 @@ import {CategoryCard, MenuPage} from '../../../components';
 import React from 'react';
 import styled from '@emotion/native';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../../app/store';
+import {RootState} from '../../../redux/store';
 
 export const Home = () => {
   const CardArray = useSelector(

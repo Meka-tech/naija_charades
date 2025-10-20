@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Slider} from '@miblanchard/react-native-slider';
 import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../app/store';
+import {RootState} from '../../redux/store';
 import {updateSoundLevel} from '../../features/user_preference/userPreference';
 
 export const SliderComponent = () => {

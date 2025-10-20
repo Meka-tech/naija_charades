@@ -4,7 +4,7 @@ import {fontPixel, heightPixel, widthPixel} from '../../../utils/pxToDpConvert';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {theme} from '../../../utils/theme';
 import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../../app/store';
+import {RootState} from '../../../redux/store';
 import {
   deleteFavouriteArray,
   updateFavouriteArray,

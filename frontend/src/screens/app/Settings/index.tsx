@@ -8,7 +8,7 @@ import SoundIcon from '../../../../assets/images/SettingsIcon/sound.svg';
 import MoonIcon from '../../../../assets/images/SettingsIcon/crecent.svg';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateTimer} from '../../../features/game_rules/gameRulesSlice';
-import {RootState} from '../../../app/store';
+import {RootState} from '../../../redux/store';
 import {
   updateDarkMode,
   updateSound,

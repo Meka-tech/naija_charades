@@ -5,7 +5,7 @@ import Astronaught from '../../../../assets/images/astronaught.png';
 import {fontPixel, heightPixel} from '../../../utils/pxToDpConvert';
 import {theme} from '../../../utils/theme';
 import {useSelector} from 'react-redux';
-import {RootState} from '../../../app/store';
+import {RootState} from '../../../redux/store';
 import {CardData} from '../cardData';
 
 export const New = () => {
