@@ -11,7 +11,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {useNavigation} from '@react-navigation/native';
 import {Dimensions} from 'react-native';
-import {OrientationLocker} from 'react-native-orientation-locker';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import {updateQuickPlay} from '../../../features/team_data/team_data';
 import {BackHandler} from 'react-native';
 import {ConfirmExitModal} from '../../../components/modal';
@@ -21,17 +21,19 @@ import {RootState} from '../../../redux/store';
 import {updateCards} from '../../../features/card_array/card_array';
 import NetInfo from '@react-native-community/netinfo';
 import {CardData} from '../../app/cardData';
-import mobileAds from 'react-native-google-mobile-ads';
-import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
+// import mobileAds from 'react-native-google-mobile-ads';
+// import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
+import {useRouter} from 'expo-router';
 
 export const MainMenu = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
-  mobileAds()
-    .initialize()
-    .then(adapterStatuses => {
-      // Initialization complete!
-    });
+  // mobileAds()
+  //   .initialize()
+  //   .then(adapterStatuses => {
+  //     // Initialization complete!
+  //   });
 
   const [networkConnected, setNetworkConnected] = useState(false);
   const SavedCardArray = useSelector(
@@ -45,20 +47,20 @@ export const MainMenu = () => {
       }
     });
     checkConnection();
-    const getCategories = async () => {
-      database()
-        .ref('/categories')
-        .once('value')
-        .then(snapshot => {
-          if (snapshot.val() !== SavedCardArray) {
-            dispatch(updateCards(snapshot.val()));
-          }
-          // console.log('card data: ', snapshot.val());
-        });
-    };
-    if (networkConnected) {
-      getCategories();
-    }
+    // const getCategories = async () => {
+    //   database()
+    //     .ref('/categories')
+    //     .once('value')
+    //     .then(snapshot => {
+    //       if (snapshot.val() !== SavedCardArray) {
+    //         dispatch(updateCards(snapshot.val()));
+    //       }
+    //       // console.log('card data: ', snapshot.val());
+    //     });
+    // };
+    // if (networkConnected) {
+    //   getCategories();
+    // }
   });
 
   // const setCategories = () => {
@@ -114,38 +116,44 @@ export const MainMenu = () => {
   }, []);
 
   //ads
-  const adUnitId = __DEV__
-    ? TestIds.INTERSTITIAL
-    : 'ca-app-pub-4708275943185751/6247304992';
+  // const adUnitId = __DEV__
+  //   ? TestIds.INTERSTITIAL
+  //   : 'ca-app-pub-4708275943185751/6247304992';
 
-  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
-    requestNonPersonalizedAdsOnly: true,
-  });
+  // const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+  //   requestNonPersonalizedAdsOnly: true,
+  // });
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  // useEffect(() => {
+  //   load();
+  // }, [load]);
 
   const ClickQuickPlay = () => {
-    if (isLoaded) {
-      show();
-      dispatch(updateQuickPlay(true));
-      navigate('Home');
-    } else {
-      dispatch(updateQuickPlay(true));
-      navigate('Home');
-    }
+    // if (isLoaded) {
+    //   show();
+    //   dispatch(updateQuickPlay(true));
+    //   navigate('Home');
+    // } else {
+    //   dispatch(updateQuickPlay(true));
+    //   navigate('Home');
+    // }
+
+    dispatch(updateQuickPlay(true));
+    router.push('/screens/app/Home');
   };
+  // useEffect(() => {
+  //   if (isClosed) {
+  //     load();
+  //   }
+  // }, [isClosed, load]);
+
   useEffect(() => {
-    if (isClosed) {
-      load();
-    }
-  }, [isClosed, load]);
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+  }, []);
 
   return (
     <Main>
       <Image source={ArtImg} resizeMode="cover">
-        <OrientationLocker orientation={'PORTRAIT'} />
         <Body>
           <ConfirmExitModal
             active={modalActive}

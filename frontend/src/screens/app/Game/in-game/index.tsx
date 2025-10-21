@@ -8,7 +8,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import {RootState} from '../../../../redux/store';
 import {CreateTeamData} from '../../../../utils/function';
 import {fontPixel} from '../../../../utils/pxToDpConvert';
-import {OrientationLocker} from 'react-native-orientation-locker';
 import {Round, RoundResult, StartGame} from './phases';
 import {EndCard} from './phases/endCard';
 import {
@@ -28,6 +27,7 @@ import {
 import {IRootNavgation} from '../../../../navigation';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useKeepAwake} from 'expo-keep-awake';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 export const InGame = () => {
   const dispatch = useDispatch();
@@ -285,10 +285,13 @@ export const InGame = () => {
     }
   }, [Sound, SoundLevel, roundTimer, roundStarting]);
 
+  useEffect(() => {
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+  }, []);
+
   useKeepAwake();
   return (
     <Container>
-      <OrientationLocker orientation={'LANDSCAPE_LEFT'} />
       <GoBack
         onPress={() => {
           goBack();

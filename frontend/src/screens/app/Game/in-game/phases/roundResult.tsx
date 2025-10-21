@@ -6,7 +6,7 @@ import {
   widthPixel,
 } from '../../../../../utils/pxToDpConvert';
 import {theme} from '../../../../../utils/theme';
-import {OrientationLocker} from 'react-native-orientation-locker';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {IsDarkMode} from '../../../../../utils/isDarkMode';
@@ -17,8 +17,8 @@ import Art from '../../../../../../assets/images/background_art2.svg';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../../../redux/store';
 import {StrippedButton} from '../../../../../components';
-import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
-
+// import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
+import {useRouter} from 'expo-router';
 interface IProps {
   round: number;
   team: number;
@@ -28,6 +28,7 @@ interface IProps {
 
 export const RoundResult: FC<IProps> = ({team, round, title, onClick}) => {
   const {goBack, navigate} = useNavigation();
+  const router = useRouter();
   const QuickPlay = useSelector((state: RootState) => state.teamData.quickPlay);
   const score = useSelector(
     (state: RootState) => state.teamData.teamArray[team - 1].score,
@@ -50,36 +51,41 @@ export const RoundResult: FC<IProps> = ({team, round, title, onClick}) => {
 
   const isDarkMode = IsDarkMode();
   //ads
-  const adUnitId = __DEV__
-    ? TestIds.INTERSTITIAL
-    : 'ca-app-pub-4708275943185751/5078352735';
+  // const adUnitId = __DEV__
+  //   ? TestIds.INTERSTITIAL
+  //   : 'ca-app-pub-4708275943185751/5078352735';
 
-  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
-    requestNonPersonalizedAdsOnly: true,
-  });
+  // const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+  //   requestNonPersonalizedAdsOnly: true,
+  // });
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  // useEffect(() => {
+  //   load();
+  // }, [load]);
 
   const ClickNext = () => {
-    if (isLoaded) {
-      show();
-      navigate('Home');
-    } else {
-      navigate('Home');
-    }
+    // if (isLoaded) {
+    //   show();
+    //   navigate('Home');
+    // } else {
+    //   navigate('Home');
+    // }
+
+    router.push('/screens/app/Home');
   };
+  // useEffect(() => {
+  //   if (isClosed) {
+  //     load();
+  //   }
+  // }, [isClosed, load]);
+
   useEffect(() => {
-    if (isClosed) {
-      load();
-    }
-  }, [isClosed, load]);
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+  }, []);
 
   return (
     <Container darkMode={isDarkMode}>
       <Image source={isDarkMode ? Art2Img : ArtImg} resizeMode="cover">
-        <OrientationLocker orientation={'PORTRAIT'} />
         <ArrowButton
           onPress={() => {
             goBack();

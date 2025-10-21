@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import styled from '@emotion/native';
 import Art from '../../../assets/images/background_art2.svg';
 import ArtImg from '../../../assets/images/background_art2.png';
@@ -11,7 +11,7 @@ import Art2Img from '../../../assets/images/background_art.png';
 import HamburgerIconDark from '../../../assets/images/DarkMode/hamburger_light.svg';
 import {Dimensions} from 'react-native';
 import {IsDarkMode} from '../../utils/isDarkMode';
-import {OrientationLocker} from 'react-native-orientation-locker';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 interface IProps {
   title?: string;
@@ -26,6 +26,10 @@ export const MenuPage: FC<IProps> = ({title, activePage, children}) => {
   const closeNav = () => {
     setNavbarActive(false);
   };
+
+  useEffect(() => {
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+  }, []);
 
   return (
     <Container isDarkMode={isDarkMode}>
@@ -44,10 +48,7 @@ export const MenuPage: FC<IProps> = ({title, activePage, children}) => {
           </HamburgerButton>
           <Title isDarkMode={isDarkMode}>{title}</Title>
         </Head>
-        <Body>
-          <OrientationLocker orientation={'PORTRAIT'} />
-          {children}
-        </Body>
+        <Body>{children}</Body>
       </Image>
     </Container>
   );

@@ -6,7 +6,7 @@ import {
   widthPixel,
 } from '../../../../../utils/pxToDpConvert';
 import {theme} from '../../../../../utils/theme';
-import {OrientationLocker} from 'react-native-orientation-locker';
+
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {IsDarkMode} from '../../../../../utils/isDarkMode';
@@ -19,7 +19,8 @@ import {RootState} from '../../../../../redux/store';
 import {StrippedButton} from '../../../../../components';
 import {IRootNavgation} from '../../../../../navigation';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
+
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 export const VersusResult = () => {
   const {navigate} = useNavigation<NativeStackNavigationProp<IRootNavgation>>();
@@ -43,32 +44,37 @@ export const VersusResult = () => {
     ? TestIds.INTERSTITIAL
     : 'ca-app-pub-4708275943185751/5078352735';
 
-  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
-    requestNonPersonalizedAdsOnly: true,
-  });
+  // const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+  //   requestNonPersonalizedAdsOnly: true,
+  // });
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  // useEffect(() => {
+  //   load();
+  // }, [load]);
 
   const ClickNext = () => {
-    if (isLoaded) {
-      show();
-      navigate('Home');
-    } else {
-      navigate('Home');
-    }
+    // if (isLoaded) {
+    //   show();
+    //   navigate('Home');
+    // } else {
+    //   navigate('Home');
+    // }
+
+    navigate('Home');
   };
+  // useEffect(() => {
+  //   if (isClosed) {
+  //     load();
+  //   }
+  // }, [isClosed, load]);
+
   useEffect(() => {
-    if (isClosed) {
-      load();
-    }
-  }, [isClosed, load]);
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+  }, []);
 
   return (
     <Container darkMode={isDarkMode}>
       <Image source={isDarkMode ? Art2Img : ArtImg} resizeMode="cover">
-        <OrientationLocker orientation={'PORTRAIT'} />
         <ArrowButton
           onPress={() => {
             navigate('Home');

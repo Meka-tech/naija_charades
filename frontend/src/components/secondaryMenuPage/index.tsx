@@ -1,17 +1,16 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import styled from '@emotion/native';
 
-import Art from '../../../assets/images/background_art2.svg';
 import ArtImg from '../../../assets/images/background_art2.png';
 import {theme} from '../../utils/theme';
 import {fontPixel, heightPixel, widthPixel} from '../../utils/pxToDpConvert';
-import Art2 from '../../../assets/images/background_art.svg';
+
 import Art2Img from '../../../assets/images/background_art.png';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Dimensions} from 'react-native';
 import {IsDarkMode} from '../../utils/isDarkMode';
-import {OrientationLocker, PORTRAIT} from 'react-native-orientation-locker';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 interface IProps {
   title?: string;
@@ -22,6 +21,10 @@ export const SecondaryMenuPage: FC<IProps> = ({title, children}) => {
   const {goBack} = useNavigation();
 
   const isDarkMode = IsDarkMode();
+
+  useEffect(() => {
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+  }, []);
 
   return (
     <Container isDarkMode={isDarkMode}>
@@ -35,10 +38,7 @@ export const SecondaryMenuPage: FC<IProps> = ({title, children}) => {
           </ArrowButton>
           <Title isDarkMode={isDarkMode}>{title}</Title>
         </Head>
-        <Body>
-          <OrientationLocker orientation={'PORTRAIT'} />
-          {children}
-        </Body>
+        <Body>{children}</Body>
       </Image>
     </Container>
   );

@@ -32,14 +32,20 @@ interface IContainer {
   width?: string;
   elevation?: number;
 }
-const Container = styled.TouchableOpacity<IContainer>(({width, elevation}) => ({
-  backgroundColor: theme.colors.main,
-  paddingVertical: heightPixel(8),
-  width: width ? width : '100%',
-  alignItems: 'center',
-  borderRadius: widthPixel(10),
-  elevation: elevation ? elevation : 0,
-}));
+const Container = styled.TouchableOpacity<IContainer>(
+  ({width = '100%', elevation = 0}) => ({
+    backgroundColor: theme.colors.main,
+    paddingVertical: heightPixel(8),
+    width: width ?? '100%',
+    alignItems: 'center',
+    borderRadius: widthPixel(10),
+    elevation: elevation ?? 0,
+    shadowColor: 'rgba(0, 0, 0, 0.25)',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  }),
+);
 interface IText {
   fontSize?: number;
 }

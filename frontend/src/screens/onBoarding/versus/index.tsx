@@ -14,9 +14,10 @@ import {
   updateNoOfTeams,
 } from '../../../features/game_rules/gameRulesSlice';
 import {updateQuickPlay} from '../../../features/team_data/team_data';
-import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
-
+// import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
+import {useRouter} from 'expo-router';
 export const Versus = ({}) => {
+  const router = useRouter();
   /////Redux
   const Rounds = useSelector(
     (state: RootState) => state.reducer.gameRules.rounds,
@@ -45,33 +46,35 @@ export const Versus = ({}) => {
   };
   const {navigate, goBack} = useNavigation();
   //ads
-  const adUnitId = __DEV__
-    ? TestIds.INTERSTITIAL
-    : 'ca-app-pub-4708275943185751/6247304992';
+  // const adUnitId = __DEV__
+  //   ? TestIds.INTERSTITIAL
+  //   : 'ca-app-pub-4708275943185751/6247304992';
 
-  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
-    requestNonPersonalizedAdsOnly: true,
-  });
+  // const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+  //   requestNonPersonalizedAdsOnly: true,
+  // });
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  // useEffect(() => {
+  //   load();
+  // }, [load]);
 
   const OnClickNext = () => {
-    if (isLoaded) {
-      show();
-      dispatch(updateQuickPlay(false));
-      navigate('Home');
-    } else {
-      dispatch(updateQuickPlay(false));
-      navigate('Home');
-    }
+    // if (isLoaded) {
+    //   show();
+    //   dispatch(updateQuickPlay(false));
+    //   navigate('Home');
+    // } else {
+    //   dispatch(updateQuickPlay(false));
+    //   navigate('Home');
+    // }
+
+    router.push('/screens/app/Home');
   };
-  useEffect(() => {
-    if (isClosed) {
-      load();
-    }
-  }, [isClosed, load]);
+  //useEffect(() => {
+  // if (isClosed) {
+  //   load();
+  // }
+  // }, [isClosed, load]);
   return (
     <Main>
       <Image source={ArtImg} resizeMode="contain">
