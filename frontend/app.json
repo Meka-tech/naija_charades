@@ -50,7 +50,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.naijacharades.app",
+      "bundleIdentifier": "com.naija_charades",
       "infoPlist": {
         "UIBackgroundModes": ["audio"]
       }
@@ -61,7 +61,7 @@
         "monochromeImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#000000"
       },
-      "package": "com.naijacharades.app"
+      "package": "com.naija_charades"
     },
     "web": {
       "favicon": "./assets/images/icon.png"

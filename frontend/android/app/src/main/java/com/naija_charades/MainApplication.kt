@@ -1,4 +1,4 @@
-package com.naijacharades.app
+package com.naija_charades
 
 import android.app.Application
 import android.content.res.Configuration

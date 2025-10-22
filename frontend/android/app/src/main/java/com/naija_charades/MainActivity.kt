@@ -1,4 +1,4 @@
-package com.naijacharades.app
+package com.naija_charades
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build
