@@ -45,7 +45,7 @@ export const MenuPage: FC<IProps> = ({title, activePage, children}) => {
       <Container isDarkMode={isDarkMode}>
         <Image source={isDarkMode ? Art2Img : ArtImg} resizeMode="cover">
           <SafeAreaViewWrapper darkmode={isDarkMode}>
-            <View style={{width: '100%'}}>
+            <View style={{width: '100%', paddingHorizontal: widthPixel(20)}}>
               <Head>
                 <HamburgerButton
                   onPress={() => {
@@ -101,7 +101,6 @@ const Body = styled.View({
 const Image = styled.ImageBackground({
   flex: 1,
   width: '100%',
-  paddingHorizontal: widthPixel(20),
 });
 const Head = styled.View({
   width: '100%',
