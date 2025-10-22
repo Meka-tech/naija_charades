@@ -1,7 +1,7 @@
 import styled from '@emotion/native';
 import React, {FC, useState} from 'react';
 import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {theme} from 'utils/theme';
 import customImage from 'assets/images/CardIcon/custom_image.png';
 import {useDispatch, useSelector} from 'react-redux';
@@ -54,7 +54,7 @@ export const CustomMadeCard: FC<IProps> = ({title, id, uniqueId}) => {
       <Title>{title}</Title>
       <Image source={customImage} />
       <Trash onPress={() => setModalActive(true)}>
-        <Icon name={'trash-o'} color="white" size={22} />
+        <FontAwesome name={'trash-o'} color="white" size={22} />
       </Trash>
     </Container>
   );

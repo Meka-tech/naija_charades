@@ -3,7 +3,7 @@ import styled from '@emotion/native';
 import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
 import {theme} from 'utils/theme';
 import {View} from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 interface IProps {
   list: {no: number; isPremium: boolean}[];
