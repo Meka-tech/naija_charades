@@ -2,10 +2,11 @@ import React, {FC, useCallback, useEffect, useState} from 'react';
 import {Slot, SplashScreen} from 'expo-router';
 import {Provider} from 'react-redux';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {store} from 'src/redux/store';
+import {store} from 'redux/app/store';
 import 'react-native-gesture-handler';
-import * as ScreenOrientation from 'expo-screen-orientation';
 import {useFonts} from 'expo-font';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {CardProvider} from 'contexts/cardContext';
 
 const RootLayout: FC = () => {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -25,9 +26,6 @@ const RootLayout: FC = () => {
 
   useEffect(() => {
     async function prepare() {
-      // await ScreenOrientation.lockAsync(
-      //   ScreenOrientation.OrientationLock.PORTRAIT,
-      // );
       try {
         if (fontsLoaded) {
           setAppIsReady(true);
@@ -53,11 +51,15 @@ const RootLayout: FC = () => {
   }
 
   return (
-    <SafeAreaProvider>
-      <Provider store={store}>
-        <Slot />
-      </Provider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <SafeAreaProvider>
+        <Provider store={store}>
+          <CardProvider>
+            <Slot />
+          </CardProvider>
+        </Provider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 };
 
