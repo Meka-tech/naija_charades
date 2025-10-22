@@ -9,7 +9,7 @@ module.exports = function (api) {
           root: ['./'],
         },
       ],
-      'react-native-reanimated/plugin',
+      'react-native-worklets/plugin',
     ],
   };
 };

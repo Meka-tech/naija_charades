@@ -20,7 +20,7 @@ import {FlatList} from 'react-native-gesture-handler';
 import {heightPixel, widthPixel} from 'utils/pxToDpConvert';
 import {Dimensions} from 'react-native';
 import SafeAreaViewWrapper from 'components/safeAreaViewWrapper';
-import Entypo from 'react-native-vector-icons/Entypo';
+import Entypo from '@expo/vector-icons/Entypo';
 
 interface ICarouselItem {
   children: JSX.Element;

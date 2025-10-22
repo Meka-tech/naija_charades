@@ -13,7 +13,7 @@ import {
 } from 'redux/features/game_rules/gameRulesSlice';
 import {updateQuickPlay} from 'redux/features/team_data/team_data';
 import {useRouter} from 'expo-router';
-import Entypo from 'react-native-vector-icons/Entypo';
+import Entypo from '@expo/vector-icons/Entypo';
 
 export default function Versus() {
   const router = useRouter();

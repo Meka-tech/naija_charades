@@ -3,7 +3,6 @@ import styled from '@emotion/native';
 import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
 import {theme} from 'utils/theme';
 
-import Icon from 'react-native-vector-icons/AntDesign';
 import {IsDarkMode} from 'utils/isDarkMode';
 
 import Art2Img from 'assets/images/background_art.png';
@@ -12,7 +11,6 @@ import ArtImg from 'assets/images/background_art2.png';
 import {useSelector} from 'react-redux';
 import {RootState} from 'redux/app/store';
 import {StrippedButton} from 'components';
-// import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import {useRouter} from 'expo-router';
 import Entypo from '@expo/vector-icons/Entypo';
