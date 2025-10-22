@@ -35,7 +35,7 @@ export default function WhoseGuess() {
   const router = useRouter();
 
   const [selectedGuess, setSelectedGuess] = useState<'you' | 'others'>(
-    params.youGuess === 'true' ? 'you' : 'others',
+    params.youGuess === 'false' ? 'others' : 'you',
   );
   const CategoryTitle = params.title;
   const Custom = params.custom;

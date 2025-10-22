@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {FC, useState, useEffect} from 'react';
+import React, {FC, useState, useEffect, useRef} from 'react';
 import styled from '@emotion/native';
 import {theme} from 'utils/theme';
 import {fontPixel, heightPixel} from 'utils/pxToDpConvert';
@@ -16,42 +16,53 @@ interface Iprops {
 }
 
 const Round: FC<Iprops> = ({title, timer, score, correct, skip, card}) => {
-  const [hasBeenTilted, setHasBeenTilted] = useState(true);
+  const hasBeenTiltedRef = useRef(true);
+
+  const [canAnswer, setCanAnswer] = useState(true);
+  const [isUpright, setIsUpright] = useState(false);
   const [{x, y, z}, setData] = useState({
     x: 0,
     y: 0,
     z: 0,
   });
-  const [subscription, setSubscription] = useState(null);
-
-  const _subscribe = () => {
-    setSubscription(Accelerometer.addListener(setData));
-  };
-
-  const _unsubscribe = () => {
-    subscription && subscription.remove();
-    setSubscription(null);
-  };
-  const [canAnswer, setCanAnswer] = useState(true);
 
   useEffect(() => {
-    _subscribe();
+    const subscription = Accelerometer.addListener(accelerometerData => {
+      setData(accelerometerData);
+    });
 
-    if (y >= 0.5 && hasBeenTilted === false && canAnswer === true) {
+    Accelerometer.setUpdateInterval(100); // 10 updates per second
+
+    return () => {
+      subscription && subscription.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    const isScreenVertical = Math.abs(z) < 0.4;
+    const hasGravityOnMainAxis = Math.abs(x) > 0.8;
+    const isDeviceUpright = isScreenVertical && hasGravityOnMainAxis;
+    setIsUpright(isDeviceUpright);
+
+    if (!canAnswer) return;
+
+    if (y >= 0.5 && !hasBeenTiltedRef.current) {
+      hasBeenTiltedRef.current = true;
       correct();
-      setHasBeenTilted(true);
       setCanAnswer(false);
     }
-    if (y <= -0.5 && hasBeenTilted === false && canAnswer === true) {
+
+    if (y <= -0.5 && !hasBeenTiltedRef.current) {
+      hasBeenTiltedRef.current = true;
       skip();
-      setHasBeenTilted(true);
       setCanAnswer(false);
     }
-    if (hasBeenTilted && y < 0.1 && y > -0.1 && x > 0.6) {
-      setHasBeenTilted(false);
+
+    if (hasBeenTiltedRef.current && Math.abs(y) < 0.2 && isUpright) {
+      hasBeenTiltedRef.current = false;
     }
-    return () => _unsubscribe();
-  }, [x, y]);
+  }, [x, y, hasBeenTiltedRef.current, canAnswer, title]);
+
   useEffect(() => {
     if (canAnswer === false) {
       setTimeout(() => setCanAnswer(true), 2500);
@@ -80,8 +91,8 @@ const Round: FC<Iprops> = ({title, timer, score, correct, skip, card}) => {
       />
       <Title>{title}</Title>
       <CardDiv>
-        {hasBeenTilted === false && <Card>{card}</Card>}
-        {hasBeenTilted && (
+        {hasBeenTiltedRef.current === false && <Card>{card}</Card>}
+        {hasBeenTiltedRef.current && (
           <Reminder>(Hold device horizontally upright to continue!)</Reminder>
         )}
       </CardDiv>

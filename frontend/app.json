@@ -7,11 +7,6 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/images/icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "assetBundlePatterns": ["**/*"],
     "plugins": [
       "expo-router",
@@ -25,6 +20,15 @@
         "expo-screen-orientation",
         {
           "initialOrientation": "DEFAULT"
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#000000",
+          "image": "./assets/images/splash.png",
+          "resizeMode": "contain",
+          "imageWidth": 200
         }
       ],
       [
@@ -53,8 +57,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon.png",
-        "monochromeImage": "./assets/images/icon.png",
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "monochromeImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#000000"
       },
       "package": "com.naijacharades.app"

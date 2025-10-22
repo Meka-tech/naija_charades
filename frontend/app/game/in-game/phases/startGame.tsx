@@ -4,6 +4,7 @@ import {IsDarkMode} from 'utils/isDarkMode';
 import {theme} from 'utils/theme';
 import {fontPixel, heightPixel} from 'utils/pxToDpConvert';
 import {DeviceMotion, Accelerometer} from 'expo-sensors';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 interface Iprops {
   startAction: () => void;
@@ -13,6 +14,7 @@ interface Iprops {
 
 const StartGame: FC<Iprops> = ({startAction, timer, gameStarting}) => {
   const isDarkMode = IsDarkMode();
+
   const [TimerStarted, setTimerStarted] = useState(false);
   const [data, setData] = useState({});
   const [{x, y, z}, setAccelData] = useState({

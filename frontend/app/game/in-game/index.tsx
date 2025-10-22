@@ -158,23 +158,24 @@ export default function InGame() {
   //press right side of the screen
   const OnCorrectCard = () => {
     setCardStatus('Correct');
-    dispatch(updateTeamScore({score: 1, team: activeTeam}));
-    dispatch(updateCorrectArray({card: presentCard, team: activeTeam}));
     NewCard();
     if (Sound) {
+      correctAnswerPlayer.seekTo(0);
       correctAnswerPlayer.play();
     }
+    dispatch(updateTeamScore({score: 1, team: activeTeam}));
+    dispatch(updateCorrectArray({card: presentCard, team: activeTeam}));
   };
 
   //press left side of the screen
   const OnSkipCard = () => {
     setCardStatus('Skip');
-    dispatch(updateSkipArray({card: presentCard, team: activeTeam}));
     NewCard();
-
     if (Sound) {
+      wrongAnswerPlayer.seekTo(0);
       wrongAnswerPlayer.play();
     }
+    dispatch(updateSkipArray({card: presentCard, team: activeTeam}));
   };
 
   // increase Round and team by 1 , team goes back to one if last team
@@ -257,6 +258,7 @@ export default function InGame() {
   useEffect(() => {
     if (roundTimerDone && Sound) {
       endGameSoundPlayer.volume = SoundLevel;
+      endGameSoundPlayer.seekTo(0);
       endGameSoundPlayer.play();
       setTimeUp(true);
       setTimeout(() => {
@@ -281,6 +283,7 @@ export default function InGame() {
 
   useEffect(() => {
     if (gameStarting && Sound) {
+      startGamePlayer.seekTo(0);
       startGamePlayer.play();
     }
   }, [Sound, gameStarting, startGamePlayer]);
@@ -288,6 +291,7 @@ export default function InGame() {
   useEffect(() => {
     if (Sound) {
       if (roundTimer === 10) {
+        tickingTimerPlayer.seekTo(0);
         tickingTimerPlayer.play();
       }
       if (roundTimer === 0) {
