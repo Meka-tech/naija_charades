@@ -51,7 +51,7 @@ export default function InGame() {
 
   const {
     title: CategoryTitle,
-    whoGuess,
+    youGuess: whoGuess,
     custom,
     id: CategoryId,
   } = useLocalSearchParams();
