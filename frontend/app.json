@@ -50,7 +50,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.naija_charades",
+      "bundleIdentifier": "com.naijacharades.app",
       "infoPlist": {
         "UIBackgroundModes": ["audio"]
       }
