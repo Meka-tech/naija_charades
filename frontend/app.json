@@ -2,7 +2,7 @@
   "expo": {
     "name": "naija_charades",
     "slug": "naija_charades",
-    "version": "2.0.0",
+    "version": "2.1.1",
     "scheme": "naija-charades",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -61,7 +61,9 @@
         "monochromeImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#000000"
       },
-      "package": "com.naija_charades"
+      "package": "com.naija_charades",
+      "versionCode": 4,
+      "blockedPermissions": ["android.permission.ACTIVITY_RECOGNITION"]
     },
     "web": {
       "favicon": "./assets/images/icon.png"
@@ -74,7 +76,7 @@
     },
     "owner": "meka1200",
     "newArchEnabled": true,
-    "runtimeVersion": "2.0.0",
+    "runtimeVersion": "2.1.1",
     "updates": {
       "url": "https://u.expo.dev/9e014c08-7d5c-4032-bcbe-3d12ddcd0c82"
     }

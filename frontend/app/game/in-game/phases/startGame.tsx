@@ -4,7 +4,6 @@ import {IsDarkMode} from 'utils/isDarkMode';
 import {theme} from 'utils/theme';
 import {fontPixel, heightPixel} from 'utils/pxToDpConvert';
 import {DeviceMotion, Accelerometer} from 'expo-sensors';
-import * as ScreenOrientation from 'expo-screen-orientation';
 
 interface Iprops {
   startAction: () => void;
