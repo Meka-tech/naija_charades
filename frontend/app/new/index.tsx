@@ -18,6 +18,8 @@ export default function New() {
 
   const newCards = CardArray.filter(category => category.isNew);
 
+  console.log(newCards);
+
   const refreshControl = (
     <RefreshControl
       refreshing={isLoading}

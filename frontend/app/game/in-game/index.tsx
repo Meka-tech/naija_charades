@@ -68,13 +68,16 @@ export default function InGame() {
 
   const CustomCardArray = useSelector(
     (state: RootState) =>
-      state.reducer.customCategories.customCategoryArray[Number(CategoryId)]
-        ?.cards,
+      state.reducer.customCategories.customCategoryArray.find(
+        customCategory => customCategory.title === CategoryTitle,
+      )?.cards,
   );
 
   const SavedCardArray = useSelector(
     (state: RootState) =>
-      state.reducer.cardArray.cardArray[Number(CategoryId)]?.cards,
+      state.reducer.cardArray.cardArray.find(
+        category => category.title === CategoryTitle,
+      )?.cards,
   );
 
   const [gameStarting, setGameStarting] = useState(false);
@@ -119,7 +122,7 @@ export default function InGame() {
     if (custom && CustomCardArray) {
       setGameCardArray(CustomCardArray);
     } else {
-      setGameCardArray(SavedCardArray);
+      setGameCardArray(SavedCardArray || []);
     }
   }, []);
 
