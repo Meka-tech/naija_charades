@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "naija_charades",
+    "name": "Naija Charades",
     "slug": "naija_charades",
-    "version": "2.1.1",
+    "version": "2.2.2",
     "scheme": "naija-charades",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -76,7 +76,7 @@
     },
     "owner": "meka1200",
     "newArchEnabled": true,
-    "runtimeVersion": "2.1.1",
+    "runtimeVersion": "2.2.2",
     "updates": {
       "url": "https://u.expo.dev/9e014c08-7d5c-4032-bcbe-3d12ddcd0c82"
     }

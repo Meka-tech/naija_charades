@@ -14,9 +14,12 @@ export const CustomCard: FC = ({}) => {
   const [isPremiumUser, setIsPremiumUser] = useState(false);
   const router = useRouter();
 
+  // const premiumProductIdentifier = 'one_time_purchase';
+  const premiumProductIdentifier = 'premium';
+
   const CheckIfUserIsPremium = async () => {
     const isStoredPremiumUser = await AsyncStorage.getItem('isPremiumUser');
-    if (isStoredPremiumUser) {
+    if (isStoredPremiumUser === 'true') {
       setIsPremiumUser(true);
       return true;
     }
@@ -24,7 +27,9 @@ export const CustomCard: FC = ({}) => {
     const customerInfo = await Purchases.getCustomerInfo();
 
     if (
-      customerInfo.allPurchasedProductIdentifiers.includes('one_time_purchase')
+      customerInfo.allPurchasedProductIdentifiers.includes(
+        premiumProductIdentifier,
+      )
     ) {
       setIsPremiumUser(true);
       await AsyncStorage.setItem('isPremiumUser', 'true');
@@ -66,7 +71,7 @@ export const CustomCard: FC = ({}) => {
       <HeaderView>
         {!isPremiumUser && (
           <MaterialCommunityIcons
-            name="crown"
+            name="star"
             size={fontPixel(36)}
             color="gold"
           />

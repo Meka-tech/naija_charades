@@ -9,7 +9,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import {Dimensions, StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {updateQuickPlay} from 'redux/features/team_data/team_data';
 import {BackHandler} from 'react-native';
 import {ConfirmExitModal} from 'components/modal';
@@ -18,6 +18,10 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import {useDispatch} from 'react-redux';
 
 import {useRouter} from 'expo-router';
+import {
+  updateNoOfRounds,
+  updateNoOfTeams,
+} from 'redux/features/game_rules/gameRulesSlice';
 
 export default function MainMenu() {
   const dispatch = useDispatch();
@@ -79,6 +83,8 @@ export default function MainMenu() {
 
   useEffect(() => {
     lockOrientation();
+    dispatch(updateNoOfRounds(2));
+    dispatch(updateNoOfTeams(2));
   }, []);
 
   return (

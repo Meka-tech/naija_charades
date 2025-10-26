@@ -47,14 +47,14 @@ const Round: FC<Iprops> = ({title, timer, score, correct, skip, card}) => {
     if (!canAnswer) return;
 
     if (y >= 0.5 && !hasBeenTiltedRef.current) {
-      hasBeenTiltedRef.current = true;
       correct();
+      hasBeenTiltedRef.current = true;
       setCanAnswer(false);
     }
 
     if (y <= -0.5 && !hasBeenTiltedRef.current) {
-      hasBeenTiltedRef.current = true;
       skip();
+      hasBeenTiltedRef.current = true;
       setCanAnswer(false);
     }
 
@@ -65,7 +65,7 @@ const Round: FC<Iprops> = ({title, timer, score, correct, skip, card}) => {
 
   useEffect(() => {
     if (canAnswer === false) {
-      setTimeout(() => setCanAnswer(true), 2500);
+      setTimeout(() => setCanAnswer(true), 100);
     }
   }, [canAnswer]);
 
@@ -92,7 +92,7 @@ const Round: FC<Iprops> = ({title, timer, score, correct, skip, card}) => {
       <Title>{title}</Title>
       <CardDiv>
         {hasBeenTiltedRef.current === false && <Card>{card}</Card>}
-        {hasBeenTiltedRef.current && (
+        {hasBeenTiltedRef.current && canAnswer && (
           <Reminder>(Hold device horizontally upright to continue!)</Reminder>
         )}
       </CardDiv>

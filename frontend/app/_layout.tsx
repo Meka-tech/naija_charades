@@ -26,6 +26,10 @@ const RootLayout: FC = () => {
     'Montserrat-Thin': require('assets/fonts/Montserrat-Thin.ttf'),
   });
 
+  const googleApiKey =
+    process.env.EXPO_PUBLIC_REVENUE_CAT_GOOGLE ||
+    'test_KuNYxsDGLwuYpZAZtHxYawhnDLH';
+
   useEffect(() => {
     async function prepare() {
       try {
@@ -39,9 +43,7 @@ const RootLayout: FC = () => {
           // });
         } else if (Platform.OS === 'android') {
           Purchases.configure({
-            apiKey:
-              process.env.EXPO_PUBLIC_REVENUECAT_PROJECT_GOOGLE_API_KEY ||
-              'test_KuNYxsDGLwuYpZAZtHxYawhnDLH',
+            apiKey: googleApiKey,
           });
         }
         if (fontsLoaded) {

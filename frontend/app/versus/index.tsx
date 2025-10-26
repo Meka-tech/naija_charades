@@ -37,7 +37,8 @@ export default function Versus() {
 
   ////Rounds
   const Roundslist = [
-    {no: 3, isPremium: false},
+    {no: 2, isPremium: false},
+    {no: 3, isPremium: true},
     {no: 5, isPremium: true},
     {no: 7, isPremium: true},
     {no: 9, isPremium: true},
