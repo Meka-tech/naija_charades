@@ -6,7 +6,6 @@ import {Dropdown, StrippedButton} from 'components';
 import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
 import {theme} from 'utils/theme';
 import {useSelector, useDispatch} from 'react-redux';
-import {RootState} from 'redux/app/store';
 import {
   updateNoOfRounds,
   updateNoOfTeams,
@@ -17,13 +16,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 
 export default function Versus() {
   const router = useRouter();
-  /////Redux
-  const Rounds = useSelector(
-    (state: RootState) => state.reducer.gameRules.rounds,
-  );
-  const Teams = useSelector(
-    (state: RootState) => state.reducer.gameRules.teams,
-  );
+
   const dispatch = useDispatch();
 
   ////Teams
@@ -31,6 +24,7 @@ export default function Versus() {
     {no: 2, isPremium: false},
     {no: 3, isPremium: true},
     {no: 4, isPremium: true},
+    {no: 5, isPremium: true},
   ];
   const [noOfTeams, setNoOfTeams] = useState<{no: number; isPremium: boolean}>(
     Teamlist[0],
@@ -46,6 +40,7 @@ export default function Versus() {
     {no: 3, isPremium: false},
     {no: 5, isPremium: true},
     {no: 7, isPremium: true},
+    {no: 9, isPremium: true},
   ];
   const [noOfRounds, setNoOfRounds] = useState<{
     no: number;

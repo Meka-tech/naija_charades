@@ -1,9 +1,13 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useState, useEffect} from 'react';
 import styled from '@emotion/native';
 import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
 import {theme} from 'utils/theme';
 import {View} from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import Purchases from 'react-native-purchases';
+import RevenueCatUI from 'react-native-purchases-ui';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface IProps {
   list: {no: number; isPremium: boolean}[];
@@ -19,6 +23,65 @@ export const Dropdown: FC<IProps> = ({
   setSelected,
 }) => {
   const [active, setActive] = useState(false);
+
+  const [isPremiumUser, setIsPremiumUser] = useState(false);
+
+  const CheckIfUserIsPremium = async () => {
+    const isStoredPremiumUser = await AsyncStorage.getItem('isPremiumUser');
+    if (isStoredPremiumUser) {
+      setIsPremiumUser(true);
+      return true;
+    }
+
+    const customerInfo = await Purchases.getCustomerInfo();
+
+    if (
+      customerInfo.allPurchasedProductIdentifiers.includes('one_time_purchase')
+    ) {
+      setIsPremiumUser(true);
+      await AsyncStorage.setItem('isPremiumUser', 'true');
+      return true;
+    }
+    return false;
+  };
+
+  const PresentPaywallIfNeeded = async () => {
+    try {
+      await RevenueCatUI.presentPaywallIfNeeded({
+        requiredEntitlementIdentifier: 'premium',
+      });
+
+      await CheckIfUserIsPremium();
+    } catch (e) {}
+  };
+
+  const OnDropdownItemPress = async (item: {
+    no: number;
+    isPremium: boolean;
+  }) => {
+    if (item.isPremium) {
+      try {
+        const isPremiumUserResult = await CheckIfUserIsPremium();
+        if (isPremiumUserResult) {
+          setSelected(item);
+          setActive(false);
+          return;
+        } else {
+          await PresentPaywallIfNeeded();
+        }
+      } catch (e) {}
+    } else {
+      setSelected(item);
+      setActive(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchCustomerInfo = async () => {
+      await CheckIfUserIsPremium();
+    };
+    fetchCustomerInfo();
+  }, []);
 
   return (
     <Container>
@@ -41,22 +104,17 @@ export const Dropdown: FC<IProps> = ({
                 <View key={index * Math.random()}>
                   {item.no !== selected && (
                     <Item
-                      onPress={() => {
-                        if (item.isPremium) {
-                          return;
-                        } else {
-                          setSelected(item);
-                          setActive(false);
-                        }
-                      }}
+                      onPress={() => OnDropdownItemPress(item)}
                       key={index * Math.random()}>
                       <Text>
                         {item.no} {groupName}
                       </Text>
-                      {item.isPremium && (
-                        <PremiumTag>
-                          <PremiumText>coming soon</PremiumText>
-                        </PremiumTag>
+                      {item.isPremium && !isPremiumUser && (
+                        <MaterialCommunityIcons
+                          name="crown"
+                          size={24}
+                          color="gold"
+                        />
                       )}
                     </Item>
                   )}
@@ -108,6 +166,9 @@ const Item = styled.TouchableOpacity({
   paddingLeft: widthPixel(16),
   width: '100%',
   position: 'relative',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
 });
 
 const PremiumTag = styled.View({

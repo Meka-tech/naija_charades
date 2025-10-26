@@ -7,6 +7,8 @@ import 'react-native-gesture-handler';
 import {useFonts} from 'expo-font';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {CardProvider} from 'contexts/cardContext';
+import Purchases, {LOG_LEVEL} from 'react-native-purchases';
+import {Platform} from 'react-native';
 
 const RootLayout: FC = () => {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -27,6 +29,21 @@ const RootLayout: FC = () => {
   useEffect(() => {
     async function prepare() {
       try {
+        Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+
+        if (Platform.OS === 'ios') {
+          // Purchases.configure({
+          //   apiKey:
+          //     process.env.EXPO_PUBLIC_REVENUECAT_PROJECT_GOOGLE_API_KEY ||
+          //     'test_KuNYxsDGLwuYpZAZtHxYawhnDLH',
+          // });
+        } else if (Platform.OS === 'android') {
+          Purchases.configure({
+            apiKey:
+              process.env.EXPO_PUBLIC_REVENUECAT_PROJECT_GOOGLE_API_KEY ||
+              'test_KuNYxsDGLwuYpZAZtHxYawhnDLH',
+          });
+        }
         if (fontsLoaded) {
           setAppIsReady(true);
         }
