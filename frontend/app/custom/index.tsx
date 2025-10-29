@@ -20,8 +20,6 @@ export default function CustomPage() {
   const CheckIfUserIsPremium = async () => {
     const isStoredPremiumUser = await AsyncStorage.getItem('isPremiumUser');
 
-    console.log(isStoredPremiumUser, 'isStoredPremiumUser');
-
     if (isStoredPremiumUser === 'true') {
       setIsPremiumUser(true);
       return true;
