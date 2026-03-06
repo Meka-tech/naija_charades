@@ -20,7 +20,7 @@ import {
 } from 'redux/features/team_data/team_data';
 import {useKeepAwake} from 'expo-keep-awake';
 import {useLocalSearchParams, useRouter} from 'expo-router';
-import {useAudioPlayer} from 'expo-audio';
+import {useAudioPlayer, setAudioModeAsync} from 'expo-audio';
 import Entypo from '@expo/vector-icons/Entypo';
 
 const startGameSource = require('assets/sounds/start_game.mp3');
@@ -48,6 +48,15 @@ export default function InGame() {
   correctAnswerPlayer.volume = SoundLevel;
   wrongAnswerPlayer.volume = SoundLevel;
   endGameSoundPlayer.volume = SoundLevel;
+
+  // Enable audio playback even when iOS silent switch is on (production builds default to silent)
+  useEffect(() => {
+    setAudioModeAsync({
+      playsInSilentMode: true,
+      shouldPlayInBackground: false,
+      interruptionMode: 'doNotMix',
+    });
+  }, []);
 
   const {
     title: CategoryTitle,

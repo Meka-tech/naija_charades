@@ -34,21 +34,21 @@ const RootLayout: FC = () => {
         const googleApiKey = process.env.EXPO_PUBLIC_REVENUE_CAT_GOOGLE;
 
         const appleApiKey = process.env.EXPO_PUBLIC_REVENUE_CAT_APPLE;
-        Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
-
-        if (__DEV__) {
-          Purchases.configure({
-            apiKey: testApiKey,
-          });
-        } else if (Platform.OS === 'ios' && appleApiKey) {
+        Purchases.setLogLevel(LOG_LEVEL.INFO);
+        if (!__DEV__ && Platform.OS === 'ios' && appleApiKey) {
           Purchases.configure({
             apiKey: appleApiKey,
           });
-        } else if (Platform.OS === 'android' && googleApiKey) {
+        } else if (!__DEV__ && Platform.OS === 'android' && googleApiKey) {
           Purchases.configure({
             apiKey: googleApiKey,
           });
+        } else if (__DEV__ && testApiKey) {
+          Purchases.configure({
+            apiKey: testApiKey,
+          });
         }
+
         if (fontsLoaded) {
           setAppIsReady(true);
         }
