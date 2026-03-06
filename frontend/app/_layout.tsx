@@ -26,22 +26,25 @@ const RootLayout: FC = () => {
     'Montserrat-Thin': require('assets/fonts/Montserrat-Thin.ttf'),
   });
 
-  const googleApiKey =
-    process.env.EXPO_PUBLIC_REVENUE_CAT_GOOGLE ||
-    'test_KuNYxsDGLwuYpZAZtHxYawhnDLH';
-
   useEffect(() => {
     async function prepare() {
       try {
+        const testApiKey = process.env.EXPO_PUBLIC_REVENUE_CAT_TEST || '';
+
+        const googleApiKey = process.env.EXPO_PUBLIC_REVENUE_CAT_GOOGLE;
+
+        const appleApiKey = process.env.EXPO_PUBLIC_REVENUE_CAT_APPLE;
         Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
 
-        if (Platform.OS === 'ios') {
-          // Purchases.configure({
-          //   apiKey:
-          //     process.env.EXPO_PUBLIC_REVENUECAT_PROJECT_GOOGLE_API_KEY ||
-          //     'test_KuNYxsDGLwuYpZAZtHxYawhnDLH',
-          // });
-        } else if (Platform.OS === 'android') {
+        if (__DEV__) {
+          Purchases.configure({
+            apiKey: testApiKey,
+          });
+        } else if (Platform.OS === 'ios' && appleApiKey) {
+          Purchases.configure({
+            apiKey: appleApiKey,
+          });
+        } else if (Platform.OS === 'android' && googleApiKey) {
           Purchases.configure({
             apiKey: googleApiKey,
           });
