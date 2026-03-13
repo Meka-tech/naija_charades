@@ -33,6 +33,22 @@ export default function InGame() {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  // Helper that configures iOS audio session before each play call.
+  // On production iOS, the audio session can be reset by the OS at any time,
+  // so we must re-apply the config immediately before every playback.
+  const playSound = useCallback(
+    async (player: ReturnType<typeof useAudioPlayer>) => {
+      await setAudioModeAsync({
+        playsInSilentMode: true,
+        shouldPlayInBackground: false,
+        interruptionMode: 'duckOthers',
+      });
+      player.seekTo(0);
+      player.play();
+    },
+    [],
+  );
+
   const startGamePlayer = useAudioPlayer(startGameSource);
   const correctAnswerPlayer = useAudioPlayer(correctSource);
   const wrongAnswerPlayer = useAudioPlayer(wrongSource);
@@ -48,15 +64,6 @@ export default function InGame() {
   correctAnswerPlayer.volume = SoundLevel;
   wrongAnswerPlayer.volume = SoundLevel;
   endGameSoundPlayer.volume = SoundLevel;
-
-  // Enable audio playback even when iOS silent switch is on (production builds default to silent)
-  useEffect(() => {
-    setAudioModeAsync({
-      playsInSilentMode: true,
-      shouldPlayInBackground: false,
-      interruptionMode: 'doNotMix',
-    });
-  }, []);
 
   const {
     title: CategoryTitle,
@@ -172,8 +179,7 @@ export default function InGame() {
     setCardStatus('Correct');
     NewCard();
     if (Sound) {
-      correctAnswerPlayer.seekTo(0);
-      correctAnswerPlayer.play();
+      playSound(correctAnswerPlayer);
     }
     dispatch(updateTeamScore({score: 1, team: activeTeam}));
     dispatch(updateCorrectArray({card: presentCard, team: activeTeam}));
@@ -184,8 +190,7 @@ export default function InGame() {
     setCardStatus('Skip');
     NewCard();
     if (Sound) {
-      wrongAnswerPlayer.seekTo(0);
-      wrongAnswerPlayer.play();
+      playSound(wrongAnswerPlayer);
     }
     dispatch(updateSkipArray({card: presentCard, team: activeTeam}));
   };
@@ -270,8 +275,7 @@ export default function InGame() {
   useEffect(() => {
     if (roundTimerDone && Sound) {
       endGameSoundPlayer.volume = SoundLevel;
-      endGameSoundPlayer.seekTo(0);
-      endGameSoundPlayer.play();
+      playSound(endGameSoundPlayer);
       setTimeUp(true);
       setTimeout(() => {
         setTeamRoundEnded(true);
@@ -289,28 +293,27 @@ export default function InGame() {
     SoundLevel,
     Sound,
     endGameSoundPlayer,
+    playSound,
   ]);
 
   ///sounds
 
   useEffect(() => {
     if (gameStarting && Sound) {
-      startGamePlayer.seekTo(0);
-      startGamePlayer.play();
+      playSound(startGamePlayer);
     }
-  }, [Sound, gameStarting, startGamePlayer]);
+  }, [Sound, gameStarting, startGamePlayer, playSound]);
 
   useEffect(() => {
     if (Sound) {
       if (roundTimer === 10) {
-        tickingTimerPlayer.seekTo(0);
-        tickingTimerPlayer.play();
+        playSound(tickingTimerPlayer);
       }
       if (roundTimer === 0) {
         tickingTimerPlayer.pause();
       }
     }
-  }, [Sound, roundTimer, roundStarting, tickingTimerPlayer]);
+  }, [Sound, roundTimer, roundStarting, tickingTimerPlayer, playSound]);
 
   useKeepAwake();
 

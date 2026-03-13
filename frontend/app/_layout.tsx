@@ -9,6 +9,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {CardProvider} from 'contexts/cardContext';
 import Purchases, {LOG_LEVEL} from 'react-native-purchases';
 import {Platform} from 'react-native';
+import {setAudioModeAsync} from 'expo-audio';
 
 const RootLayout: FC = () => {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -29,6 +30,13 @@ const RootLayout: FC = () => {
   useEffect(() => {
     async function prepare() {
       try {
+        // Configure iOS audio session so audio plays even when silent switch is on
+        await setAudioModeAsync({
+          playsInSilentMode: true,
+          shouldPlayInBackground: false,
+          interruptionMode: 'duckOthers',
+        });
+
         const testApiKey = process.env.EXPO_PUBLIC_REVENUE_CAT_TEST || '';
 
         const googleApiKey = process.env.EXPO_PUBLIC_REVENUE_CAT_GOOGLE;
