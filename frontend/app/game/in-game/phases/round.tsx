@@ -73,7 +73,7 @@ const Round: FC<Iprops> = ({title, timer, score, correct, skip, card}) => {
     <Container>
       <Operation
         onPress={() => {
-          if (canAnswer) {
+          if (hasBeenTiltedRef.current === false && canAnswer) {
             setCanAnswer(false);
             correct();
           }
@@ -82,7 +82,7 @@ const Round: FC<Iprops> = ({title, timer, score, correct, skip, card}) => {
       />
       <Operation
         onPress={() => {
-          if (canAnswer) {
+          if (hasBeenTiltedRef.current === false && canAnswer) {
             setCanAnswer(false);
             skip();
           }

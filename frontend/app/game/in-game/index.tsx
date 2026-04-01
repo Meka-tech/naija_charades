@@ -29,31 +29,30 @@ const wrongSource = require('assets/sounds/wrong_answer.mp3');
 const endGameSource = require('assets/sounds/end_game.mp3');
 const timerSource = require('assets/sounds/ticking_timer.mp3');
 
+setAudioModeAsync({
+  playsInSilentMode: true,
+  shouldPlayInBackground: false,
+  interruptionMode: 'duckOthers',
+});
+
 export default function InGame() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  // Helper that configures iOS audio session before each play call.
-  // On production iOS, the audio session can be reset by the OS at any time,
-  // so we must re-apply the config immediately before every playback.
-  const playSound = useCallback(
-    async (player: ReturnType<typeof useAudioPlayer>) => {
-      await setAudioModeAsync({
-        playsInSilentMode: true,
-        shouldPlayInBackground: false,
-        interruptionMode: 'duckOthers',
-      });
-      player.seekTo(0);
-      player.play();
-    },
-    [],
-  );
+  // Configure iOS audio session on mount, BEFORE any player is used.
+  // This must happen early so the audio category is set when players initialize.
 
-  const startGamePlayer = useAudioPlayer(startGameSource);
-  const correctAnswerPlayer = useAudioPlayer(correctSource);
-  const wrongAnswerPlayer = useAudioPlayer(wrongSource);
-  const endGameSoundPlayer = useAudioPlayer(endGameSource);
-  const tickingTimerPlayer = useAudioPlayer(timerSource);
+  const playSound = useCallback((player: ReturnType<typeof useAudioPlayer>) => {
+    player.seekTo(0);
+    player.play();
+  }, []);
+
+  const playerOptions = {downloadFirst: true};
+  const startGamePlayer = useAudioPlayer(startGameSource, playerOptions);
+  const correctAnswerPlayer = useAudioPlayer(correctSource, playerOptions);
+  const wrongAnswerPlayer = useAudioPlayer(wrongSource, playerOptions);
+  const endGameSoundPlayer = useAudioPlayer(endGameSource, playerOptions);
+  const tickingTimerPlayer = useAudioPlayer(timerSource, playerOptions);
 
   const {soundLevel: SoundLevel, sound: Sound} = useSelector(
     (state: RootState) => state.reducer.userPreference,
