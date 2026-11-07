@@ -116,7 +116,6 @@ interface useDark {
 const CardItem = styled.Text<useDark>(({darkMode}) => ({
   marginBottom: heightPixel(10),
   color: darkMode ? theme.colors.white : theme.colors.black,
-  fontWeight: '500',
   fontSize: fontPixel(18),
   fontFamily: theme.fonts.MonstserratMedium,
   textTransform: 'uppercase',

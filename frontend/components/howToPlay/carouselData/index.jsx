@@ -168,14 +168,12 @@ export const ItemNine = () => {
   return (
     <Container>
       <Text isDarkMode={isDarkMode} width={'70%'}>
-        Or you can play the game by, tilting left or right on the you guess mode
+        Or you can play the game by tilting your phone in the you guess mode
       </Text>
       <Image source={ImgNine} />
-      <Text
-        isDarkMode={isDarkMode}
-        width={'60%'}
-        style={{alignSelf: 'flex-end', textAlign: 'left'}}>
-        Tilt left to skip and move to the next question
+      <Text isDarkMode={isDarkMode} width={'80%'}>
+        Tilt down if you guessed correctly, tilt up to pass and move to the
+        next question
       </Text>
       <Image source={ImgNineOne} />
     </Container>

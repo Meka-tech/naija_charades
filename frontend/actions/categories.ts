@@ -18,20 +18,30 @@ export async function getCategoriesWithCards(): Promise<ICardType[]> {
       return [];
     }
 
-    const {data: cards, error: cardsError} = await supabase
-      .from('cards')
-      .select('*')
-      .in(
-        'category_id',
-        categories.map(cat => cat.id),
-      );
+    // Supabase caps each response at 1000 rows, so page through all cards.
+    const PAGE_SIZE = 1000;
+    const categoryIds = categories.map(cat => cat.id);
+    const cards: {category_id: string; content: string}[] = [];
+    for (let from = 0; ; from += PAGE_SIZE) {
+      const {data: page, error: cardsError} = await supabase
+        .from('cards')
+        .select('category_id, content')
+        .in('category_id', categoryIds)
+        .order('id')
+        .range(from, from + PAGE_SIZE - 1);
 
-    if (cardsError) {
-      console.error('Error fetching cards:', cardsError);
-      throw new Error(`Failed to fetch cards: ${cardsError.message}`);
+      if (cardsError) {
+        console.error('Error fetching cards:', cardsError);
+        throw new Error(`Failed to fetch cards: ${cardsError.message}`);
+      }
+
+      cards.push(...(page || []));
+      if (!page || page.length < PAGE_SIZE) {
+        break;
+      }
     }
 
-    const cardsByCategory = (cards || []).reduce((acc, card) => {
+    const cardsByCategory = cards.reduce((acc, card) => {
       if (!acc[card.category_id]) {
         acc[card.category_id] = [];
       }

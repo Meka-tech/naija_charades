@@ -1,15 +1,12 @@
-import React, {FC, useEffect, useRef, useState} from 'react';
-import styled from '@emotion/native';
+import React, {FC, useEffect, useRef} from 'react';
+import {ImageBackground, Platform, StyleSheet, View} from 'react-native';
 import ArtImg from 'assets/images/background_art2.png';
-import {theme} from 'utils/theme';
-import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
-import HamburgerIcon from 'assets/images/hamburger_icon.svg';
-import {Navbar} from 'components/navbar';
-
 import Art2Img from 'assets/images/background_art.png';
-import HamburgerIconDark from 'assets/images/DarkMode/hamburger_light.svg';
-import {Platform, View} from 'react-native';
-import {IsDarkMode} from 'utils/isDarkMode';
+import {Navbar} from 'components/navbar';
+import {IconButton, ScreenHeader} from 'components/ui';
+import {useAppTheme} from 'utils/useAppTheme';
+import {space} from 'utils/theme';
+import {widthPixel} from 'utils/pxToDpConvert';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import SafeAreaViewWrapper from 'components/safeAreaViewWrapper';
 import ReanimatedDrawerLayout, {
@@ -21,13 +18,12 @@ import ReanimatedDrawerLayout, {
 interface IProps {
   title?: string;
   activePage?: string;
-  children?: JSX.Element;
+  children?: React.ReactNode;
 }
 
 export const MenuPage: FC<IProps> = ({title, activePage, children}) => {
   const drawerRef = useRef<DrawerLayoutMethods>(null);
-
-  const isDarkMode = IsDarkMode();
+  const {isDark, c} = useAppTheme();
 
   useEffect(() => {
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
@@ -39,73 +35,40 @@ export const MenuPage: FC<IProps> = ({title, activePage, children}) => {
       renderNavigationView={() => <Navbar activePage={activePage} />}
       drawerPosition={DrawerPosition.LEFT}
       drawerType={DrawerType.FRONT}
-      drawerWidth={widthPixel(260)}
+      drawerWidth={widthPixel(290)}
+      overlayColor={c.overlay}
       edgeWidth={Platform.OS === 'android' ? 0 : 50}
       minSwipeDistance={20}>
-      <Container isDarkMode={isDarkMode}>
-        <Image source={isDarkMode ? Art2Img : ArtImg} resizeMode="cover">
-          <SafeAreaViewWrapper darkmode={isDarkMode}>
-            <View style={{width: '100%', paddingHorizontal: widthPixel(20)}}>
-              <Head>
-                <HamburgerButton
-                  onPress={() => {
-                    drawerRef.current?.openDrawer();
-                  }}>
-                  {isDarkMode ? (
-                    <HamburgerIconDark />
-                  ) : (
-                    <HamburgerIcon width={widthPixel(50)} />
-                  )}
-                </HamburgerButton>
-                <Title isDarkMode={isDarkMode}>{title}</Title>
-              </Head>
-              <Body>{children}</Body>
+      <View style={[styles.container, {backgroundColor: c.background}]}>
+        <ImageBackground
+          source={isDark ? Art2Img : ArtImg}
+          resizeMode="cover"
+          style={styles.flex}
+          imageStyle={{opacity: isDark ? 0.35 : 1}}>
+          <SafeAreaViewWrapper darkmode={isDark} edges={['top', 'left', 'right']}>
+            <View style={styles.inner}>
+              <ScreenHeader
+                title={title}
+                left={
+                  <IconButton
+                    name="menu"
+                    accessibilityLabel="Open menu"
+                    onPress={() => drawerRef.current?.openDrawer()}
+                  />
+                }
+              />
+              <View style={styles.body}>{children}</View>
             </View>
           </SafeAreaViewWrapper>
-        </Image>
-      </Container>
+        </ImageBackground>
+      </View>
     </ReanimatedDrawerLayout>
   );
 };
 
-interface IContainer {
-  isDarkMode: boolean;
-}
-const Container = styled.View<IContainer>(({isDarkMode}) => ({
-  width: '100%',
-  height: '100%',
-  backgroundColor: isDarkMode
-    ? theme.colors.darkbackground
-    : theme.colors.white,
-}));
-interface ITitle {
-  isDarkMode: boolean;
-}
-const Title = styled.Text<ITitle>(({isDarkMode}) => ({
-  fontWeight: '400',
-  fontSize: fontPixel(30),
-  fontFamily: theme.fonts.Gagalin,
-  color: isDarkMode ? theme.colors.white : theme.colors.black,
-}));
-
-const HamburgerButton = styled.TouchableOpacity({
-  position: 'absolute',
-  left: widthPixel(0),
-  width: widthPixel(50),
-});
-const Body = styled.View({
-  width: '100%',
-  alignItems: 'center',
-  height: '100%',
-});
-const Image = styled.ImageBackground({
-  flex: 1,
-  width: '100%',
-});
-const Head = styled.View({
-  width: '100%',
-  position: 'relative',
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginBottom: heightPixel(20),
+const styles = StyleSheet.create({
+  flex: {flex: 1},
+  container: {flex: 1, width: '100%'},
+  inner: {flex: 1, width: '100%', paddingHorizontal: space.lg},
+  body: {flex: 1, width: '100%', alignItems: 'center'},
 });

@@ -1,11 +1,11 @@
 import {MenuPage, SecondaryMenuPage, SliderComponent, Switch} from 'components';
 import React, {useEffect, useState} from 'react';
 import styled from '@emotion/native';
-import {theme} from 'utils/theme';
+import {theme, palette, radius, shadow, space} from 'utils/theme';
+import {PressableScale} from 'components/ui';
+import {schemes} from 'utils/theme';
 import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
-import TimerIcon from 'assets/images/SettingsIcon/timer.svg';
-import SoundIcon from 'assets/images/SettingsIcon/sound.svg';
-import MoonIcon from 'assets/images/SettingsIcon/crecent.svg';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateTimer} from 'redux/features/game_rules/gameRulesSlice';
 import {RootState} from 'redux/app/store';
@@ -13,9 +13,6 @@ import {
   updateDarkMode,
   updateSound,
 } from 'redux/features/user_preference/userPreference';
-import TimerIconDark from 'assets/images/DarkMode/timer_light.svg';
-import CrescentIconDark from 'assets/images/DarkMode/crecent_light.svg';
-import SoundIconDark from 'assets/images/DarkMode/sound_light.svg';
 
 export default function Settings() {
   const Timer = useSelector(
@@ -32,7 +29,9 @@ export default function Settings() {
   const [timer, setTimer] = useState(Timer);
   const dispatch = useDispatch();
   const toggleMode = () => {
+    // Only an explicit toggle saves the theme (marks it as the user's choice).
     setDarkMode(!darkMode);
+    dispatch(updateDarkMode(!darkMode));
   };
   const toggleSound = () => {
     setSound(!sound);
@@ -53,45 +52,67 @@ export default function Settings() {
 
   useEffect(() => {
     dispatch(updateTimer(timer));
-    dispatch(updateDarkMode(darkMode));
     dispatch(updateSound(sound));
-  }, [timer, dispatch, darkMode, sound, soundLevel]);
+  }, [timer, dispatch, sound, soundLevel]);
 
-  const ToggleTimerView = styled.TouchableOpacity({
-    backgroundColor: darkMode ? 'rgba(30, 30, 30, 1)' : theme.colors.white,
-    width: widthPixel(109),
-    height: heightPixel(38),
-    borderColor: theme.colors.main,
-    borderWidth: widthPixel(2),
-    borderRadius: widthPixel(5),
-    alignItems: 'center',
-    justifyContent: 'center',
-  });
+  const c = darkMode ? schemes.dark : schemes.light;
+  const ToggleTimerView = PressableScale;
+  const timerPill = {
+    backgroundColor: palette.gold,
+    paddingHorizontal: space.md,
+    height: heightPixel(36),
+    borderRadius: radius.pill,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+  };
+  const card = [
+    {
+      backgroundColor: c.surface,
+      borderRadius: radius.lg,
+      paddingHorizontal: space.lg,
+      paddingVertical: space.xs,
+    },
+    !darkMode && shadow.sm,
+  ];
+  const divider = {height: 1, backgroundColor: c.border};
 
   return (
     <SecondaryMenuPage title="SETTINGS">
-      <Body>
+      <Body style={card}>
         <Setting>
           <Left>
-            {darkMode ? <TimerIconDark /> : <TimerIcon />}
+            <SettingIcon name="timer-outline" />
             <SettingName darkMode={darkMode}>Timer</SettingName>
           </Left>
-          <ToggleTimerView onPress={ChangeTimer}>
-            <TimerText darkMode={darkMode}>{timer} Secs</TimerText>
+          <ToggleTimerView
+            haptic="select"
+            onPress={ChangeTimer}
+            style={timerPill}>
+            <TimerText darkMode={darkMode} style={{color: palette.ink}}>
+              {timer} Secs
+            </TimerText>
           </ToggleTimerView>
         </Setting>
+        <Divider style={divider} />
         <Setting>
           <Left>
-            {darkMode ? <CrescentIconDark /> : <MoonIcon />}
+            <SettingIcon name={darkMode ? 'moon' : 'moon-outline'} />
             <SettingName darkMode={darkMode}>Dark Mode</SettingName>
           </Left>
           <ToggleView>
             <Switch active={darkMode} toggle={toggleMode} />
           </ToggleView>
         </Setting>
+        <Divider style={divider} />
         <Setting>
           <Left>
-            {darkMode ? <SoundIconDark /> : <SoundIcon />}
+            <SettingIcon
+              name={
+                sound && SoundLevel !== 0
+                  ? 'volume-high-outline'
+                  : 'volume-mute-outline'
+              }
+            />
             <SettingName darkMode={darkMode}>Sound</SettingName>
           </Left>
           <ToggleView>
@@ -109,32 +130,52 @@ export default function Settings() {
   );
 }
 
+/** Gold-tinted rounded tile, matching the icon tiles on the selection screens. */
+const SettingIcon = ({
+  name,
+}: {
+  name: React.ComponentProps<typeof Ionicons>['name'];
+}) => (
+  <SettingIconWrap>
+    <Ionicons name={name} size={widthPixel(22)} color={palette.gold} />
+  </SettingIconWrap>
+);
+
+const SettingIconWrap = styled.View({
+  width: widthPixel(40),
+  height: widthPixel(40),
+  borderRadius: radius.sm,
+  backgroundColor: 'transparent',
+  alignItems: 'center',
+  justifyContent: 'center',
+});
+
 interface useDark {
   darkMode: boolean;
 }
 
 const TimerText = styled.Text<useDark>(({darkMode}) => ({
-  fontWeight: '600',
   color: darkMode ? theme.colors.white : theme.colors.black,
   fontSize: fontPixel(15),
   fontFamily: theme.fonts.MonstserratSemibold,
 }));
 const SettingName = styled.Text<useDark>(({darkMode}) => ({
   marginLeft: widthPixel(12),
-  fontWeight: '600',
   fontSize: fontPixel(18),
   color: darkMode ? theme.colors.white : theme.colors.black,
   fontFamily: theme.fonts.MonstserratSemibold,
 }));
 
 const Body = styled.View({
-  width: '80%',
-  marginTop: heightPixel(50),
+  width: '100%',
+  marginTop: space.md,
 });
+
+const Divider = styled.View({});
 
 const Setting = styled.View({
   width: '100%',
-  marginBottom: heightPixel(53),
+  paddingVertical: space.md,
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -145,11 +186,9 @@ const Left = styled.View({
 });
 
 const ToggleView = styled.View({
-  width: widthPixel(109),
-  alignItems: 'center',
+  alignItems: 'flex-end',
 });
 const SliderDiv = styled.View({
-  width: '80%',
-  marginLeft: 'auto',
-  marginRight: 'auto',
+  width: '100%',
+  paddingBottom: space.sm,
 });

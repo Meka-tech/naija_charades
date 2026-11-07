@@ -8,10 +8,12 @@ import {
   FlatList,
   RefreshControl,
   StyleSheet,
+  View,
 } from 'react-native';
 import {widthPixel} from 'utils/pxToDpConvert';
 import {useCards} from 'contexts/cardContext';
 import {theme} from 'utils/theme';
+import {EmptyState} from 'components/ui';
 
 export default function Home() {
   const {isLoading, refreshCategories} = useCards();
@@ -47,6 +49,17 @@ export default function Home() {
             )}
             keyExtractor={(item, index) => `${item.title}-${index}`}
             contentContainerStyle={Styles.contentContainerStyle}
+            ListEmptyComponent={
+              <View style={Styles.empty}>
+                <EmptyState
+                  icon="cloud-offline"
+                  title="Couldn't load categories"
+                  message="Check your internet connection and try again."
+                  actionLabel="Try again"
+                  onAction={refreshCategories}
+                />
+              </View>
+            }
             showsVerticalScrollIndicator={false}
           />
         )}
@@ -62,7 +75,14 @@ const Body = styled.View({
 
 const Styles = StyleSheet.create({
   contentContainerStyle: {
-    paddingBottom: widthPixel(200),
+    paddingBottom: widthPixel(140),
+    paddingTop: widthPixel(4),
     width: '100%',
+    flexGrow: 1,
+  },
+  empty: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingBottom: widthPixel(60),
   },
 });

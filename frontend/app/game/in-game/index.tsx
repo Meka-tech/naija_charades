@@ -19,9 +19,15 @@ import {
   updateTeamScore,
 } from 'redux/features/team_data/team_data';
 import {useKeepAwake} from 'expo-keep-awake';
+import {BackHandler} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {StatusBar} from 'expo-status-bar';
 import {useLocalSearchParams, useRouter} from 'expo-router';
 import {useAudioPlayer, setAudioModeAsync} from 'expo-audio';
-import Entypo from '@expo/vector-icons/Entypo';
+import {IconButton} from 'components/ui';
+import {haptics} from 'utils/haptics';
+import {fonts, palette, space} from 'utils/theme';
+import Animated, {FadeIn, ZoomIn} from 'react-native-reanimated';
 
 const startGameSource = require('assets/sounds/start_game.mp3');
 const correctSource = require('assets/sounds/correct_answer.mp3');
@@ -38,6 +44,7 @@ setAudioModeAsync({
 export default function InGame() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   // Configure iOS audio session on mount, BEFORE any player is used.
   // This must happen early so the audio category is set when players initialize.
@@ -176,6 +183,7 @@ export default function InGame() {
   //press right side of the screen
   const OnCorrectCard = () => {
     setCardStatus('Correct');
+    haptics.success();
     NewCard();
     if (Sound) {
       playSound(correctAnswerPlayer);
@@ -187,6 +195,7 @@ export default function InGame() {
   //press left side of the screen
   const OnSkipCard = () => {
     setCardStatus('Skip');
+    haptics.warning();
     NewCard();
     if (Sound) {
       playSound(wrongAnswerPlayer);
@@ -270,6 +279,12 @@ export default function InGame() {
     }
   }, [cardStatus]);
 
+  useEffect(() => {
+    if (roundTimerDone) {
+      haptics.error();
+    }
+  }, [roundTimerDone]);
+
   // end Round
   useEffect(() => {
     if (roundTimerDone && Sound) {
@@ -316,6 +331,25 @@ export default function InGame() {
 
   useKeepAwake();
 
+  // Android hardware back: stop the ticking sound, then let navigation go back.
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      tickingTimerPlayer.pause();
+      return false;
+    });
+    return () => sub.remove();
+  }, [tickingTimerPlayer]);
+
+  // The previous screens only lock portrait when they first mount, so restore
+  // portrait when leaving the game (header back, hardware back or swipe).
+  useEffect(() => {
+    return () => {
+      ScreenOrientation.lockAsync(
+        ScreenOrientation.OrientationLock.PORTRAIT_UP,
+      );
+    };
+  }, []);
+
   useEffect(() => {
     if (teamRoundEnded) {
       ScreenOrientation.lockAsync(
@@ -329,12 +363,21 @@ export default function InGame() {
   }, []);
   return (
     <Container>
+      <StatusBar hidden />
       <GoBack
-        onPress={() => {
-          router.back();
-          tickingTimerPlayer.pause();
+        style={{
+          left: Math.max(insets.left, space.xl),
+          top: Math.max(insets.top, space.lg),
         }}>
-        <Entypo name="chevron-left" size={widthPixel(36)} color={'white'} />
+        <IconButton
+          name="chevron-back"
+          variant="glass"
+          accessibilityLabel="Leave game"
+          onPress={() => {
+            router.back();
+            tickingTimerPlayer.pause();
+          }}
+        />
       </GoBack>
       {BeginTimer >= 0 && youGuess && (
         <StartGame
@@ -355,10 +398,12 @@ export default function InGame() {
       )}
       {endCard && <EndCard status={cardStatus} />}
       {timeUp && (
-        <TimesUp>
+        <Animated.View entering={FadeIn.duration(150)} style={timesUpStyle}>
           <TimesupSmallText>Oops</TimesupSmallText>
-          <TimesupBigText>Times Up!</TimesupBigText>
-        </TimesUp>
+          <Animated.View entering={ZoomIn.springify().damping(10)}>
+            <TimesupBigText>Time's Up!</TimesupBigText>
+          </Animated.View>
+        </Animated.View>
       )}
       {teamRoundEnded && (
         <RoundResult
@@ -385,31 +430,31 @@ const Text = styled.Text({
   fontSize: fontPixel(16),
 });
 
-const GoBack = styled.TouchableOpacity({
+const GoBack = styled.View({
   zIndex: 10,
-  alignItems: 'center',
   position: 'absolute',
-  left: 25,
-  top: 20,
+  left: space.xl,
+  top: space.lg,
 });
 
-const TimesUp = styled.View({
-  width: '100%',
-  height: '100%',
-  backgroundColor: 'rgba(254, 69, 10, 1)',
-  position: 'absolute',
+const timesUpStyle = {
+  width: '100%' as const,
+  height: '100%' as const,
+  backgroundColor: palette.orange,
+  position: 'absolute' as const,
   zIndex: 15,
-  alignItems: 'center',
-  justifyContent: 'center',
-});
+  alignItems: 'center' as const,
+  justifyContent: 'center' as const,
+};
 
 const TimesupSmallText = styled.Text({
-  color: theme.colors.white,
+  color: 'rgba(255,255,255,0.85)',
   fontSize: fontPixel(24),
-  fontFamily: theme.fonts.MonstserratBold,
+  fontFamily: fonts.MonstserratBold,
+  marginBottom: space.xs,
 });
 const TimesupBigText = styled.Text({
-  color: theme.colors.white,
-  fontSize: fontPixel(60),
-  fontFamily: theme.fonts.MonstserratBold,
+  color: palette.white,
+  fontSize: fontPixel(64),
+  fontFamily: fonts.Gagalin,
 });

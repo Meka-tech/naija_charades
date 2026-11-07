@@ -1,20 +1,21 @@
 import React from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {SafeAreaView, Edge} from 'react-native-safe-area-context';
 import {StatusBar} from 'expo-status-bar';
-import {ViewStyle} from 'react-native';
-import {heightPixel} from '@/lib/utils/pxToDpConvert';
+import {StyleProp, ViewStyle} from 'react-native';
 
 const SafeAreaViewWrapper = ({
   children,
   style,
   darkmode,
+  edges = ['top', 'bottom', 'left', 'right'],
 }: {
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   darkmode?: boolean;
+  edges?: Edge[];
 }) => {
   return (
-    <SafeAreaView edges={['top', 'bottom', 'left', 'right']} style={[style]}>
+    <SafeAreaView edges={edges} style={[{flex: 1}, style]}>
       <StatusBar style={darkmode ? 'light' : 'dark'} />
       {children}
     </SafeAreaView>

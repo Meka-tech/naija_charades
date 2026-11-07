@@ -1,58 +1,79 @@
-import React, {FC} from 'react';
-import styled from '@emotion/native';
-import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
-import {theme} from 'utils/theme';
+import React, {FC, useEffect} from 'react';
+import {Pressable, StyleSheet} from 'react-native';
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
+import {widthPixel} from 'utils/pxToDpConvert';
+import {palette} from 'utils/theme';
+import {useAppTheme} from 'utils/useAppTheme';
+import {haptics} from 'utils/haptics';
 
 interface IProps {
   toggle?: () => void;
   active: boolean;
 }
 
+const W = widthPixel(54);
+const H = widthPixel(32);
+const KNOB = H - 6;
+
+/** Animated toggle with a gold "on" track. */
 export const Switch: FC<IProps> = ({active, toggle}) => {
+  const {c} = useAppTheme();
+  const p = useSharedValue(active ? 1 : 0);
+
+  useEffect(() => {
+    p.value = withSpring(active ? 1 : 0, {damping: 18, stiffness: 260});
+  }, [active, p]);
+
+  const track = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(
+      p.value,
+      [0, 1],
+      [c.surfaceAlt, palette.gold],
+    ),
+  }));
+  const knob = useAnimatedStyle(() => ({
+    transform: [{translateX: p.value * (W - KNOB - 6)}],
+  }));
+
   return (
-    <Container onPress={toggle}>
-      <Body active={active}>
-        <Text active={active}> {active ? 'On' : 'Off'}</Text>
-        <Handle active={active} />
-      </Body>
-    </Container>
+    <Pressable
+      accessibilityRole="switch"
+      accessibilityState={{checked: active}}
+      hitSlop={8}
+      onPress={() => {
+        haptics.select();
+        toggle?.();
+      }}>
+      <Animated.View style={[styles.track, {borderColor: c.border}, track]}>
+        <Animated.View style={[styles.knob, knob]} />
+      </Animated.View>
+    </Pressable>
   );
 };
 
-interface ISwitch {
-  active: boolean;
-}
-const Container = styled.TouchableOpacity({
-  position: 'relative',
+const styles = StyleSheet.create({
+  track: {
+    width: W,
+    height: H,
+    borderRadius: H / 2,
+    padding: 3,
+    borderWidth: 1,
+    justifyContent: 'center',
+  },
+  knob: {
+    width: KNOB,
+    height: KNOB,
+    borderRadius: KNOB / 2,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
+  },
 });
-
-const Body = styled.View<ISwitch>(({active}) => ({
-  width: widthPixel(75),
-  height: heightPixel(29),
-  backgroundColor: active ? theme.colors.main : theme.colors.gray100,
-  borderRadius: widthPixel(10),
-  justifyContent: 'center',
-  alignItems: active ? 'flex-end' : 'flex-start',
-  position: 'relative',
-}));
-
-const Handle = styled.View<ISwitch>(({active}) => ({
-  width: widthPixel(34),
-  height: heightPixel(34),
-  backgroundColor: active ? theme.colors.white : theme.colors.gray,
-  borderRadius: widthPixel(10),
-  elevation: 10,
-  shadowColor: 'rgba(0 , 0 , 0 , 0.25)',
-  shadowOffset: {width: 0, height: 2},
-  shadowOpacity: 0.25,
-  shadowRadius: 3.84,
-}));
-
-const Text = styled.Text<ISwitch>(({active}) => ({
-  position: 'absolute',
-  color: active ? theme.colors.white : theme.colors.main,
-  fontWeight: '500',
-  fontFamily: theme.fonts.MonstserratMedium,
-  fontSize: fontPixel(14),
-  left: active ? 4 : 40,
-}));

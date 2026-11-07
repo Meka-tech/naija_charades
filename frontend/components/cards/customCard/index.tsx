@@ -2,7 +2,7 @@ import styled from '@emotion/native';
 import React, {FC, useEffect, useState} from 'react';
 import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
 import {theme} from 'utils/theme';
-import NewIcon from 'assets/images/CardIcon/new_card.svg';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import {useRouter} from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -79,7 +79,11 @@ export const CustomCard: FC = ({}) => {
         <Title>Add New Deck</Title>
       </HeaderView>
 
-      <NewIcon />
+      <Ionicons
+        name="add-circle"
+        size={fontPixel(56)}
+        color={theme.colors.main}
+      />
     </Container>
   );
 };

@@ -3,12 +3,16 @@ import type {PayloadAction} from '@reduxjs/toolkit';
 
 export interface UserPreferenceState {
   darkMode: boolean;
+  /** True once the user has picked a theme in Settings. */
+  themeChosen: boolean;
   sound: boolean;
   soundLevel: number;
 }
 
 const initialState: UserPreferenceState = {
-  darkMode: false,
+  // Dark is the default until the user picks a theme in Settings.
+  darkMode: true,
+  themeChosen: false,
   sound: true,
   soundLevel: 1,
 };
@@ -19,6 +23,7 @@ export const UserPreference = createSlice({
   reducers: {
     updateDarkMode: (state, action: PayloadAction<boolean>) => {
       state.darkMode = action.payload;
+      state.themeChosen = true;
     },
     updateSound: (state, action: PayloadAction<boolean>) => {
       state.sound = action.payload;

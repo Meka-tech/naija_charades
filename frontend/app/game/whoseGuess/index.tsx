@@ -3,8 +3,12 @@ import styled from '@emotion/native';
 import {SecondaryMenuPage, StrippedButton} from 'components';
 import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
 
-import {theme} from 'utils/theme';
-import {IsDarkMode} from 'utils/isDarkMode';
+import {palette, radius, shadow, space, type} from 'utils/theme';
+import {useAppTheme} from 'utils/useAppTheme';
+import {PressableScale} from 'components/ui';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import Animated, {FadeInDown} from 'react-native-reanimated';
+import {StyleSheet, View} from 'react-native';
 
 import {useLocalSearchParams, useRouter} from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -13,20 +17,66 @@ interface IGuessBlock {
   active?: boolean;
   title?: string;
   description?: string;
+  icon: React.ComponentProps<typeof Ionicons>['name'];
+  index: number;
   onPress?: () => void;
 }
-const GuessBlock: FC<IGuessBlock> = ({active, title, description, onPress}) => {
-  const isDarkMode = IsDarkMode();
+const GuessBlock: FC<IGuessBlock> = ({
+  active,
+  title,
+  description,
+  icon,
+  index,
+  onPress,
+}) => {
+  const {c, isDark} = useAppTheme();
   return (
-    <GuessView isDarkMode={isDarkMode} onPress={onPress}>
-      <GoldRing onPress={onPress}>{active ? <ActiveRing /> : null}</GoldRing>
-      <GuessText>
-        <GuessTitle isDarkMode={isDarkMode}>{title}</GuessTitle>
-        <GuessDescription isDarkMode={isDarkMode}>
-          {description}
-        </GuessDescription>
-      </GuessText>
-    </GuessView>
+    <Animated.View
+      entering={FadeInDown.delay(index * 90)
+        .springify()
+        .damping(18)}>
+      <PressableScale
+        onPress={onPress}
+        haptic="select"
+        activeScale={0.98}
+        accessibilityRole="radio"
+        accessibilityState={{selected: !!active}}
+        style={[
+          styles.block,
+          {
+            backgroundColor: active ? palette.gold : c.surface,
+          },
+          !isDark && shadow.sm,
+        ]}>
+        <View
+          style={[
+            styles.iconWrap,
+            {backgroundColor: active ? palette.ink : c.surfaceAlt},
+          ]}>
+          <Ionicons
+            name={icon}
+            size={widthPixel(26)}
+            color={active ? palette.gold : c.textMuted}
+          />
+        </View>
+        <GuessText>
+          <GuessTitle style={{color: active ? palette.ink : c.text}}>
+            {title}
+          </GuessTitle>
+          <GuessDescription
+            style={{color: active ? 'rgba(26,25,25,0.75)' : c.textMuted}}>
+            {description}
+          </GuessDescription>
+        </GuessText>
+        <View
+          style={[
+            styles.radio,
+            {backgroundColor: active ? palette.ink : c.surfaceAlt},
+          ]}>
+          {active ? <View style={styles.radioDot} /> : null}
+        </View>
+      </PressableScale>
+    </Animated.View>
   );
 };
 
@@ -54,18 +104,22 @@ export default function WhoseGuess() {
   }, []);
 
   return (
-    <SecondaryMenuPage>
+    <SecondaryMenuPage title="Who's guessing?">
       <Body>
         <Guesses>
           <GuessBlock
             active={selectedGuess === 'you'}
             onPress={ClickYouGuess}
+            icon="phone-portrait-outline"
+            index={0}
             title="You Guess"
             description="Place the screen on your forehead and try to guess, while your teammates describe or act out the words."
           />
           <GuessBlock
             active={selectedGuess === 'others'}
             onPress={ClickOtherGuess}
+            icon="people-outline"
+            index={1}
             title="Others Guess"
             description="Describe or act out the words on the screen, while your teammates guess the word"
           />
@@ -91,78 +145,66 @@ export default function WhoseGuess() {
   );
 }
 
-interface useDark {
-  isDarkMode: boolean;
-}
+const styles = StyleSheet.create({
+  block: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: space.lg,
+    borderRadius: radius.lg,
+  },
+  iconWrap: {
+    width: widthPixel(52),
+    height: widthPixel(52),
+    borderRadius: radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: space.md,
+  },
+  radio: {
+    width: widthPixel(24),
+    height: widthPixel(24),
+    borderRadius: widthPixel(12),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: space.sm,
+  },
+  radioDot: {
+    width: widthPixel(12),
+    height: widthPixel(12),
+    borderRadius: widthPixel(6),
+    backgroundColor: palette.gold,
+  },
+});
 
 const Body = styled.View({
   width: '100%',
   flex: 1,
   alignItems: 'center',
-  position: 'relative',
 });
 
 const Button = styled.View({
   width: '100%',
-  marginBottom: heightPixel(20),
+  marginBottom: space.lg,
   marginTop: 'auto',
 });
 
 const Guesses = styled.View({
-  gap: heightPixel(40),
-  marginTop: heightPixel(150),
+  gap: space.md,
+  marginTop: heightPixel(60),
   width: '100%',
 });
-
-const GuessView = styled.TouchableOpacity<useDark>(({isDarkMode}) => ({
-  elevation: 10,
-  shadowColor: 'rgba(0, 0, 0, 0.25)',
-  shadowOffset: {width: 0, height: 2},
-  shadowOpacity: 0.25,
-  shadowRadius: 3.84,
-  width: '100%',
-  backgroundColor: isDarkMode
-    ? theme.colors.darkbackground
-    : theme.colors.white,
-  borderRadius: widthPixel(15),
-  flexDirection: 'row',
-  justifyContent: 'center',
-  paddingVertical: heightPixel(24),
-}));
 
 const GuessText = styled.View({
-  width: '80%',
-  justifyContent: 'center',
+  flex: 1,
 });
-const GuessTitle = styled.Text<useDark>(({isDarkMode}) => ({
-  fontSize: fontPixel(18),
-  fontFamily: theme.fonts.MonstserratBold,
-  color: isDarkMode ? theme.colors.white : theme.colors.black,
-  textAlign: 'left',
-  marginBottom: heightPixel(10),
-}));
-const GuessDescription = styled.Text<useDark>(({isDarkMode}) => ({
-  fontSize: fontPixel(14),
-  fontFamily: theme.fonts.MonstserratMedium,
-  color: isDarkMode ? theme.colors.white : theme.colors.black,
-  textAlign: 'left',
-}));
-
-const GoldRing = styled.TouchableOpacity({
-  width: widthPixel(25),
-  height: heightPixel(25),
-  borderRadius: widthPixel(50),
-  borderColor: theme.colors.main,
-  borderWidth: widthPixel(2),
-  alignSelf: 'center',
-  marginRight: widthPixel(20),
-  alignItems: 'center',
-  justifyContent: 'center',
+const GuessTitle = styled.Text({
+  ...type.heading,
+  fontSize: type.subheading.fontSize,
+  marginBottom: space.xxs,
 });
-
-const ActiveRing = styled.View({
-  width: widthPixel(15),
-  height: heightPixel(15),
-  borderRadius: widthPixel(50),
-  backgroundColor: theme.colors.main,
+const GuessDescription = styled.Text({
+  ...type.body,
+  fontSize: fontPixel(13),
+  lineHeight: fontPixel(19),
 });

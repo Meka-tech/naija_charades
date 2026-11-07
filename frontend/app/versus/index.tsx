@@ -12,12 +12,17 @@ import {
 } from 'redux/features/game_rules/gameRulesSlice';
 import {updateQuickPlay} from 'redux/features/team_data/team_data';
 import {useRouter} from 'expo-router';
-import Entypo from '@expo/vector-icons/Entypo';
+import {IconButton} from 'components/ui';
+import SafeAreaViewWrapper from 'components/safeAreaViewWrapper';
+import {useAppTheme} from 'utils/useAppTheme';
+import {palette, radius, shadow, space, type} from 'utils/theme';
+import Animated, {FadeInUp} from 'react-native-reanimated';
 
 export default function Versus() {
   const router = useRouter();
 
   const dispatch = useDispatch();
+  const {c, isDark} = useAppTheme();
 
   ////Teams
   const Teamlist = [
@@ -60,49 +65,73 @@ export default function Versus() {
 
   return (
     <Main>
-      <Image source={ArtImg} resizeMode="contain">
-        <Body>
-          <LogoContainer>
-            <Logo width={'100%'} />
-          </LogoContainer>
-          <Card>
-            <Cross onPress={() => router.back()}>
-              <Entypo name="cross" size={30} color={theme.colors.black} />
-            </Cross>
-            <Title>Select number of teams</Title>
-            <DropDownContainer style={{zIndex: 10}}>
-              <Dropdown
-                list={Teamlist}
-                groupName={'Teams'}
-                selected={noOfTeams.no}
-                setSelected={SetTeams}
-              />
-            </DropDownContainer>
-            <Title>Select number of rounds</Title>
-            <DropDownContainer style={{zIndex: 5}}>
-              <Dropdown
-                list={Roundslist}
-                groupName={'Rounds'}
-                selected={noOfRounds.no}
-                setSelected={SetRounds}
-              />
-            </DropDownContainer>
-            <Button>
-              <StrippedButton label="Next" onPress={OnClickNext} />
-            </Button>
-          </Card>
-        </Body>
+      <Image source={ArtImg} resizeMode="cover">
+        <SafeAreaViewWrapper style={{paddingHorizontal: space.lg}}>
+          <Body>
+            <LogoContainer>
+              <Logo width={'100%'} />
+            </LogoContainer>
+            <Animated.View
+              entering={FadeInUp.springify().damping(18)}
+              style={[
+                cardStyle,
+                {backgroundColor: c.surface},
+                !isDark && shadow.md,
+              ]}>
+              <CardHeader>
+                <IconButton
+                  name="close"
+                  accessibilityLabel="Close"
+                  onPress={() => router.back()}
+                />
+                <CardTitle style={{color: c.text}}>Versus setup</CardTitle>
+                <Spacer />
+              </CardHeader>
+              <Title style={{color: c.textMuted}}>Number of teams</Title>
+              <DropDownContainer style={{zIndex: 10}}>
+                <DropDownFloat>
+                  <Dropdown
+                    list={Teamlist}
+                    groupName={'Teams'}
+                    selected={noOfTeams.no}
+                    setSelected={SetTeams}
+                  />
+                </DropDownFloat>
+              </DropDownContainer>
+              <Title style={{color: c.textMuted}}>Number of rounds</Title>
+              <DropDownContainer style={{zIndex: 5}}>
+                <DropDownFloat>
+                  <Dropdown
+                    list={Roundslist}
+                    groupName={'Rounds'}
+                    selected={noOfRounds.no}
+                    setSelected={SetRounds}
+                  />
+                </DropDownFloat>
+              </DropDownContainer>
+              <Button>
+                <StrippedButton label="Next" onPress={OnClickNext} />
+              </Button>
+            </Animated.View>
+          </Body>
+        </SafeAreaViewWrapper>
       </Image>
     </Main>
   );
 }
 
+const cardStyle = {
+  width: '100%' as const,
+  paddingHorizontal: space.xl,
+  paddingTop: space.lg,
+  paddingBottom: space.xl,
+  borderRadius: radius.xl,
+  marginTop: heightPixel(60),
+};
+
 const Main = styled.View({
-  width: '100%',
-  height: '100%',
-  backgroundColor: 'rgba(254, 182, 10, 0.95)',
-  alignItems: 'center',
-  justifyContent: 'center',
+  flex: 1,
+  backgroundColor: palette.gold,
 });
 
 const LogoContainer = styled.View({
@@ -111,50 +140,48 @@ const LogoContainer = styled.View({
   justifyContent: 'center',
 });
 const Body = styled.View({
+  flex: 1,
   width: '100%',
-  height: '100%',
   alignItems: 'center',
   justifyContent: 'center',
-  paddingHorizontal: widthPixel(20),
 });
 const Image = styled.ImageBackground({
-  width: '100%',
-  height: '100%',
-  alignItems: 'center',
-  justifyContent: 'center',
   flex: 1,
-});
-
-const Card = styled.View({
-  backgroundColor: theme.colors.white,
   width: '100%',
-  paddingHorizontal: widthPixel(36),
-  paddingTop: heightPixel(20),
-  paddingBottom: heightPixel(45),
-  borderRadius: widthPixel(15),
+});
+const CardHeader = styled.View({
+  flexDirection: 'row',
   alignItems: 'center',
-  position: 'relative',
-  marginTop: heightPixel(115),
+  justifyContent: 'space-between',
+  marginBottom: space.lg,
+});
+const CardTitle = styled.Text({
+  ...type.heading,
+});
+const Spacer = styled.View({
+  width: widthPixel(44),
 });
 const Title = styled.Text({
-  marginBottom: heightPixel(10),
-  fontWeight: '600',
-  fontSize: fontPixel(16),
-  color: theme.colors.black,
-  fontFamily: theme.fonts.MonstserratSemibold,
+  ...type.caption,
+  textTransform: 'uppercase',
+  letterSpacing: 1,
+  marginBottom: space.xs,
+  marginLeft: space.xxs,
 });
 const Button = styled.View({
   width: '100%',
-  marginTop: heightPixel(17),
+  marginTop: space.md,
 });
 
+// Fixed slot for the closed dropdown; the open list floats over what follows.
 const DropDownContainer = styled.View({
-  height: heightPixel(150),
+  height: heightPixel(62),
   width: '100%',
+  marginBottom: space.lg,
 });
-
-const Cross = styled.TouchableOpacity({
+const DropDownFloat = styled.View({
   position: 'absolute',
-  left: 15,
-  top: 15,
+  top: 0,
+  left: 0,
+  right: 0,
 });

@@ -1,7 +1,9 @@
 import React, {FC} from 'react';
-import styled from '@emotion/native';
-import {theme} from 'utils/theme';
-import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
+import {StyleSheet, Text, View} from 'react-native';
+import {PressableScale} from 'components/ui/PressableScale';
+import {palette, radius, shadow, space, type} from 'utils/theme';
+import {fontPixel, heightPixel} from 'utils/pxToDpConvert';
+import {useAppTheme} from 'utils/useAppTheme';
 
 interface IProps {
   width?: string;
@@ -9,53 +11,95 @@ interface IProps {
   label: string;
   elevation?: number;
   onPress?: () => void;
+  /** 'primary' = danfo gold, 'secondary' = neutral surface with gold label. */
+  variant?: 'primary' | 'secondary';
+  disabled?: boolean;
 }
 
+/**
+ * The signature Naija Charades button, styled after a Lagos danfo: yellow
+ * body, black stripes and a black bumper edge. Springs and taps on press.
+ */
 export const StrippedButton: FC<IProps> = ({
   width,
   fontSize,
   label,
   elevation,
   onPress,
-  ...rest
+  variant = 'primary',
+  disabled,
 }) => {
+  const {c, isDark} = useAppTheme();
+  const primary = variant === 'primary';
+  const bg = primary ? palette.gold : c.surface;
+  const edge = primary ? palette.ink : c.border;
+  const stripe = primary ? palette.ink : palette.gold;
+  const labelColor = primary ? palette.white : palette.gold;
+
   return (
-    <Container width={width} elevation={elevation} onPress={onPress} {...rest}>
-      <Stripe />
-      <Text fontSize={fontSize}>{label}</Text>
-      <Stripe />
-    </Container>
+    <PressableScale
+      onPress={onPress}
+      disabled={disabled}
+      haptic="press"
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      style={[
+        styles.container,
+        {
+          width: (width ?? '100%') as any,
+          backgroundColor: bg,
+          borderBottomColor: edge,
+          borderWidth: variant === 'secondary' ? 1 : 0,
+          borderColor: c.border,
+        },
+        (elevation ?? 0) > 0 && !isDark ? shadow.md : null,
+      ]}>
+      <View
+        style={[
+          styles.stripe,
+          {borderBottomColor: stripe},
+        ]}
+      />
+      <Text
+        style={[
+          type.button,
+          styles.label,
+          {
+            color: labelColor,
+            fontSize: fontSize ? fontPixel(fontSize) : type.button.fontSize,
+          },
+        ]}>
+        {label}
+      </Text>
+      <View
+        style={[
+          styles.stripe,
+          {borderBottomColor: stripe},
+        ]}
+      />
+    </PressableScale>
   );
 };
 
-interface IContainer {
-  width?: string;
-  elevation?: number;
-}
-const Container = styled.TouchableOpacity<IContainer>(({width, elevation}) => ({
-  backgroundColor: theme.colors.main,
-  paddingVertical: heightPixel(8),
-  width: width ? width : '100%',
-  alignItems: 'center',
-  borderRadius: widthPixel(10),
-  elevation: elevation ? elevation : 0,
-  shadowColor: 'rgba(0, 0, 0, 0.25)',
-  shadowOffset: {width: 0, height: 2},
-  shadowOpacity: 0.25,
-  shadowRadius: 3.84,
-}));
-interface IText {
-  fontSize?: number;
-}
-const Text = styled.Text<IText>(({fontSize}) => ({
-  color: 'white',
-  fontSize: fontSize ? fontPixel(fontSize) : fontPixel(24),
-  marginVertical: heightPixel(2),
-  textTransform: 'uppercase',
-  fontFamily: theme.fonts.Gagalin,
-}));
-const Stripe = styled.View({
-  width: '100%',
-  borderBottomColor: 'rgba(26, 25, 25, 1)',
-  borderBottomWidth: heightPixel(3),
+const styles = StyleSheet.create({
+  container: {
+    minHeight: heightPixel(58),
+    borderRadius: radius.md,
+    borderBottomWidth: 4,
+    paddingVertical: space.xs,
+    paddingHorizontal: space.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stripe: {
+    width: '100%',
+    borderBottomWidth: 2.5,
+    opacity: 0.9,
+    borderRadius: 2,
+  },
+  label: {
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginVertical: space.xxs,
+  },
 });

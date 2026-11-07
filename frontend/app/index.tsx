@@ -6,9 +6,13 @@ import {StrippedButton} from 'components';
 import {heightPixel, widthPixel} from 'utils/pxToDpConvert';
 import Animated, {
   withSpring,
+  withDelay,
+  withTiming,
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
+import SafeAreaViewWrapper from 'components/safeAreaViewWrapper';
+import {palette, space} from 'utils/theme';
 import {StyleSheet} from 'react-native';
 import {updateQuickPlay} from 'redux/features/team_data/team_data';
 import {BackHandler} from 'react-native';
@@ -28,32 +32,26 @@ export default function MainMenu() {
 
   const router = useRouter();
 
-  const logoOffset = useSharedValue(200);
-  const offsetButton = useSharedValue(-400);
+  const logoOffset = useSharedValue(160);
+  const logoScale = useSharedValue(0.9);
+  const buttonsOffset = useSharedValue(60);
+  const buttonsOpacity = useSharedValue(0);
 
-  const LogoSpringStyles = useAnimatedStyle(() => {
-    return {
-      transform: [{translateY: logoOffset.value}],
-    };
-  });
-  const ButtonSpringStyles = useAnimatedStyle(() => {
-    return {
-      transform: [{translateX: offsetButton.value}],
-    };
-  });
+  const LogoSpringStyles = useAnimatedStyle(() => ({
+    transform: [{translateY: logoOffset.value}, {scale: logoScale.value}],
+  }));
+  const ButtonSpringStyles = useAnimatedStyle(() => ({
+    opacity: buttonsOpacity.value,
+    transform: [{translateY: buttonsOffset.value}],
+  }));
 
   useEffect(() => {
-    setTimeout(() => {
-      logoOffset.value = withSpring(0, {
-        damping: 26,
-        stiffness: 200,
-      });
-      offsetButton.value = withSpring(0, {
-        damping: 26,
-        stiffness: 200,
-      });
-    }, 1000);
-  });
+    const spring = {damping: 18, stiffness: 140};
+    logoOffset.value = withDelay(500, withSpring(0, spring));
+    logoScale.value = withDelay(500, withSpring(1, spring));
+    buttonsOffset.value = withDelay(750, withSpring(0, spring));
+    buttonsOpacity.value = withDelay(750, withTiming(1, {duration: 350}));
+  }, []);
 
   const [modalActive, setModalActive] = useState(false);
 
@@ -90,7 +88,7 @@ export default function MainMenu() {
   return (
     <Main>
       <Image source={ArtImg} resizeMode="cover">
-        <Body>
+        <SafeAreaViewWrapper style={Styles.safe}>
           <ConfirmExitModal
             active={modalActive}
             closeModal={() => setModalActive(false)}
@@ -116,41 +114,32 @@ export default function MainMenu() {
               onPress={() => router.push('/howToPlay')}
             />
           </Animated.View>
-        </Body>
+        </SafeAreaViewWrapper>
       </Image>
     </Main>
   );
 }
 
 const Main = styled.View({
-  width: '100%',
-  height: '100%',
-  backgroundColor: 'rgba(254, 182, 10, 1)',
-});
-const Body = styled.View({
-  width: '100%',
-  height: '100%',
-  alignItems: 'center',
-  paddingTop: heightPixel(200),
-  paddingHorizontal: widthPixel(20),
+  flex: 1,
+  backgroundColor: palette.gold,
 });
 const Image = styled.ImageBackground({
-  width: '100%',
-  height: '100%',
-  alignItems: 'center',
-  justifyContent: 'center',
   flex: 1,
+  width: '100%',
 });
 
 const Styles = StyleSheet.create({
+  safe: {
+    paddingHorizontal: widthPixel(28),
+    justifyContent: 'center',
+  },
   logoContainer: {
-    marginBottom: heightPixel(100),
     width: '100%',
+    marginBottom: heightPixel(70),
   },
   buttonsStyles: {
-    marginTop: heightPixel(100),
-    gap: heightPixel(30),
+    gap: space.md,
     width: '100%',
-    height: heightPixel(250),
   },
 });

@@ -2,11 +2,12 @@
   "expo": {
     "name": "Naija Charades",
     "slug": "naija_charades",
-    "version": "2.2.4",
+    "version": "3.0.0",
     "scheme": "naija-charades",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#121212",
     "assetBundlePatterns": ["**/*"],
     "plugins": [
       "expo-router",
@@ -35,12 +36,12 @@
         "expo-build-properties",
         {
           "android": {
-            "compileSdkVersion": 35,
-            "targetSdkVersion": 35,
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36,
             "enableShrinkResourcesInReleaseBuilds": true,
             "enableMinifyInReleaseBuilds": true,
             "enableProguardInReleaseBuilds": true,
-            "buildToolsVersion": "35.0.0"
+            "buildToolsVersion": "36.0.0"
           },
           "ios": {
             "deploymentTarget": "17.0",
@@ -89,7 +90,7 @@
     },
     "owner": "meka1200",
     "newArchEnabled": true,
-    "runtimeVersion": "2.2.4",
+    "runtimeVersion": "3.0.0",
     "updates": {
       "url": "https://u.expo.dev/9e014c08-7d5c-4032-bcbe-3d12ddcd0c82"
     }

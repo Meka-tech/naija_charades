@@ -7,3 +7,4 @@ export * from './secondaryMenuPage';
 export * from './InputField';
 export * from './CustomKeyboardAvoidingView';
 export * from './Slider';
+export * from './ui';

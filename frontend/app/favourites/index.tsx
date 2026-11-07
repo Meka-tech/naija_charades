@@ -1,9 +1,9 @@
 import {CategoryCard, MenuPage} from 'components';
 import React from 'react';
 import styled from '@emotion/native';
-import Void from 'assets/images/void.png';
-import {fontPixel, heightPixel} from 'utils/pxToDpConvert';
-import {theme} from 'utils/theme';
+import {theme, space} from 'utils/theme';
+import {EmptyState} from 'components/ui';
+import {useRouter} from 'expo-router';
 import {useSelector} from 'react-redux';
 import {RootState} from 'redux/app/store';
 import {ActivityIndicator, FlatList} from 'react-native';
@@ -11,6 +11,7 @@ import {useCards} from 'contexts/cardContext';
 
 export default function Favourites() {
   const {isLoading} = useCards();
+  const router = useRouter();
   const {favouritesArray} = useSelector(
     (state: RootState) => state.reducer.favouriteCategories,
   );
@@ -25,14 +26,6 @@ export default function Favourites() {
   return (
     <MenuPage title="FAVOURITES" activePage={'Favourites'}>
       <>
-        {favouritesArray?.length === 0 && !isLoading && (
-          <NoContentView>
-            <Image source={Void} />
-            <NoContentText>
-              You haven't added anything to your favourites
-            </NoContentText>
-          </NoContentView>
-        )}
         <Body>
           {isLoading ? (
             <ActivityIndicator size="large" color={theme.colors.main} />
@@ -49,7 +42,19 @@ export default function Favourites() {
                 />
               )}
               keyExtractor={(item, index) => `${item.title}-${index}`}
-              contentContainerStyle={{paddingBottom: 20}}
+              contentContainerStyle={{paddingBottom: 20, flexGrow: 1}}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={
+                <NoContentView>
+                  <EmptyState
+                    icon="heart"
+                    title="No favourites yet"
+                    message="Tap the heart on any category and it will show up here for quick play."
+                    actionLabel="Browse categories"
+                    onAction={() => router.push('/home')}
+                  />
+                </NoContentView>
+              }
             />
           )}
         </Body>
@@ -63,21 +68,8 @@ const Body = styled.View({
   flex: 1,
 });
 const NoContentView = styled.View({
+  flex: 1,
   width: '100%',
-  height: '100%',
-  alignItems: 'center',
-});
-
-const Image = styled.Image({
-  marginTop: heightPixel(120),
-  marginBottom: heightPixel(30),
-});
-const NoContentText = styled.Text({
-  color: theme.colors.main,
-  fontWeight: '600',
-  fontSize: fontPixel(20),
-  fontFamily: theme.fonts.MonstserratSemibold,
-  textAlign: 'center',
-  width: '100%',
-  lineHeight: heightPixel(25),
+  justifyContent: 'center',
+  paddingBottom: space.xxxl * 2,
 });

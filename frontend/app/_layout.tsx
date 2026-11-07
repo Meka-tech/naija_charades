@@ -7,6 +7,7 @@ import 'react-native-gesture-handler';
 import {useFonts} from 'expo-font';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {CardProvider} from 'contexts/cardContext';
+import {ThemeSystemUI} from 'components/ui/ThemeSystemUI';
 import Purchases, {LOG_LEVEL} from 'react-native-purchases';
 import {Platform} from 'react-native';
 import {setAudioModeAsync} from 'expo-audio';
@@ -85,6 +86,7 @@ const RootLayout: FC = () => {
       <SafeAreaProvider>
         <Provider store={store}>
           <CardProvider>
+            <ThemeSystemUI />
             <Slot />
           </CardProvider>
         </Provider>

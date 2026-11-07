@@ -1,8 +1,6 @@
-import styled from '@emotion/native';
 import React, {FC, useState, useEffect} from 'react';
-import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
-
-import {theme} from 'utils/theme';
+import {Image, StyleSheet, Text, View} from 'react-native';
+import Animated, {FadeInDown} from 'react-native-reanimated';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from 'redux/app/store';
 import {
@@ -10,17 +8,16 @@ import {
   updateFavouriteArray,
 } from 'redux/features/favourite_category/favouriteCategory';
 import {useIsFocused} from '@react-navigation/native';
-
-import {Dimensions} from 'react-native';
-
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import {useRouter} from 'expo-router';
-
-const ScreenHeight = Dimensions.get('window').height;
+import {PressableScale} from 'components/ui/PressableScale';
+import {fonts, palette, radius, shadow, space} from 'utils/theme';
+import {fontPixel, widthPixel} from 'utils/pxToDpConvert';
+import {haptics} from 'utils/haptics';
 
 interface IProps {
   title: string;
-  icon?: string; //JSX.Element
+  icon?: string;
   color: string;
   description: string;
   index: number;
@@ -43,9 +40,11 @@ export const CategoryCard: FC<IProps> = ({
 
   const updateFavourite = () => {
     if (favorite === false) {
+      haptics.success();
       setFavourite(true);
       dispatch(updateFavouriteArray(title));
     } else {
+      haptics.tap();
       setFavourite(false);
       const NewArray = favouritesArray.filter(item => item !== title);
       dispatch(deleteFavouriteArray(NewArray));
@@ -57,66 +56,120 @@ export const CategoryCard: FC<IProps> = ({
   );
 
   return (
-    <Container
-      color={color}
-      onPress={() =>
-        router.push({
-          pathname: '/game/gameDescription',
-          params: {
-            title: title,
-            description: description,
-            index: index,
-          },
-        })
-      }>
-      <Title>{title}</Title>
-      <Image
-        source={{
-          uri: icon,
-        }}
-      />
-      <Heart onPress={updateFavourite}>
-        <MaterialCommunityIcons
-          name={favorite ? 'cards-heart' : 'cards-heart-outline'}
-          size={30}
-          color="white"
-        />
-      </Heart>
-    </Container>
+    <Animated.View
+      entering={FadeInDown.delay(Math.min(index, 8) * 60)
+        .springify()
+        .damping(18)}>
+      <PressableScale
+        activeScale={0.97}
+        accessibilityRole="button"
+        accessibilityLabel={`Play ${title}`}
+        style={[styles.card, {backgroundColor: color}]}
+        onPress={() =>
+          router.push({
+            pathname: '/game/gameDescription',
+            params: {
+              title: title,
+              description: description,
+              index: index,
+            },
+          })
+        }>
+        {/* soft highlight for depth */}
+        <View style={styles.glow} pointerEvents="none" />
+        <View style={styles.iconWrap}>
+          <Image source={{uri: icon}} style={styles.icon} resizeMode="contain" />
+        </View>
+        <View style={styles.text}>
+          <Text style={styles.title} numberOfLines={1}>
+            {title}
+          </Text>
+          {!!description && (
+            <Text style={styles.description} numberOfLines={2}>
+              {description}
+            </Text>
+          )}
+        </View>
+        <PressableScale
+          onPress={updateFavourite}
+          haptic={false}
+          activeScale={0.8}
+          hitSlop={10}
+          accessibilityRole="button"
+          accessibilityLabel={
+            favorite ? 'Remove from favourites' : 'Add to favourites'
+          }
+          style={styles.heart}>
+          <MaterialCommunityIcons
+            name={favorite ? 'cards-heart' : 'cards-heart-outline'}
+            size={widthPixel(22)}
+            color="white"
+          />
+        </PressableScale>
+      </PressableScale>
+    </Animated.View>
   );
 };
 
-interface IContainer {
-  color: string;
-}
-const Container = styled.TouchableOpacity<IContainer>(({color}) => ({
-  width: '100%',
-  height: 'auto',
-  marginBottom: heightPixel(20),
-  borderRadius: widthPixel(30),
-  paddingVertical: heightPixel(24),
-  backgroundColor: color,
-  position: 'relative',
-  alignItems: 'center',
-  elevation: 5,
-  shadowColor: 'rgba(0, 0, 0, 0.25)',
-  shadowOffset: {width: 0, height: 2},
-  shadowOpacity: 0.25,
-  shadowRadius: 3.84,
-}));
-const Title = styled.Text({
-  color: theme.colors.white,
-  fontSize: fontPixel(24),
-  fontFamily: theme.fonts.MonstserratBold,
-  marginBottom: heightPixel(10),
-});
-const Heart = styled.TouchableOpacity({
-  position: 'absolute',
-  bottom: widthPixel(15),
-  right: widthPixel(20),
-});
-const Image = styled.Image({
-  height: heightPixel(100),
-  width: widthPixel(100),
-  transform: [{scaleY: ScreenHeight / 900}],
+// Keeps white text legible on pale category colours.
+const textShadow = {
+  textShadowColor: 'rgba(0,0,0,0.25)',
+  textShadowOffset: {width: 0, height: 1},
+  textShadowRadius: 3,
+};
+
+const styles = StyleSheet.create({
+  card: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: space.md,
+    marginBottom: space.md,
+    borderRadius: radius.lg,
+    overflow: 'hidden',
+    ...shadow.sm,
+  },
+  glow: {
+    position: 'absolute',
+    top: -widthPixel(60),
+    right: -widthPixel(40),
+    width: widthPixel(180),
+    height: widthPixel(180),
+    borderRadius: widthPixel(90),
+    backgroundColor: 'rgba(255,255,255,0.14)',
+  },
+  iconWrap: {
+    width: widthPixel(76),
+    height: widthPixel(76),
+    borderRadius: radius.md,
+    backgroundColor: 'rgba(255,255,255,0.22)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: space.md,
+  },
+  icon: {width: widthPixel(58), height: widthPixel(58)},
+  text: {flex: 1, paddingRight: space.xs},
+  title: {
+    color: palette.white,
+    fontFamily: fonts.MonstserratExtraBold,
+    fontSize: fontPixel(20),
+    marginBottom: space.xxs,
+    ...textShadow,
+  },
+  description: {
+    color: 'rgba(255,255,255,0.88)',
+    fontFamily: fonts.MonstserratMedium,
+    fontSize: fontPixel(13),
+    lineHeight: fontPixel(18),
+    ...textShadow,
+  },
+  heart: {
+    width: widthPixel(38),
+    height: widthPixel(38),
+    borderRadius: widthPixel(19),
+    backgroundColor: 'rgba(0,0,0,0.14)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'flex-start',
+  },
 });

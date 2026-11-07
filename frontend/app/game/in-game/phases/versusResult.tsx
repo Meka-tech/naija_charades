@@ -1,10 +1,14 @@
 import React, {useEffect} from 'react';
 import styled from '@emotion/native';
-import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
-import {theme} from 'utils/theme';
+import {fontPixel, widthPixel} from 'utils/pxToDpConvert';
+import {fonts, palette, radius, shadow, space, type} from 'utils/theme';
+import {useAppTheme} from 'utils/useAppTheme';
+import {IconButton, ScreenHeader} from 'components/ui';
+import SafeAreaViewWrapper from 'components/safeAreaViewWrapper';
+import Animated, {FadeInDown, ZoomIn} from 'react-native-reanimated';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import {StyleSheet, View} from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
-
-import {IsDarkMode} from 'utils/isDarkMode';
 
 import Art2Img from 'assets/images/background_art.png';
 
@@ -14,7 +18,6 @@ import {RootState} from 'redux/app/store';
 import {StrippedButton} from 'components';
 
 import {useLocalSearchParams, useRouter} from 'expo-router';
-import Entypo from '@expo/vector-icons/Entypo';
 
 export default function VersusResult() {
   const router = useRouter();
@@ -24,7 +27,7 @@ export default function VersusResult() {
   );
 
   const TeamArray = useSelector((state: RootState) => state.teamData.teamArray);
-  const isDarkMode = IsDarkMode();
+  const {isDark: isDarkMode, c} = useAppTheme();
 
   const TeamScores = TeamArray.map(team => {
     return [team.team, team.score];
@@ -40,190 +43,184 @@ export default function VersusResult() {
     router.push('/home');
   };
 
+  const rankColors = [palette.sky, palette.gold, palette.coral, palette.slate];
+  const ordinal = (i: number) => ['1st', '2nd', '3rd'][i] ?? `${i + 1}th`;
+
   return (
-    <Container darkMode={isDarkMode}>
-      <Image source={isDarkMode ? Art2Img : ArtImg} resizeMode="cover">
-        <ArrowButton
-          onPress={() => {
-            router.push('/home');
-          }}>
-          <Entypo
-            name="chevron-left"
-            size={widthPixel(36)}
-            color={isDarkMode ? 'white' : 'black'}
+    <Container style={{backgroundColor: c.background}}>
+      <Image
+        source={isDarkMode ? Art2Img : ArtImg}
+        resizeMode="cover"
+        imageStyle={{opacity: isDarkMode ? 0.35 : 1}}>
+        <SafeAreaViewWrapper darkmode={isDarkMode} style={styles.safe}>
+          <ScreenHeader
+            title={CategoryTitle as string}
+            left={
+              <IconButton
+                name="chevron-back"
+                accessibilityLabel="Back to categories"
+                onPress={() => router.push('/home')}
+              />
+            }
           />
-        </ArrowButton>
-        <Body>
-          <Title darkMode={isDarkMode}>{CategoryTitle}</Title>
-          <RoundTeamText
-            darkMode={
-              isDarkMode
-            }>{`Number of Rounds: ${NoOfRounds} `}</RoundTeamText>
-          <ScoreText>Versus Result</ScoreText>
-          <TeamResults>
+          <RoundTeamText style={{color: c.textMuted}}>
+            {`${NoOfRounds} rounds played`}
+          </RoundTeamText>
+
+          <Animated.View
+            entering={ZoomIn.springify().damping(12)}
+            style={styles.winner}>
+            <Ionicons
+              name="trophy"
+              size={widthPixel(44)}
+              color={palette.white}
+            />
+            <WinnerText>{`${SortedArray[0][0]} wins!`}</WinnerText>
+          </Animated.View>
+
+          <View
+            style={[
+              styles.board,
+              {backgroundColor: c.surface},
+              !isDarkMode && shadow.md,
+            ]}>
             <ResultHeader>
-              <HeaderText>POS</HeaderText>
-              <HeaderText>TEAMS</HeaderText>
-              <HeaderText>SCORES</HeaderText>
+              <HeaderText style={{color: c.textMuted, width: widthPixel(70)}}>
+                Pos
+              </HeaderText>
+              <HeaderText style={{color: c.textMuted, flex: 1}}>
+                Team
+              </HeaderText>
+              <HeaderText style={{color: c.textMuted}}>Score</HeaderText>
             </ResultHeader>
-            {SortedArray.map((item, index) => {
-              return (
-                <ResultItem key={index} pos={index}>
-                  <PositionText>
-                    {index === 0
-                      ? '1st'
-                      : index === 1
-                      ? '2nd'
-                      : index === 2
-                      ? '3rd'
-                      : '4th'}
-                  </PositionText>
-                  <ResultItemText>{item[0]}</ResultItemText>
-                  <ResultScoreText>{item[1]}</ResultScoreText>
-                </ResultItem>
-              );
-            })}
-            <AnnounceResultText>{`${SortedArray[0][0]} wins`}</AnnounceResultText>
-          </TeamResults>
+            {SortedArray.map((item, index) => (
+              <Animated.View
+                key={index}
+                entering={FadeInDown.delay(200 + index * 90)
+                  .springify()
+                  .damping(18)}
+                style={[
+                  styles.row,
+                  {backgroundColor: index === 0 ? c.surfaceAlt : 'transparent'},
+                ]}>
+                <View style={{width: widthPixel(70)}}>
+                  <View
+                    style={[
+                      styles.badge,
+                      {backgroundColor: rankColors[Math.min(index, 3)]},
+                    ]}>
+                    <BadgeText>{ordinal(index)}</BadgeText>
+                  </View>
+                </View>
+                <ResultItemText style={{color: c.text}}>
+                  {item[0]}
+                </ResultItemText>
+                <ResultScoreText style={{color: c.text}}>
+                  {item[1]}
+                </ResultScoreText>
+              </Animated.View>
+            ))}
+          </View>
           <Button>
             <StrippedButton label={'Play Again'} onPress={ClickNext} />
           </Button>
-        </Body>
+        </SafeAreaViewWrapper>
       </Image>
     </Container>
   );
 }
 
-interface IuseDark {
-  darkMode: boolean;
-}
+const styles = StyleSheet.create({
+  safe: {paddingHorizontal: space.lg, alignItems: 'center'},
+  winner: {
+    width: '100%',
+    alignItems: 'center',
+    backgroundColor: palette.blue,
+    borderRadius: radius.xl,
+    paddingVertical: space.xl,
+    marginTop: space.lg,
+    ...shadow.md,
+  },
+  board: {
+    width: '100%',
+    borderRadius: radius.lg,
+    paddingVertical: space.md,
+    paddingHorizontal: space.sm,
+    marginTop: space.lg,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: space.sm,
+    paddingVertical: space.sm,
+    borderRadius: radius.md,
+    marginBottom: space.xxs,
+  },
+  badge: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: space.sm,
+    paddingVertical: space.xxs,
+    borderRadius: radius.pill,
+  },
+});
 
-const Container = styled.View<IuseDark>(({darkMode}) => ({
+const Container = styled.View({
   width: '100%',
   height: '100%',
-  alignItems: 'center',
-  position: 'relative',
   zIndex: 50,
-  backgroundColor: darkMode ? theme.colors.darkbackground : theme.colors.white,
-}));
+});
 
-const Body = styled.View({
-  width: '100%',
-  height: '100%',
-  alignItems: 'center',
-  paddingHorizontal: widthPixel(25),
-});
-const ArrowButton = styled.TouchableOpacity({
-  position: 'absolute',
-  left: 25,
-  top: 30,
-  width: widthPixel(50),
-});
 const Image = styled.ImageBackground({
-  width: '100%',
-  height: '100%',
-  alignItems: 'center',
-  justifyContent: 'center',
   flex: 1,
-});
-const Button = styled.View({
-  width: widthPixel(254),
-});
-
-const Title = styled.Text<IuseDark>(({darkMode}) => ({
-  color: darkMode ? theme.colors.white : theme.colors.black,
-  fontSize: fontPixel(24),
-  fontWeight: '400',
-  fontFamily: theme.fonts.Gagalin,
-  marginBottom: heightPixel(20),
-  marginTop: heightPixel(50),
-}));
-
-const RoundTeamText = styled.Text<IuseDark>(({darkMode}) => ({
-  color: darkMode ? theme.colors.white : theme.colors.black,
-  fontSize: fontPixel(20),
-  fontWeight: '400',
-  fontFamily: theme.fonts.MonstserratSemibold,
-  marginBottom: heightPixel(25),
-}));
-
-const ScoreText = styled.Text({
-  color: 'rgba(63, 131, 254, 1)',
-  fontSize: fontPixel(32),
-  fontWeight: '400',
-  fontFamily: theme.fonts.MonstserratBold,
-  marginBottom: heightPixel(15),
-});
-
-const TeamResults = styled.View({
-  backgroundColor: 'rgba(0, 159, 255, 0.3)',
   width: '100%',
-  height: heightPixel(480),
-  borderRadius: widthPixel(25),
-  marginBottom: heightPixel(70),
-  alignItems: 'center',
-  flexDirection: 'column',
+});
+
+const Button = styled.View({
+  width: '100%',
+  marginTop: 'auto',
+  marginBottom: space.sm,
+});
+
+const RoundTeamText = styled.Text({
+  ...type.subheading,
+  marginTop: -space.xs,
+});
+
+const WinnerText = styled.Text({
+  fontFamily: fonts.Gagalin,
+  fontSize: fontPixel(36),
+  color: palette.white,
+  textTransform: 'capitalize',
+  marginTop: space.xs,
 });
 
 const ResultHeader = styled.View({
   flexDirection: 'row',
-  justifyContent: 'space-between',
-  paddingHorizontal: widthPixel(35),
-  marginTop: heightPixel(15),
-  marginBottom: heightPixel(25),
-  width: '100%',
+  paddingHorizontal: space.sm,
+  marginBottom: space.xs,
 });
 
 const HeaderText = styled.Text({
-  fontSize: fontPixel(25),
-  fontFamily: theme.fonts.Gagalin,
-  color: theme.colors.white,
+  ...type.caption,
+  textTransform: 'uppercase',
+  letterSpacing: 1,
 });
 
-interface Iresult {
-  pos: number;
-}
-const ResultItem = styled.View<Iresult>(({pos}) => ({
-  width: '100%',
-  flexDirection: 'row',
-  paddingHorizontal: widthPixel(35),
-  marginBottom: heightPixel(15),
-  backgroundColor:
-    pos === 0
-      ? 'rgba(91, 193, 255, 1)'
-      : pos === 1
-      ? 'rgba(254, 182, 10, 1)'
-      : pos === 2
-      ? 'rgba(252, 94, 94, 1)'
-      : 'rgba(159, 163, 166, 1)',
-  height: heightPixel(56),
-  alignItems: 'center',
-}));
+const BadgeText = styled.Text({
+  fontFamily: fonts.MonstserratExtraBold,
+  fontSize: fontPixel(13),
+  color: palette.white,
+});
 
 const ResultItemText = styled.Text({
-  fontSize: fontPixel(25),
-  fontFamily: theme.fonts.MonstserratBold,
-  color: theme.colors.white,
-  textTransform: 'uppercase',
-  width: widthPixel(150),
-});
-const PositionText = styled.Text({
-  fontSize: fontPixel(25),
-  fontFamily: theme.fonts.MonstserratBold,
-  color: theme.colors.white,
-  width: widthPixel(100),
+  flex: 1,
+  fontSize: fontPixel(18),
+  fontFamily: fonts.MonstserratBold,
+  textTransform: 'capitalize',
 });
 const ResultScoreText = styled.Text({
-  fontSize: fontPixel(25),
-  fontFamily: theme.fonts.MonstserratSemibold,
-  color: theme.colors.white,
-});
-
-const AnnounceResultText = styled.Text({
-  fontSize: fontPixel(32),
-  fontFamily: theme.fonts.Gagalin,
-  color: theme.colors.white,
-  alignSelf: 'center',
-  height: '100%',
-  marginTop: heightPixel(60),
+  fontSize: fontPixel(20),
+  fontFamily: fonts.MonstserratExtraBold,
+  minWidth: widthPixel(50),
+  textAlign: 'right',
 });

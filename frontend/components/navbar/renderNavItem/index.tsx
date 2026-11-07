@@ -1,14 +1,16 @@
-import styled from '@emotion/native';
 import React, {FC} from 'react';
-import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
-import {theme} from 'utils/theme';
-import {IsDarkMode} from 'utils/isDarkMode';
+import {StyleSheet, Text, View} from 'react-native';
 import {useRouter} from 'expo-router';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import {PressableScale} from 'components/ui/PressableScale';
+import {useAppTheme} from 'utils/useAppTheme';
+import {fonts, palette, radius, space} from 'utils/theme';
+import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
 
 interface IProps {
   active: boolean;
   text?: string;
-  Icon?: JSX.Element;
+  icon?: React.ComponentProps<typeof Ionicons>['name'];
   nav?: string;
   isPremium?: boolean;
 }
@@ -16,99 +18,77 @@ interface IProps {
 export const RenderNavItem: FC<IProps> = ({
   active,
   text,
-  Icon,
+  icon,
   nav,
   isPremium,
 }) => {
   const router = useRouter();
-  const isDarkMode = IsDarkMode();
+  const {c} = useAppTheme();
 
   return (
-    <Container
-      active={active}
-      isPremium={isPremium}
+    <PressableScale
+      haptic="select"
+      activeScale={0.97}
+      accessibilityRole="button"
+      accessibilityState={{selected: active}}
+      style={[
+        styles.container,
+        {backgroundColor: active ? palette.gold : 'transparent'},
+        isPremium && {opacity: 0.5},
+      ]}
       onPress={() => {
-        if (isPremium) {
-          return;
-        } else {
+        if (!isPremium) {
           router.push(nav ?? '/');
         }
       }}>
-      <IconView>{Icon}</IconView>
-      <TextView>
-        <TextAbove isDarkMode={isDarkMode} active={active}>
+      <View style={styles.icon}>
+        {!!icon && (
+          <Ionicons
+            name={icon}
+            size={widthPixel(24)}
+            color={active ? palette.white : c.text}
+          />
+        )}
+      </View>
+      <View>
+        {/* Gold drop-shadow text is part of the original brand look. */}
+        <Text
+          style={[
+            styles.label,
+            styles.shadowLabel,
+            {color: active ? palette.ink : palette.gold},
+          ]}>
           {text}
-        </TextAbove>
-        <TextBelow active={active}>{text}</TextBelow>
-      </TextView>
-    </Container>
+        </Text>
+        <Text style={[styles.label, {color: active ? palette.white : c.text}]}>
+          {text}
+        </Text>
+      </View>
+    </PressableScale>
   );
 };
 
-interface IContainer {
-  active: boolean;
-  isPremium?: boolean;
-}
-
-const Container = styled.TouchableOpacity<IContainer>(
-  ({active, isPremium}) => ({
-    backgroundColor: active ? theme.colors.main : 'transparent',
-    color: active ? theme.colors.white : theme.colors.black,
-    paddingLeft: widthPixel(60),
-    width: '100%',
-    height: heightPixel(40),
-    marginBottom: heightPixel(20),
-    alignItems: 'center',
+const styles = StyleSheet.create({
+  container: {
     flexDirection: 'row',
-    position: 'relative',
-    opacity: isPremium ? 0.5 : 1,
-  }),
-);
-const IconView = styled.View({});
-
-const TextView = styled.View({
-  marginLeft: widthPixel(21),
-  position: 'relative',
-  justifyContent: 'center',
-  height: heightPixel(31),
-  width: '100%',
-});
-
-interface IText {
-  active: boolean;
-  isDarkMode?: boolean;
-}
-const TextAbove = styled.Text<IText>(({active, isDarkMode}) => ({
-  fontWeight: '500',
-  fontSize: fontPixel(24),
-  fontFamily: theme.fonts.Gagalin,
-  color: active
-    ? theme.colors.white
-    : isDarkMode
-    ? theme.colors.white
-    : theme.colors.black,
-  position: 'absolute',
-  zIndex: 1,
-}));
-const TextBelow = styled.Text<IText>(({active}) => ({
-  fontWeight: '500',
-  fontSize: fontPixel(24),
-  fontFamily: theme.fonts.Gagalin,
-  color: active ? theme.colors.black : theme.colors.main,
-  position: 'absolute',
-  bottom: 0,
-}));
-
-const PremiumTag = styled.View({
-  backgroundColor: theme.colors.main,
-  paddingHorizontal: widthPixel(10),
-  paddingVertical: heightPixel(5),
-  borderRadius: widthPixel(10),
-});
-
-const PremiumText = styled.Text({
-  color: theme.colors.white,
-  fontSize: fontPixel(12),
-  fontFamily: theme.fonts.Gagalin,
-  textTransform: 'uppercase',
+    alignItems: 'center',
+    height: heightPixel(54),
+    marginHorizontal: space.md,
+    paddingHorizontal: space.lg,
+    borderRadius: radius.md,
+  },
+  icon: {
+    width: widthPixel(32),
+    alignItems: 'center',
+    marginRight: space.md,
+  },
+  label: {
+    fontFamily: fonts.Gagalin,
+    fontSize: fontPixel(22),
+  },
+  shadowLabel: {
+    position: 'absolute',
+    top: 2,
+    left: 1,
+  },
 });

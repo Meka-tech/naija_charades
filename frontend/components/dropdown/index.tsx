@@ -8,6 +8,9 @@ import Purchases from 'react-native-purchases';
 import RevenueCatUI from 'react-native-purchases-ui';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useAppTheme} from 'utils/useAppTheme';
+import {radius, space} from 'utils/theme';
+import {haptics} from 'utils/haptics';
 
 interface IProps {
   list: {no: number; isPremium: boolean}[];
@@ -23,6 +26,7 @@ export const Dropdown: FC<IProps> = ({
   setSelected,
 }) => {
   const [active, setActive] = useState(false);
+  const {c, isDark} = useAppTheme();
 
   // const premiumProductIdentifier = 'one_time_purchase';
   const premiumProductIdentifier = 'premium';
@@ -90,9 +94,16 @@ export const Dropdown: FC<IProps> = ({
   }, []);
 
   return (
-    <Container>
-      <Main onPress={() => setActive(!active)}>
-        <Text active={true}>
+    <Container
+      style={{
+        backgroundColor: isDark ? c.surfaceAlt : c.surface,
+      }}>
+      <Main
+        onPress={() => {
+          haptics.select();
+          setActive(!active);
+        }}>
+        <Text active={true} style={{color: c.text}}>
           {selected ? selected : list[0].no} {groupName}
         </Text>
 
@@ -112,7 +123,7 @@ export const Dropdown: FC<IProps> = ({
                     <Item
                       onPress={() => OnDropdownItemPress(item)}
                       key={index * Math.random()}>
-                      <Text>
+                      <Text style={{color: c.textMuted}}>
                         {item.no} {groupName}
                       </Text>
                       {item.isPremium && !isPremiumUser && (
@@ -136,16 +147,10 @@ export const Dropdown: FC<IProps> = ({
 
 const Container = styled.View({
   width: '100%',
-  borderRadius: widthPixel(15),
-  paddingVertical: heightPixel(9),
-  backgroundColor: theme.colors.white,
-  paddingHorizontal: widthPixel(10),
-  elevation: 5,
+  borderRadius: radius.md,
+  paddingVertical: heightPixel(8),
+  paddingHorizontal: space.sm,
   position: 'relative',
-  shadowColor: 'rgba(0, 0, 0, 0.25)',
-  shadowOffset: {width: 0, height: 2},
-  shadowOpacity: 0.25,
-  shadowRadius: 3.84,
 });
 
 interface IText {
@@ -159,7 +164,6 @@ const Main = styled.TouchableOpacity({
   paddingVertical: heightPixel(6),
 });
 const Text = styled.Text<IText>(({active}) => ({
-  fontWeight: '400',
   fontSize: fontPixel(18),
   color: active ? 'rgba(45, 45, 45, 1)' : 'rgba(110, 110, 110, 1)',
   fontFamily: theme.fonts.Gagalin,

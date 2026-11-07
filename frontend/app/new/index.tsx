@@ -1,9 +1,9 @@
 import {CategoryCard, MenuPage} from 'components';
 import React from 'react';
 import styled from '@emotion/native';
-import Astronaught from 'assets/images/astronaught.png';
-import {fontPixel, heightPixel} from 'utils/pxToDpConvert';
-import {theme} from 'utils/theme';
+import {theme, space} from 'utils/theme';
+import {EmptyState} from 'components/ui';
+import {useRouter} from 'expo-router';
 import {useSelector} from 'react-redux';
 import {RootState} from 'redux/app/store';
 
@@ -12,6 +12,7 @@ import {useCards} from 'contexts/cardContext';
 
 export default function New() {
   const {isLoading, refreshCategories} = useCards();
+  const router = useRouter();
   const CardArray = useSelector(
     (state: RootState) => state.reducer.cardArray.cardArray,
   );
@@ -29,12 +30,6 @@ export default function New() {
   return (
     <MenuPage title="NEW" activePage={'New'}>
       <>
-        {newCards.length === 0 && !isLoading && (
-          <NoContentView>
-            <Image source={Astronaught} />
-            <NoContentText>Sorry, No new Items Here</NoContentText>
-          </NoContentView>
-        )}
         <Body>
           {isLoading ? (
             <ActivityIndicator size="large" color={theme.colors.main} />
@@ -52,7 +47,19 @@ export default function New() {
                 />
               )}
               keyExtractor={(item, index) => `${item.title}-${index}`}
-              contentContainerStyle={{paddingBottom: 20}}
+              contentContainerStyle={{paddingBottom: 20, flexGrow: 1}}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={
+                <NoContentView>
+                  <EmptyState
+                    icon="sparkles"
+                    title="Nothing new yet"
+                    message="Fresh categories land here first. Pull down to check again, or play an old favourite."
+                    actionLabel="Browse categories"
+                    onAction={() => router.push('/home')}
+                  />
+                </NoContentView>
+              }
             />
           )}
         </Body>
@@ -62,19 +69,10 @@ export default function New() {
 }
 
 const NoContentView = styled.View({
+  flex: 1,
   width: '100%',
-  alignItems: 'center',
   justifyContent: 'center',
-});
-
-const Image = styled.Image({
-  marginBottom: heightPixel(30),
-});
-const NoContentText = styled.Text({
-  color: theme.colors.main,
-  fontWeight: '600',
-  fontSize: fontPixel(20),
-  fontFamily: theme.fonts.MonstserratSemibold,
+  paddingBottom: space.xxxl * 2,
 });
 const Body = styled.View({
   width: '100%',

@@ -1,9 +1,13 @@
 import React, {FC, useEffect} from 'react';
 import styled from '@emotion/native';
-import {fontPixel, heightPixel, widthPixel} from 'utils/pxToDpConvert';
-import {theme} from 'utils/theme';
-
-import {IsDarkMode} from 'utils/isDarkMode';
+import {fontPixel, widthPixel} from 'utils/pxToDpConvert';
+import {fonts, palette, radius, shadow, space, type} from 'utils/theme';
+import {useAppTheme} from 'utils/useAppTheme';
+import {EmptyState, IconButton, ScreenHeader} from 'components/ui';
+import SafeAreaViewWrapper from 'components/safeAreaViewWrapper';
+import Animated, {FadeInDown, ZoomIn} from 'react-native-reanimated';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import {ScrollView, StyleSheet, View} from 'react-native';
 
 import Art2Img from 'assets/images/background_art.png';
 import ArtImg from 'assets/images/background_art2.png';
@@ -13,7 +17,6 @@ import {RootState} from 'redux/app/store';
 import {StrippedButton} from 'components';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import {useRouter} from 'expo-router';
-import Entypo from '@expo/vector-icons/Entypo';
 
 interface IProps {
   round: number;
@@ -44,7 +47,7 @@ const RoundResult: FC<IProps> = ({team, round, title, onClick}) => {
     (state: RootState) => state.reducer.gameRules.teams,
   );
 
-  const isDarkMode = IsDarkMode();
+  const {isDark: isDarkMode, c} = useAppTheme();
 
   const ClickNext = () => {
     router.push('/home');
@@ -55,50 +58,104 @@ const RoundResult: FC<IProps> = ({team, round, title, onClick}) => {
   }, []);
 
   return (
-    <Container darkMode={isDarkMode}>
-      <Image source={isDarkMode ? Art2Img : ArtImg} resizeMode="cover">
-        <ArrowButton
-          onPress={() => {
-            router.back();
-          }}>
-          <Entypo
-            name="chevron-left"
-            size={widthPixel(36)}
-            color={isDarkMode ? 'white' : 'black'}
+    <Container style={{backgroundColor: c.background}}>
+      <Image
+        source={isDarkMode ? Art2Img : ArtImg}
+        resizeMode="cover"
+        imageStyle={{opacity: isDarkMode ? 0.35 : 1}}>
+        <SafeAreaViewWrapper darkmode={isDarkMode} style={styles.safe}>
+          <ScreenHeader
+            title={title}
+            left={
+              <IconButton
+                name="chevron-back"
+                accessibilityLabel="Go back"
+                onPress={() => router.back()}
+              />
+            }
           />
-        </ArrowButton>
-        <Body>
-          <Title darkMode={isDarkMode}>{title}</Title>
           {!QuickPlay && (
-            <RoundTeamText
-              darkMode={
-                isDarkMode
-              }>{`Round ${round} : Team ${team}`}</RoundTeamText>
+            <RoundChip>
+              <RoundChipText>{`Round ${round} · Team ${team}`}</RoundChipText>
+            </RoundChip>
           )}
 
-          <ScoreText>{`Score : ${score}`}</ScoreText>
-          <CardResults>
-            <CardCategory>
-              <CategoryTitle cardCate="Correct">CORRECT</CategoryTitle>
-              {CorrectCards.map((card, index) => {
-                return (
-                  <CardNames key={index} darkMode={isDarkMode}>
+          <Animated.View entering={ZoomIn.springify().damping(12)}>
+            <ScoreText>{score}</ScoreText>
+          </Animated.View>
+          <ScoreLabel style={{color: c.textMuted}}>points</ScoreLabel>
+
+          <Animated.View
+            entering={FadeInDown.delay(120).springify().damping(18)}
+            style={styles.columns}>
+            <View
+              style={[
+                styles.column,
+                {backgroundColor: c.surface},
+                !isDarkMode && shadow.sm,
+              ]}>
+              <ColumnHeader>
+                <Ionicons
+                  name="checkmark-circle"
+                  size={widthPixel(18)}
+                  color={palette.green}
+                />
+                <CategoryTitle style={{color: palette.green}}>
+                  Correct · {CorrectCards.length}
+                </CategoryTitle>
+              </ColumnHeader>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {CorrectCards.length === 0 && (
+                  <EmptyState
+                    compact
+                    icon="happy-outline"
+                    title="None this round"
+                  />
+                )}
+                {CorrectCards.map((card, index) => (
+                  <CardNames key={index} style={{color: c.text}}>
                     {card}
                   </CardNames>
-                );
-              })}
-            </CardCategory>
-            <CardCategory>
-              <CategoryTitle>SKIPPED</CategoryTitle>
-              {SkippedCards.map((card, index) => {
-                return (
-                  <CardNames cardCate={'skipped'} key={index}>
+                ))}
+              </ScrollView>
+            </View>
+            <View
+              style={[
+                styles.column,
+                {backgroundColor: c.surface},
+                !isDarkMode && shadow.sm,
+              ]}>
+              <ColumnHeader>
+                <Ionicons
+                  name="play-skip-forward-circle"
+                  size={widthPixel(18)}
+                  color={palette.gold}
+                />
+                <CategoryTitle style={{color: palette.gold}}>
+                  Passed · {SkippedCards.length}
+                </CategoryTitle>
+              </ColumnHeader>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {SkippedCards.length === 0 && (
+                  <EmptyState
+                    compact
+                    icon="thumbs-up-outline"
+                    title="No passes!"
+                  />
+                )}
+                {SkippedCards.map((card, index) => (
+                  <CardNames
+                    key={index}
+                    style={{
+                      color: c.textMuted,
+                      textDecorationLine: 'line-through',
+                    }}>
                     {card}
                   </CardNames>
-                );
-              })}
-            </CardCategory>
-          </CardResults>
+                ))}
+              </ScrollView>
+            </View>
+          </Animated.View>
           <Button>
             <StrippedButton
               label={
@@ -111,7 +168,7 @@ const RoundResult: FC<IProps> = ({team, round, title, onClick}) => {
               onPress={QuickPlay ? ClickNext : onClick}
             />
           </Button>
-        </Body>
+        </SafeAreaViewWrapper>
       </Image>
     </Container>
   );
@@ -119,110 +176,84 @@ const RoundResult: FC<IProps> = ({team, round, title, onClick}) => {
 
 export default RoundResult;
 
-interface IuseDark {
-  darkMode: boolean;
-}
+const styles = StyleSheet.create({
+  safe: {paddingHorizontal: space.lg, alignItems: 'center'},
+  columns: {
+    flex: 1,
+    width: '100%',
+    flexDirection: 'row',
+    gap: space.sm,
+    marginTop: space.lg,
+    marginBottom: space.lg,
+  },
+  column: {
+    flex: 1,
+    borderRadius: radius.lg,
+    padding: space.md,
+  },
+});
 
-const Container = styled.View<IuseDark>(({darkMode}) => ({
+const Container = styled.View({
   width: '100%',
   height: '100%',
-  alignItems: 'center',
-  position: 'relative',
   zIndex: 50,
-  backgroundColor: darkMode ? theme.colors.darkbackground : theme.colors.white,
-}));
+});
 
-const Body = styled.View({
-  width: '100%',
-  height: '100%',
-  alignItems: 'center',
-  paddingHorizontal: widthPixel(25),
-});
-const ArrowButton = styled.TouchableOpacity({
-  position: 'absolute',
-  left: 25,
-  top: 30,
-  width: widthPixel(50),
-});
 const Image = styled.ImageBackground({
-  width: '100%',
-  height: '100%',
-  alignItems: 'center',
-  justifyContent: 'center',
   flex: 1,
+  width: '100%',
 });
+
 const Button = styled.View({
-  width: widthPixel(254),
+  width: '100%',
+  marginBottom: space.sm,
 });
 
-const Title = styled.Text<IuseDark>(({darkMode}) => ({
-  color: darkMode ? theme.colors.white : theme.colors.black,
-  fontSize: fontPixel(24),
-  fontWeight: '400',
-  fontFamily: theme.fonts.Gagalin,
-  marginBottom: heightPixel(15),
-  marginTop: heightPixel(50),
-}));
-
-const RoundTeamText = styled.Text<IuseDark>(({darkMode}) => ({
-  color: darkMode ? theme.colors.white : theme.colors.black,
-  fontSize: fontPixel(20),
-  fontWeight: '400',
-  fontFamily: theme.fonts.MonstserratSemibold,
-  marginBottom: heightPixel(25),
-}));
+const RoundChip = styled.View({
+  marginTop: -space.xs,
+  backgroundColor: palette.gold,
+  paddingHorizontal: space.md,
+  paddingVertical: space.xxs,
+  borderRadius: radius.pill,
+});
+const RoundChipText = styled.Text({
+  ...type.caption,
+  color: palette.ink,
+});
 
 const ScoreText = styled.Text({
-  color: 'rgba(63, 131, 254, 1)',
-  fontSize: fontPixel(32),
-  fontWeight: '400',
-  fontFamily: theme.fonts.MonstserratBold,
-  marginBottom: heightPixel(15),
+  color: palette.blue,
+  fontSize: fontPixel(72),
+  fontFamily: fonts.Gagalin,
+  marginTop: space.md,
+  lineHeight: fontPixel(84),
 });
 
-const CardResults = styled.View({
-  backgroundColor: 'rgba(0, 159, 255, 0.3)',
-  width: '100%',
-  height: heightPixel(480),
-  borderRadius: widthPixel(25),
-  marginBottom: heightPixel(70),
-  alignItems: 'center',
-  justifyContent: 'space-between',
+const ScoreLabel = styled.Text({
+  ...type.caption,
+  textTransform: 'uppercase',
+  letterSpacing: 1.5,
+  marginTop: -space.xs,
+});
+
+const ColumnHeader = styled.View({
   flexDirection: 'row',
-  paddingHorizontal: widthPixel(15),
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: space.xxs,
+  marginBottom: space.sm,
 });
 
-const CardCategory = styled.ScrollView({
-  height: '90%',
-  width: '45%',
+const CategoryTitle = styled.Text({
+  fontFamily: fonts.MonstserratExtraBold,
+  fontSize: fontPixel(14),
+  textTransform: 'uppercase',
+  letterSpacing: 0.5,
 });
 
-interface ICardTitle {
-  cardCate?: string;
-}
-
-const CategoryTitle = styled.Text<ICardTitle>(({cardCate}) => ({
-  color:
-    cardCate === 'Correct' ? 'rgba(78, 203, 113, 1)' : 'rgba(254, 182, 10, 1)',
-  fontSize: fontPixel(20),
-  fontFamily: theme.fonts.MonstserratBold,
-  marginBottom: heightPixel(10),
+const CardNames = styled.Text({
+  fontSize: fontPixel(16),
+  fontFamily: fonts.MonstserratBold,
+  marginBottom: space.xs,
   textAlign: 'center',
-}));
-interface ICards {
-  cardCate?: string;
-  darkMode?: boolean;
-}
-const CardNames = styled.Text<ICards>(({cardCate, darkMode}) => ({
-  color:
-    cardCate === 'skipped'
-      ? 'rgba(175, 194, 205, 1)'
-      : darkMode
-      ? theme.colors.white
-      : theme.colors.black,
-  fontSize: fontPixel(20),
-  fontFamily: theme.fonts.MonstserratBold,
-  marginBottom: heightPixel(10),
-  textDecorationLine: cardCate === 'skipped' ? 'line-through' : 'none',
-  textAlign: 'center',
-}));
+});

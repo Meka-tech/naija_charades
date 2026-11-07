@@ -1,40 +1,47 @@
-import React, {FC} from 'react';
+import React from 'react';
 import styled from '@emotion/native';
-import {theme} from 'utils/theme';
-import {fontPixel, heightPixel} from 'utils/pxToDpConvert';
-import CorrectIcon from 'assets/images/correct_icon.svg';
-import SkipIcon from 'assets/images/skip_icon.svg';
+import Animated, {FadeIn, ZoomIn} from 'react-native-reanimated';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import {fonts, palette, space} from 'utils/theme';
+import {fontPixel, widthPixel} from 'utils/pxToDpConvert';
 
 interface Iprops {
   status: string;
 }
 
 export default function EndCard({status}: Iprops) {
+  const correct = status === 'Correct';
   return (
-    <Container>
-      <Status status={status}>{status}</Status>
-      {status === 'Correct' ? <CorrectIcon /> : <SkipIcon />}
-    </Container>
+    <Animated.View
+      entering={FadeIn.duration(120)}
+      style={[
+        containerStyle,
+        {backgroundColor: correct ? palette.green : palette.gold},
+      ]}>
+      <Animated.View entering={ZoomIn.springify().damping(11)}>
+        <Ionicons
+          name={correct ? 'checkmark-circle' : 'play-skip-forward-circle'}
+          size={widthPixel(110)}
+          color={palette.white}
+        />
+      </Animated.View>
+      <Status>{correct ? 'Correct!' : 'Pass'}</Status>
+    </Animated.View>
   );
 }
 
-const Container = styled.View({
-  width: '100%',
-  height: '100%',
-  position: 'absolute',
-  backgroundColor: theme.colors.white,
-  alignItems: 'center',
-  justifyContent: 'center',
+const containerStyle = {
+  width: '100%' as const,
+  height: '100%' as const,
+  position: 'absolute' as const,
+  alignItems: 'center' as const,
+  justifyContent: 'center' as const,
   zIndex: 20,
-});
+};
 
-interface IStatus {
-  status: string;
-}
-const Status = styled.Text<IStatus>(({status}) => ({
-  color: status === 'Correct' ? 'rgba(19, 202, 70, 1)' : theme.colors.main,
-  fontFamily: theme.fonts.MonstserratBold,
-  fontSize: fontPixel(60),
-  fontWeight: '500',
-  marginBottom: heightPixel(15),
-}));
+const Status = styled.Text({
+  color: palette.white,
+  fontFamily: fonts.Gagalin,
+  fontSize: fontPixel(64),
+  marginTop: space.sm,
+});

@@ -1,7 +1,9 @@
-import React, {FC, useState, useCallback, useEffect} from 'react';
+import React, {FC, useState, useCallback, useEffect, useRef} from 'react';
 import styled from '@emotion/native';
-import {IsDarkMode} from 'utils/isDarkMode';
-import {theme} from 'utils/theme';
+import {useAppTheme} from 'utils/useAppTheme';
+import {space} from 'utils/theme';
+import {IconButton} from 'components/ui';
+import {StrippedButton} from 'components/buttons';
 import {useNavigation} from '@react-navigation/native';
 import {
   ItemEight,
@@ -20,7 +22,6 @@ import {FlatList} from 'react-native-gesture-handler';
 import {heightPixel, widthPixel} from 'utils/pxToDpConvert';
 import {Dimensions} from 'react-native';
 import SafeAreaViewWrapper from 'components/safeAreaViewWrapper';
-import Entypo from '@expo/vector-icons/Entypo';
 
 interface ICarouselItem {
   children: JSX.Element;
@@ -32,8 +33,9 @@ const Item: FC<ICarouselItem> = ({id, children}) => {
 };
 
 export default function HowToPlay() {
-  const isDarkMode = IsDarkMode();
+  const {isDark: isDarkMode, c} = useAppTheme();
   const {goBack} = useNavigation();
+  const listRef = useRef<any>(null);
 
   const Data = [
     {id: '1', children: <ItemOne />},
@@ -58,20 +60,30 @@ export default function HowToPlay() {
     ViewableItems.length !== 0 && setActiveSlide(ViewableItems[0].index);
   }, [ViewableItems]);
 
+  const isLast = activeSlide === Data.length - 1;
+  const onNext = () => {
+    if (isLast) {
+      goBack();
+      return;
+    }
+    listRef.current?.scrollToIndex({index: activeSlide + 1, animated: true});
+  };
+
   return (
-    <SafeAreaViewWrapper darkmode={isDarkMode}>
-      <Body darkMode={isDarkMode}>
-        <GobackView
-          onPress={() => {
-            goBack();
-          }}>
-          <Entypo name="chevron-left" size={30} color={theme.colors.main} />
-        </GobackView>
+    <Body style={{backgroundColor: c.background}}>
+      <SafeAreaViewWrapper darkmode={isDarkMode}>
         <Header>
+          <IconButton
+            name="chevron-back"
+            accessibilityLabel="Go back"
+            onPress={() => goBack()}
+          />
           <ProgressBar items={10} activeSlide={activeSlide} />
+          <HeaderSpacer />
         </Header>
         <CarouselBody>
           <FlatList
+            ref={listRef}
             data={Data}
             renderItem={({item}) => (
               <Item key={item.id} children={item.children} id={item.id} />
@@ -87,39 +99,52 @@ export default function HowToPlay() {
             decelerationRate={'fast'}
             snapToAlignment="start"
             snapToInterval={Dimensions.get('window').width}
+            getItemLayout={(_, index) => ({
+              length: Dimensions.get('window').width,
+              offset: Dimensions.get('window').width * index,
+              index,
+            })}
           />
         </CarouselBody>
-      </Body>
-    </SafeAreaViewWrapper>
+        <Footer>
+          <StrippedButton
+            label={isLast ? "Let's play" : 'Next'}
+            variant={isLast ? 'primary' : 'secondary'}
+            onPress={onNext}
+          />
+        </Footer>
+      </SafeAreaViewWrapper>
+    </Body>
   );
 }
 
-interface IuseDark {
-  darkMode: boolean;
-}
-const Body = styled.View<IuseDark>(({darkMode}) => ({
+const Body = styled.View({
+  flex: 1,
   width: '100%',
-  height: '100%',
-  backgroundColor: darkMode ? theme.colors.darkbackground : theme.colors.white,
-  alignItems: 'center',
-}));
+});
 
-const GobackView = styled.TouchableOpacity({
-  position: 'absolute',
-  top: heightPixel(10),
-  left: widthPixel(15),
+const Header = styled.View({
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  paddingHorizontal: space.lg,
+  marginTop: space.xs,
+  marginBottom: space.sm,
+});
+
+const HeaderSpacer = styled.View({
+  width: widthPixel(44),
 });
 
 const CarouselBody = styled.View({
+  flex: 1,
   width: '100%',
-  height: '90%',
-  alignItems: 'center',
-  justifyContent: 'center',
 });
 
 const CarouselItem = styled.View({});
 
-const Header = styled.View({
-  marginTop: heightPixel(20),
-  marginBottom: heightPixel(20),
+const Footer = styled.View({
+  paddingHorizontal: space.lg,
+  paddingTop: space.sm,
+  paddingBottom: space.xs,
 });

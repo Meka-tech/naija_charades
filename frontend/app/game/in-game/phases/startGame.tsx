@@ -1,8 +1,19 @@
 import React, {FC, useState, useEffect} from 'react';
 import styled from '@emotion/native';
 import {IsDarkMode} from 'utils/isDarkMode';
-import {theme} from 'utils/theme';
-import {fontPixel, heightPixel} from 'utils/pxToDpConvert';
+import {fonts, palette, radius, space} from 'utils/theme';
+import {fontPixel, widthPixel} from 'utils/pxToDpConvert';
+import Animated, {
+  FadeIn,
+  ZoomIn,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import {haptics} from 'utils/haptics';
 import {DeviceMotion, Accelerometer} from 'expo-sensors';
 
 interface Iprops {
@@ -69,6 +80,27 @@ const StartGame: FC<Iprops> = ({startAction, timer, gameStarting}) => {
     };
   }, [data, x, y, z]);
 
+  // Gentle bob on the phone icon while waiting.
+  const bob = useSharedValue(0);
+  useEffect(() => {
+    bob.value = withRepeat(
+      withSequence(
+        withTiming(-8, {duration: 700}),
+        withTiming(0, {duration: 700}),
+      ),
+      -1,
+    );
+  }, [bob]);
+  const bobStyle = useAnimatedStyle(() => ({
+    transform: [{translateY: bob.value}],
+  }));
+
+  useEffect(() => {
+    if (TimerStarted) {
+      timer > 0 ? haptics.press() : haptics.success();
+    }
+  }, [timer, TimerStarted]);
+
   return (
     <Container
       darkMode={isDarkMode}
@@ -78,12 +110,25 @@ const StartGame: FC<Iprops> = ({startAction, timer, gameStarting}) => {
         setTimerStarted(true);
       }}>
       {!TimerStarted && (
-        <>
+        <Animated.View entering={FadeIn} style={{alignItems: 'center'}}>
+          <Animated.View style={bobStyle}>
+            <Ionicons
+              name="phone-landscape-outline"
+              size={widthPixel(56)}
+              color={palette.white}
+            />
+          </Animated.View>
           <PlaceText>Place on Forehead</PlaceText>
-          <TouchText>Touch screen to Start</TouchText>
-        </>
+          <TouchPill>
+            <TouchText>Tap anywhere to start</TouchText>
+          </TouchPill>
+        </Animated.View>
       )}
-      {TimerStarted && <TimerText>{timer > 0 ? timer : 'G0!'}</TimerText>}
+      {TimerStarted && (
+        <Animated.View key={timer} entering={ZoomIn.springify().damping(12)}>
+          <TimerText>{timer > 0 ? timer : 'GO!'}</TimerText>
+        </Animated.View>
+      )}
     </Container>
   );
 };
@@ -93,36 +138,38 @@ interface IContainer {
   darkMode?: boolean;
   timerStarted?: boolean;
 }
-const Container = styled.TouchableOpacity<IContainer>(
-  ({darkMode, timerStarted}) => ({
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
-    backgroundColor: timerStarted
-      ? 'rgba(244, 131, 155, 1)'
-      : darkMode
-      ? theme.colors.darkbackground
-      : theme.colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-  }),
-);
+const Container = styled.TouchableOpacity<IContainer>(({timerStarted}) => ({
+  width: '100%',
+  height: '100%',
+  position: 'absolute',
+  backgroundColor: timerStarted ? palette.pink : palette.pinkDeep,
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
 
 const PlaceText = styled.Text({
-  fontFamily: theme.fonts.MonstserratBold,
-  fontSize: fontPixel(60),
-  color: 'rgba(64, 132, 254, 1)',
-  marginBottom: heightPixel(30),
+  fontFamily: fonts.Gagalin,
+  fontSize: fontPixel(56),
+  color: palette.white,
+  marginTop: space.md,
+  marginBottom: space.lg,
+});
+
+const TouchPill = styled.View({
+  backgroundColor: palette.white,
+  paddingHorizontal: space.xl,
+  paddingVertical: space.sm,
+  borderRadius: radius.pill,
 });
 
 const TouchText = styled.Text({
-  fontFamily: theme.fonts.MonstserratBold,
-  fontSize: fontPixel(24),
-  color: theme.colors.main,
+  fontFamily: fonts.MonstserratBold,
+  fontSize: fontPixel(18),
+  color: palette.pinkDeep,
 });
 
 const TimerText = styled.Text({
-  fontFamily: theme.fonts.MonstserratBold,
-  fontSize: fontPixel(96),
-  color: theme.colors.white,
+  fontFamily: fonts.Gagalin,
+  fontSize: fontPixel(120),
+  color: palette.white,
 });
